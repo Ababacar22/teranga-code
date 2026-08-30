@@ -1,0 +1,884 @@
+[
+  {
+    "id": "git",
+    "title": "Git — versioning",
+    "category": "Outils",
+    "badge": {
+      "id": "badge-git",
+      "name": "Maître du Versioning",
+      "emoji": "🌿"
+    },
+    "griotIntro": [
+      "À Saint-Louis, chaque pêcheur note dans son carnet chaque sortie en mer — on peut toujours revenir en arrière voir ce qui a été fait.",
+      "Git, c'est ce carnet pour ton code : chaque commit est une trace, chaque branche une exploration séparée."
+    ],
+    "explanation": {
+      "text": "Le versioning permet de revenir en arrière, travailler à plusieurs sans s'écraser, et savoir qui a changé quoi et pourquoi. Clique sur les lignes du workflow ci-dessous pour comprendre chaque commande.",
+      "code": "git checkout -b feature/login\ngit add .\ngit commit -m \"Ajoute le formulaire de connexion\"\ngit push -u origin feature/login\n# puis, pour intégrer les changements de main :\ngit fetch origin\ngit rebase origin/main\n# si un conflit bloque le rebase :\ngit rebase --abort",
+      "annotations": [
+        {
+          "line": 0,
+          "note": "`-b` crée une nouvelle branche ET bascule dessus en une seule commande. `main` reste intact pendant ce temps."
+        },
+        {
+          "line": 1,
+          "note": "`add` prépare (\"stage\") les fichiers modifiés — Git distingue \"modifié\" de \"prêt à committer\" pour que tu choisisses précisément ce qui part dans chaque commit."
+        },
+        {
+          "line": 2,
+          "note": "`commit` enregistre un instantané des fichiers stagés, avec un message qui explique le pourquoi, pas juste le quoi."
+        },
+        {
+          "line": 3,
+          "note": "`-u` (upstream) relie ta branche locale à la branche distante : les prochains push/pull sur cette branche n'auront plus besoin de préciser où."
+        },
+        {
+          "line": 5,
+          "note": "`fetch` télécharge les derniers changements distants SANS les appliquer à ton code — une mise à jour d'information, sans danger."
+        },
+        {
+          "line": 6,
+          "note": "`rebase` rejoue tes commits par-dessus la version la plus récente de main : historique linéaire, mais ça réécrit le hash de tes commits. Piège : ne rebase jamais une branche déjà partagée avec d'autres — ça désynchronise tout le monde."
+        },
+        {
+          "line": 8,
+          "note": "`rebase --abort` annule le rebase en cours et remet la branche exactement dans l'état d'avant — utile si les conflits deviennent trop complexes à résoudre proprement."
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "label": "Créer une branche",
+        "description": "git checkout -b : on isole son travail du code déjà stable sur main."
+      },
+      {
+        "label": "Commiter",
+        "description": "git add + git commit : chaque changement est enregistré avec un message clair."
+      },
+      {
+        "label": "Pousser la branche",
+        "description": "git push : la branche devient visible pour le reste de l'équipe sur le dépôt distant."
+      },
+      {
+        "label": "Ouvrir une Pull Request",
+        "description": "Le code est relu par un·e collègue avant d'être intégré."
+      },
+      {
+        "label": "Fusionner",
+        "description": "Une fois validée, la branche est fusionnée dans main — le cycle recommence."
+      }
+    ],
+    "useCases": [
+      "Une équipe de 5 développeurs qui travaillent chacun sur une fonctionnalité différente via des branches séparées, fusionnées ensuite via des pull requests.",
+      "Revenir à une version stable du code juste avant un bug découvert en production (`git revert` ou `git checkout` sur un ancien commit).",
+      "Comparer deux versions d'un fichier pour comprendre exactement ce qu'un collègue a changé (`git diff`, `git blame`)."
+    ],
+    "relatedTools": [
+      {
+        "name": "GitHub / GitLab / Bitbucket",
+        "description": "Plateformes qui hébergent des dépôts Git en ligne et ajoutent pull requests, CI/CD et gestion d'équipe — Git est l'outil, elles sont les plateformes."
+      },
+      {
+        "name": "GitHub Desktop / GitKraken",
+        "description": "Interfaces graphiques pour Git, utiles pour visualiser l'historique et les branches sans taper toutes les commandes."
+      },
+      {
+        "name": "Husky",
+        "description": "Exécute automatiquement des scripts (lint, tests) à chaque commit ou push via les hooks Git."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "git checkout main",
+        "git pull",
+        "git merge feature/login",
+        "git push --force origin main"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Un `push --force` sur `main` réécrit l'historique partagé et peut écraser le travail des autres développeurs — à éviter sur une branche commune (préférer `--force-with-lease` si vraiment nécessaire, ou éviter le force push)."
+    },
+    "practice": {
+      "question": "Quelle est la différence entre `git merge` et `git rebase` ?",
+      "options": [
+        "`merge` crée un commit de fusion et garde l’historique tel quel ; `rebase` réécrit l’historique en rejouant les commits sur une nouvelle base",
+        "Ce sont deux commandes strictement identiques",
+        "`rebase` supprime définitivement les commits"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — c’est une question très classique en entretien, bien la maîtriser est un vrai plus.",
+        "incorrect": "Retiens bien : merge = fusionne avec un commit de fusion, rebase = réécrit l’historique."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle commande annule le dernier commit tout en gardant les modifications dans la zone de travail (pas perdues) ?",
+        "options": [
+          "git reset --soft HEAD~1",
+          "git reset --hard HEAD~1",
+          "git commit --amend --no-edit"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Comment résous-tu correctement un conflit de merge en Git ?",
+        "options": [
+          "Éditer les fichiers marqués `<<<<<<<`, choisir/fusionner le contenu, puis `git add` et `git commit`",
+          "Toujours utiliser `git checkout --theirs` pour accepter automatiquement la version distante sur tous les fichiers en conflit",
+          "Annuler le merge avec `git merge --abort`, puis reformuler uniquement le message de commit"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Quelle est la différence entre `git pull` et `git fetch` ?",
+        "options": [
+          "`fetch` récupère les changements distants sans les fusionner, `pull` fait fetch + merge (ou rebase) automatiquement",
+          "`pull` ne fonctionne que sur la branche `main`, `fetch` fonctionne sur n'importe quelle branche",
+          "`fetch` supprime automatiquement les branches locales obsolètes"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Une branche `feature/paiement` est déjà en pull request, et 3 collègues l'ont récupérée localement pour la relire. Tu veux \"nettoyer\" son historique avant la fusion finale avec `git rebase -i` puis `git push --force`. Quel est le risque ?",
+        "options": [
+          "L'historique de tes collègues divergera du tien : leurs prochains `git pull` généreront des conflits ou des commits en double",
+          "Aucun risque : rebase ne modifie jamais l'identité des commits déjà poussés",
+          "GitHub bloque automatiquement tout `push --force` sur une branche liée à une pull request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien, on te demande pourquoi ton équipe utilise systématiquement des pull requests plutôt que de pousser directement sur `main`. Quelle réponse montre la meilleure compréhension ?",
+        "options": [
+          "Ça permet une relecture avant intégration, déclenche souvent des vérifications automatiques (CI), et garde une trace claire de qui a validé quoi",
+          "C'est une convention GitHub sans réel bénéfice technique, juste une habitude",
+          "Ça sert uniquement à ralentir volontairement les développeurs juniors"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Tu exécutes `git cherry-pick abc123` sur ta branche courante. Que se passe-t-il ?",
+        "options": [
+          "abc123 est supprimé de l'historique de la branche d'origine",
+          "Le commit abc123 est rejoué (appliqué) sur la branche courante, créant un nouveau commit avec un hash différent",
+          "cherry-pick fusionne toutes les branches contenant ce commit"
+        ],
+        "correctIndex": 1,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Que fait `git reflog` et dans quel cas est-il utile en entretien ?",
+        "options": [
+          "Il affiche uniquement les branches distantes",
+          "Il supprime les commits non poussés pour nettoyer l'historique",
+          "Il logue localement tous les déplacements de HEAD (commits, resets, checkouts...), utile pour récupérer un commit \"perdu\" après un reset --hard"
+        ],
+        "correctIndex": 2,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "\"Rebase vs merge\" est l'un des débats les plus tenaces de la culture dev : certaines équipes imposent un historique linéaire (rebase systématique), d'autres préfèrent préserver l'historique réel des merges. Aucune des deux n'est \"fausse\" — c'est une convention d'équipe à connaître et respecter.",
+    "ambiguite": {
+      "question": "git pull et git fetch + git merge, c'est pareil ?",
+      "reponse": "Oui : git pull est un raccourci qui fait fetch puis merge (ou rebase selon la config) automatiquement. La différence pratique : fetch seul te laisse le temps d'inspecter les changements avant de les intégrer, pull le fait en une seule étape sans ce contrôle."
+    }
+  },
+  {
+    "id": "docker",
+    "title": "Docker & conteneurisation",
+    "category": "Outils",
+    "badge": {
+      "id": "badge-docker",
+      "name": "Maître des Conteneurs",
+      "emoji": "🐳"
+    },
+    "griotIntro": [
+      "Une pirogue transporte toujours les mêmes provisions, peu importe le port où elle accoste — elle est autonome.",
+      "Un conteneur Docker embarque ton application avec tout ce dont elle a besoin pour tourner pareil, partout."
+    ],
+    "explanation": {
+      "text": "Docker empaquette une app et ses dépendances dans une image portable, exécutée dans un conteneur isolé — ça résout le fameux \"ça marche sur ma machine\". Clique sur les lignes du Dockerfile pour comprendre chaque étape.",
+      "code": "FROM node:22-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nUSER node\nEXPOSE 3000\nCMD [\"npm\", \"start\"]",
+      "annotations": [
+        {
+          "line": 0,
+          "note": "L'image de départ : Node.js 22 sur une base Alpine (Linux minimaliste, image plus légère)."
+        },
+        {
+          "line": 1,
+          "note": "Tout ce qui suit s'exécute dans `/app` à l'intérieur du conteneur."
+        },
+        {
+          "line": 2,
+          "note": "On copie D'ABORD juste les fichiers de dépendances — pas encore tout le code."
+        },
+        {
+          "line": 3,
+          "note": "`npm install` s'exécute avant de copier le reste du code : Docker met cette étape en cache tant que `package.json` ne change pas, ce qui accélère les builds suivants."
+        },
+        {
+          "line": 4,
+          "note": "Le reste du code est copié seulement maintenant, après l'installation des dépendances."
+        },
+        {
+          "line": 5,
+          "note": "`USER node` bascule sur un utilisateur non-root avant de lancer l'app : ça réduit la surface d'attaque si le conteneur est un jour compromis."
+        },
+        {
+          "line": 6,
+          "note": "`EXPOSE` documente le port utilisé par le conteneur — c'est informatif seulement, ça n'expose rien en soi : il faut `-p` au `docker run` pour réellement publier le port."
+        },
+        {
+          "line": 7,
+          "note": "Commande exécutée quand le conteneur démarre — pas pendant le build de l'image."
+        }
+      ]
+    },
+    "useCases": [
+      "Déployer une application Node.js + PostgreSQL de façon identique sur la machine d'un développeur, en CI et sur un serveur de production (comme dans ce projet Teranga Code).",
+      "Isoler plusieurs projets qui utilisent des versions différentes de Node.js ou de bibliothèques, sans conflit sur la même machine.",
+      "Lancer rapidement une base de données pour du développement local sans l'installer directement sur son OS (`docker run postgres`)."
+    ],
+    "relatedTools": [
+      {
+        "name": "Docker Compose",
+        "description": "Orchestre plusieurs conteneurs liés (frontend, backend, base de données) avec un seul fichier — utilisé dans ce projet."
+      },
+      {
+        "name": "Kubernetes",
+        "description": "Orchestrateur pour gérer des conteneurs à grande échelle (répartition de charge, redémarrage automatique, mise à l'échelle) — l'étape après Docker Compose en production."
+      },
+      {
+        "name": "Docker Hub",
+        "description": "Registre public d'images Docker prêtes à l'emploi (node, postgres, nginx...) que tu peux utiliser comme base."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "FROM node:22-alpine",
+        "WORKDIR /app",
+        "COPY . .",
+        "RUN npm install",
+        "EXPOSE 3000",
+        "CMD [\"npm\", \"start\"]"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "Copier tout le code AVANT `npm install` casse le cache de layers Docker : le moindre changement dans un fichier source (même sans toucher aux dépendances) invalide le layer `COPY . .`, ce qui force `RUN npm install` à se relancer entièrement à chaque build. Il faut copier `package*.json` et lancer `npm install` avant de copier le reste du code, pour que Docker réutilise le layer d'installation tant que les dépendances n'ont pas changé."
+    },
+    "practice": {
+      "question": "Quelle est la différence entre une image Docker et un conteneur ?",
+      "options": [
+        "L’image est un modèle figé (template) ; le conteneur est une instance en cours d’exécution de cette image",
+        "Ce sont deux mots pour la même chose",
+        "Un conteneur peut exister sans image"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — l’image est la recette, le conteneur est le plat en train d’être servi.",
+        "incorrect": "Pense à la métaphore : l’image est un modèle, le conteneur est une instance vivante de ce modèle."
+      }
+    },
+    "quiz": [
+      {
+        "question": "À quoi sert un volume Docker ?",
+        "options": [
+          "Persister des données au-delà du cycle de vie d’un conteneur (ex: base de données)",
+          "Accélérer le CPU du conteneur",
+          "Chiffrer l’image"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi utiliser une image \"alpine\" (comme `node:22-alpine`) ?",
+        "options": [
+          "C’est une image Linux minimale, donc plus légère et avec une surface d’attaque réduite",
+          "Elle est plus lente que les autres",
+          "Elle ne fonctionne qu’avec Python"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Que fait `docker compose up` ?",
+        "options": [
+          "Démarre plusieurs conteneurs définis dans un fichier `docker-compose.yml`, avec leur réseau partagé",
+          "Supprime toutes les images locales",
+          "Compile le code source en binaire"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi éviter de lancer un conteneur en tant que `root` en production ?",
+        "options": [
+          "Pour limiter l’impact d’une éventuelle faille de sécurité (principe du moindre privilège)",
+          "Root est obligatoire pour que Docker fonctionne",
+          "Ça n’a aucune importance pour la sécurité"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel est l’intérêt du multi-stage build dans un Dockerfile ?",
+        "options": [
+          "Réduire la taille de l’image finale en ne gardant que les artefacts nécessaires (pas les outils de build)",
+          "Créer plusieurs conteneurs en même temps automatiquement",
+          "C’est une fonctionnalité qui n’existe pas"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Dans un Dockerfile, pourquoi l'ordre des instructions COPY/RUN impacte-t-il la vitesse des builds suivants ?",
+        "options": [
+          "L'ordre n'a strictement aucun impact sur le cache",
+          "Docker met en cache chaque layer ; si une instruction plus tôt change, tous les layers suivants sont invalidés et reconstruits",
+          "Docker exécute toujours les instructions dans un ordre aléatoire à chaque build"
+        ],
+        "correctIndex": 1,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Une variable définie avec `ENV` dans un Dockerfile est-elle visible dans le conteneur en cours d'exécution ?",
+        "options": [
+          "Oui, elle est disponible au build ET à l'exécution du conteneur, contrairement à `ARG` qui n'existe que pendant le build",
+          "Non, ENV n'est disponible que pendant le build de l'image",
+          "ENV et ARG sont strictement équivalents"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "\"Ça marche sur Docker\" est devenu une blague récurrente chez les devs qui ont vécu l'ère pré-Docker du \"ça marche sur ma machine\" — Docker n'élimine pas tous les bugs d'environnement, mais il en supprime une classe entière liée aux versions de dépendances système.",
+    "ambiguite": {
+      "question": "Une image Docker et un conteneur Docker, c'est la même chose ?",
+      "reponse": "Non : l'image est un modèle figé (comme une classe), le conteneur est une instance en cours d'exécution de cette image (comme un objet). On peut lancer plusieurs conteneurs à partir de la même image, exactement comme on instancie plusieurs objets à partir d'une même classe."
+    }
+  },
+  {
+    "id": "ci-cd",
+    "title": "Intégration & déploiement continus (CI/CD)",
+    "category": "Outils",
+    "badge": {
+      "id": "badge-cicd",
+      "name": "Maître du Pipeline",
+      "emoji": "🔄"
+    },
+    "griotIntro": [
+      "Sur le chantier, chaque brique posée est vérifiée avant de poser la suivante — pas d'attente jusqu'à la fin pour découvrir un défaut.",
+      "La CI/CD applique ce principe au code : chaque changement est testé et validé automatiquement, en continu."
+    ],
+    "explanation": {
+      "text": "L'intégration continue (CI) lance automatiquement les tests à chaque push ; le déploiement continu (CD) automatise ensuite la mise en production. Clique sur les étapes du pipeline pour voir leur ordre.",
+      "code": "# Exemple simplifié de pipeline (GitHub Actions)\non: [push]\njobs:\n  build:\n    steps:\n      - run: npm install\n      - run: npm run lint\n      - run: npm test\n      - run: npm run build",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "Ce pipeline se déclenche automatiquement à chaque `push` — pas besoin de le lancer manuellement."
+        },
+        {
+          "line": 5,
+          "note": "Étape 1 : installer les dépendances, indispensable avant tout le reste."
+        },
+        {
+          "line": 6,
+          "note": "Étape 2 : vérifier la qualité du code (style, erreurs évidentes) avant de lancer les tests, plus longs."
+        },
+        {
+          "line": 7,
+          "note": "Étape 3 : lancer les tests automatisés — si un test échoue, le pipeline s'arrête ici et le build/déploiement n'a jamais lieu."
+        },
+        {
+          "line": 8,
+          "note": "Étape 4, seulement si tout ce qui précède a réussi : construire l'application pour la mettre en production."
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "label": "Push du code",
+        "description": "Un·e développeur·se pousse un commit sur une branche ou une pull request."
+      },
+      {
+        "label": "Lint & tests",
+        "description": "Le pipeline vérifie automatiquement le style du code et lance la suite de tests."
+      },
+      {
+        "label": "Build",
+        "description": "Le code est compilé/empaqueté pour produire un artefact déployable."
+      },
+      {
+        "label": "Déploiement staging",
+        "description": "L'artefact est mis en ligne automatiquement sur un environnement de test."
+      },
+      {
+        "label": "Déploiement production",
+        "description": "Après validation, le changement est livré aux utilisateurs finaux."
+      }
+    ],
+    "useCases": [
+      "Chaque pull request déclenche automatiquement les tests sur GitHub Actions/GitLab CI, bloquant le merge si un test échoue.",
+      "Un déploiement automatique sur un serveur de staging à chaque merge sur la branche `develop`, pour valider avant la mise en production.",
+      "La publication automatique d'un package npm sur une nouvelle version taguée, sans intervention manuelle."
+    ],
+    "relatedTools": [
+      {
+        "name": "GitHub Actions",
+        "description": "Pipeline CI/CD intégré à GitHub, configuré en YAML directement dans le dépôt (`.github/workflows`)."
+      },
+      {
+        "name": "GitLab CI / CircleCI / Jenkins",
+        "description": "Alternatives populaires à GitHub Actions, chacune avec sa propre syntaxe de pipeline."
+      },
+      {
+        "name": "Vercel / Netlify",
+        "description": "Déploient automatiquement à chaque push, avec un aperçu (\"preview deploy\") pour chaque pull request."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "on: [push]",
+        "jobs:",
+        "  test:",
+        "    steps:",
+        "      - run: npm test",
+        "  deploy:",
+        "    steps:",
+        "      - run: npm run deploy"
+      ],
+      "buggyLineIndex": 5,
+      "explanation": "Sans `needs: test` sur le job `deploy`, GitHub Actions exécute les jobs en parallèle par défaut — le déploiement peut donc démarrer avant même que les tests soient terminés, voire alors qu'ils échouent. Il faut ajouter `needs: test` au job `deploy` pour le forcer à attendre la réussite du job `test` avant de se lancer."
+    },
+    "practice": {
+      "question": "Quel est l’objectif principal de l’intégration continue (CI) ?",
+      "options": [
+        "Détecter les erreurs le plus tôt possible en testant automatiquement chaque changement",
+        "Remplacer complètement les développeurs",
+        "Ralentir volontairement les livraisons"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — \"fail fast\" : détecter les problèmes tôt coûte bien moins cher que de les découvrir en production.",
+        "incorrect": "La CI ne remplace personne, elle sert justement à donner un feedback rapide à l’équipe."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle est la différence entre déploiement continu et livraison continue (continuous delivery) ?",
+        "options": [
+          "Le déploiement continu déploie automatiquement en production ; la livraison continue prépare le déploiement mais garde une validation manuelle finale",
+          "C’est l’inverse : la livraison continue déploie automatiquement, le déploiement continu garde une validation manuelle",
+          "La livraison continue ne concerne que les tests unitaires"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi faire tourner les tests automatiquement sur chaque pull request ?",
+        "options": [
+          "Pour éviter d’introduire des régressions avant même de merger le code",
+          "Parce que c’est obligatoire par la loi",
+          "Ça n’a aucun intérêt si l’équipe est petite"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu’est-ce qu’un \"rollback\" dans un contexte de déploiement ?",
+        "options": [
+          "Revenir automatiquement à la version précédente stable en cas de problème après déploiement",
+          "Supprimer définitivement le code",
+          "Un type de test unitaire"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel est l’intérêt d’un déploiement \"blue-green\" ?",
+        "options": [
+          "Basculer le trafic vers la nouvelle version sans interruption de service, avec un retour arrière rapide possible",
+          "Colorer l’interface en bleu et vert",
+          "Ralentir le déploiement volontairement"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi séparer les environnements (dev, staging, production) ?",
+        "options": [
+          "Pour tester en conditions proches du réel avant d’impacter les utilisateurs finaux",
+          "Ça n’apporte aucun bénéfice concret",
+          "Pour payer plus cher en infrastructure sans raison"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Dans un pipeline GitHub Actions, à quoi sert `needs: [test]` sur un job `deploy` ?",
+        "options": [
+          "Supprime automatiquement le job `test` après exécution",
+          "Duplique le job `test` dans le job `deploy`",
+          "Force le job `deploy` à attendre la réussite du job `test` avant de démarrer, au lieu de s'exécuter en parallèle"
+        ],
+        "correctIndex": 2,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi utiliser des secrets chiffrés (ex: GitHub Secrets) plutôt que des variables en clair dans un fichier de config CI versionné ?",
+        "options": [
+          "Les secrets chiffrés s'exécutent plus vite",
+          "Pour éviter d'exposer des identifiants sensibles (clés API, mots de passe) dans l'historique du dépôt, visible par quiconque a accès au code",
+          "Ça n'a aucun impact, c'est juste une convention esthétique"
+        ],
+        "correctIndex": 1,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "L'acronyme CI/CD cache une vraie nuance culturelle en entreprise : certaines équipes n'ont que de l'intégration continue (tests auto) sans jamais déployer automatiquement, d'autres poussent jusqu'au déploiement continu total. Le niveau de maturité CI/CD est souvent un bon indicateur de la culture d'ingénierie d'une entreprise.",
+    "ambiguite": {
+      "question": "Continuous Deployment et Continuous Delivery, quelle différence exactement ?",
+      "reponse": "Les deux préparent automatiquement chaque changement pour la production. La différence : Continuous Delivery s'arrête juste avant la mise en prod (validation humaine finale), Continuous Deployment va jusqu'au bout automatiquement, sans intervention humaine."
+    }
+  },
+  {
+    "id": "linux",
+    "title": "Linux & ligne de commande",
+    "category": "Outils",
+    "badge": {
+      "id": "badge-linux",
+      "name": "Maître du Terminal",
+      "emoji": "🖥️"
+    },
+    "griotIntro": [
+      "Le terminal est comme la langue du griot : direct, précis, sans détour.",
+      "Maîtriser Linux et la ligne de commande, c’est parler directement à la machine sans intermédiaire graphique."
+    ],
+    "explanation": {
+      "text": "La plupart des serveurs tournent sous Linux — naviguer, gérer les processus et les logs en ligne de commande est une compétence de base pour tout ingénieur. Clique sur chaque commande pour comprendre ce qu'elle fait.",
+      "code": "ls -la\ncd /var/log\ngrep -i \"error\" app.log | tail -20\nchmod 644 fichier.txt\nps aux | grep node\nkill -9 <PID>\ndf -h\nlsof -i :4000",
+      "annotations": [
+        {
+          "line": 0,
+          "note": "Liste tous les fichiers, y compris les cachés (`-a`), avec les détails (permissions, taille, date) grâce à `-l`."
+        },
+        {
+          "line": 1,
+          "note": "Se déplace dans le dossier où Linux centralise ses fichiers de logs."
+        },
+        {
+          "line": 2,
+          "note": "Cherche \"error\" (insensible à la casse avec `-i`) dans le fichier de log, et n'affiche que les 20 dernières lignes trouvées."
+        },
+        {
+          "line": 3,
+          "note": "Donne les droits lecture+écriture au propriétaire, lecture seule aux autres (`644`) — un classique pour un fichier qui ne doit pas être exécutable."
+        },
+        {
+          "line": 4,
+          "note": "Liste tous les processus en cours et filtre ceux qui contiennent \"node\" — utile pour retrouver le PID d'un process qui bloque un port."
+        },
+        {
+          "line": 5,
+          "note": "`-9` envoie un signal de terminaison forcée (SIGKILL) — le process n'a pas la chance de se fermer proprement, à utiliser en dernier recours."
+        },
+        {
+          "line": 6,
+          "note": "Affiche l'espace disque utilisé/disponible par système de fichiers, en format lisible (`-h`) — le premier réflexe quand un serveur se comporte bizarrement (disque plein)."
+        },
+        {
+          "line": 7,
+          "note": "Trouve directement le processus qui occupe un port précis (ici 4000) — plus ciblé que `ps aux | grep`, très utile avant un `kill`."
+        }
+      ]
+    },
+    "useCases": [
+      "Se connecter en SSH à un serveur de production pour consulter les logs et diagnostiquer un incident en temps réel.",
+      "Tuer un processus Node.js bloqué qui occupe un port déjà utilisé (`lsof -i :4000` puis `kill -9 <PID>`).",
+      "Automatiser une tâche répétitive (sauvegarde, nettoyage de fichiers) avec un script shell exécuté par un cron."
+    ],
+    "relatedTools": [
+      {
+        "name": "tmux / screen",
+        "description": "Permettent de garder une session terminal active sur un serveur distant même après déconnexion SSH."
+      },
+      {
+        "name": "htop",
+        "description": "Version interactive et visuelle de `top` pour surveiller l'utilisation CPU/mémoire des processus en direct."
+      },
+      {
+        "name": "Oh My Zsh",
+        "description": "Surcouche du shell Zsh très utilisée pour personnaliser et améliorer le confort du terminal au quotidien."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "cd /var/www/app",
+        "ls -la",
+        "chmod -R 777 .",
+        "git pull origin main",
+        "npm install",
+        "npm run build",
+        "sudo systemctl restart app"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`chmod -R 777 .` rend TOUS les fichiers et dossiers lisibles, modifiables et exécutables par n'importe quel utilisateur du système — un réflexe courant pour 'résoudre vite' une erreur de permission, mais une faille de sécurité grave sur un serveur, surtout en production. Mieux vaut identifier le bon propriétaire avec `chown` et donner des droits minimaux (ex: 755 pour les dossiers, 644 pour les fichiers)."
+    },
+    "practice": {
+      "question": "Que fait la commande `chmod 644 fichier.txt` ?",
+      "options": [
+        "Donne lecture+écriture au propriétaire, lecture seule aux autres",
+        "Supprime le fichier définitivement",
+        "Change le propriétaire du fichier"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — 6 = rw pour le propriétaire, 4 = r pour le groupe, 4 = r pour les autres.",
+        "incorrect": "chmod gère les permissions, pas la suppression ni le changement de propriétaire (ça, c’est chown)."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle commande affiche les processus en cours d’exécution ?",
+        "options": [
+          "ps aux",
+          "ls -la",
+          "mkdir"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "À quoi sert le pipe `|` en ligne de commande ?",
+        "options": [
+          "Rediriger la sortie d’une commande vers l’entrée d’une autre commande",
+          "Supprimer un fichier",
+          "Créer un nouveau dossier"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Que fait `grep -i \"error\" app.log` ?",
+        "options": [
+          "Recherche le mot \"error\" dans le fichier, sans tenir compte de la casse",
+          "Supprime toutes les lignes contenant \"error\"",
+          "Compte le nombre de lignes du fichier"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi utiliser des variables d’environnement plutôt que des valeurs codées en dur (comme des mots de passe) ?",
+        "options": [
+          "Pour séparer la configuration sensible du code source et éviter de la committer",
+          "Ça n’a aucun intérêt pratique",
+          "Les variables d’environnement sont plus lentes"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quelle commande permet de voir en direct les nouvelles lignes ajoutées à un fichier de log ?",
+        "options": [
+          "tail -f app.log",
+          "head app.log",
+          "rm app.log"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Quelle est la différence entre un processus \"zombie\" et un processus \"orphelin\" ?",
+        "options": [
+          "Un zombie a terminé son exécution mais reste dans la table des processus tant que son parent n'a pas lu son code de sortie ; un orphelin est un processus dont le parent s'est terminé avant lui",
+          "Ce sont deux noms différents pour exactement le même état",
+          "Un zombie consomme du CPU en continu, un orphelin non"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pourquoi `kill -9` (SIGKILL) est-il déconseillé comme premier réflexe pour arrêter un processus ?",
+        "options": [
+          "kill -9 ne fonctionne que sur les processus root",
+          "kill -9 relance automatiquement le processus après l'avoir arrêté",
+          "Il termine le processus immédiatement sans lui laisser la chance de fermer proprement ses fichiers/connexions ; mieux vaut essayer `kill` (SIGTERM) d'abord"
+        ],
+        "correctIndex": 2,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "La ligne de commande Linux reste un vrai marqueur culturel dans la tech : certains développeurs web n'y touchent presque jamais grâce aux interfaces graphiques modernes, d'autres (notamment côté DevOps/SRE) y passent le plus clair de leur temps.",
+    "ambiguite": {
+      "question": "sudo et root, est-ce la même chose ?",
+      "reponse": "root est l'utilisateur administrateur du système, avec tous les droits. sudo (\"superuser do\") est une commande qui permet à un utilisateur normal d'exécuter une action précise avec les droits de root, sans se connecter en tant que root en permanence — une pratique de sécurité plus fine."
+    }
+  },
+  {
+    "id": "dependances",
+    "title": "Gestion des dépendances & environnements",
+    "category": "Outils",
+    "badge": {
+      "id": "badge-deps",
+      "name": "Maître des Paquets",
+      "emoji": "📦"
+    },
+    "griotIntro": [
+      "Chaque commerçant du marché garde un carnet précis des marchandises qu'il doit à ses fournisseurs, avec la quantité exacte.",
+      "Un gestionnaire de paquets (npm, pip...) fait pareil avec les librairies dont ton projet dépend."
+    ],
+    "explanation": {
+      "text": "Les gestionnaires de paquets installent et versionnent les librairies d'un projet. Comprendre le versionnage sémantique (semver) et la différence dependencies/devDependencies évite des surprises en production. Clique sur les lignes pour le détail.",
+      "code": "// package.json\n{\n  \"dependencies\": { \"express\": \"^5.2.1\" },\n  \"devDependencies\": { \"nodemon\": \"^3.1.14\" }\n}\n// ^5.2.1 accepte les mises à jour mineures/patch (5.x.x), pas la version majeure suivante\n// \"lodash\": \"4.17.20\" (sans ^ ni ~) fige la version exacte, aucune mise à jour automatique\n// en CI/CD, `npm ci` installe strictement les versions de package-lock.json, sans jamais le modifier",
+      "annotations": [
+        {
+          "line": 2,
+          "note": "`dependencies` = nécessaires pour que l'app tourne EN PRODUCTION (ex: Express, le framework serveur)."
+        },
+        {
+          "line": 3,
+          "note": "`devDependencies` = utiles seulement pendant le développement (ex: nodemon relance le serveur automatiquement) — jamais installées en production."
+        },
+        {
+          "line": 5,
+          "note": "Le `^` autorise les mises à jour mineures et correctifs (5.3.0, 5.2.9...) automatiquement, mais bloque un saut vers la version majeure 6.0.0 qui pourrait tout casser (semver)."
+        },
+        {
+          "line": 6,
+          "note": "Sans préfixe, la version est figée à l'exacte — utile pour une dépendance sensible où même une mise à jour mineure fait peur, mais ça prive aussi des correctifs de sécurité automatiques."
+        },
+        {
+          "line": 7,
+          "note": "`npm ci` (contrairement à `npm install`) exige un `package-lock.json` cohérent et installe exactement ces versions-là : c'est la commande à utiliser en pipeline CI/CD pour un build reproductible."
+        }
+      ]
+    },
+    "useCases": [
+      "Garder une version exacte de Prisma entre tous les développeurs d'une équipe grâce à `package-lock.json`, pour éviter le \"ça marche chez moi\".",
+      "Utiliser des variables d'environnement (`.env`) pour stocker les secrets (JWT_SECRET, DATABASE_URL) séparément du code source, comme dans ce projet.",
+      "Auditer régulièrement les dépendances d'un projet (`npm audit`) avant une mise en production pour détecter des failles connues."
+    ],
+    "relatedTools": [
+      {
+        "name": "npm / pnpm / yarn",
+        "description": "Trois gestionnaires de paquets concurrents pour Node.js ; pnpm et yarn optimisent l'espace disque et la vitesse d'installation par rapport à npm."
+      },
+      {
+        "name": "Dependabot / Renovate",
+        "description": "Ouvrent automatiquement des pull requests pour mettre à jour les dépendances vulnérables ou obsolètes."
+      },
+      {
+        "name": "pip / venv (Python)",
+        "description": "Équivalent Python de npm : `pip` installe les paquets, `venv` isole les dépendances par projet."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "npm install",
+        "echo \"DATABASE_URL=postgres://user:pass@host/db\" > .env",
+        "echo \"JWT_SECRET=supersecret123\" >> .env",
+        "git add .",
+        "git commit -m \"config initiale\"",
+        "git push origin main"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "`git add .` stage le fichier `.env` contenant des secrets (mot de passe de la base, JWT_SECRET) parce qu'il n'a jamais été exclu via `.gitignore`. Une fois poussé, ces secrets restent visibles dans l'historique du dépôt même si le fichier est supprimé plus tard. Il faut ajouter `.env` au `.gitignore` avant tout commit, et régénérer immédiatement les secrets déjà exposés."
+    },
+    "practice": {
+      "question": "Dans le versionnage sémantique `MAJOR.MINOR.PATCH`, quand incrémente-t-on le `MAJOR` ?",
+      "options": [
+        "Lors d’un changement non rétrocompatible (breaking change)",
+        "À chaque petit correctif de bug",
+        "Uniquement une fois par an"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — MAJOR casse la compatibilité, MINOR ajoute des fonctionnalités compatibles, PATCH corrige des bugs.",
+        "incorrect": "Le MAJOR est réservé aux changements qui cassent la compatibilité avec les versions précédentes."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi séparer `dependencies` et `devDependencies` dans `package.json` ?",
+        "options": [
+          "Pour ne pas installer les outils de développement (tests, linters...) inutiles en production",
+          "Uniquement pour des raisons d’organisation visuelle du fichier, sans impact réel",
+          "devDependencies sont plus rapides à charger"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "À quoi sert un fichier `package-lock.json` (ou équivalent) ?",
+        "options": [
+          "Figer les versions exactes installées pour garantir des builds reproductibles",
+          "Chiffrer les dépendances",
+          "Remplacer complètement package.json"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi utiliser un environnement virtuel en Python (venv) ?",
+        "options": [
+          "Isoler les dépendances d’un projet pour éviter les conflits de versions avec d’autres projets",
+          "Rendre le code plus rapide à l’exécution",
+          "C’est obligatoire pour utiliser une variable"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Que signifie une vulnérabilité détectée par `npm audit` sur une dépendance transitive ?",
+        "options": [
+          "Une librairie utilisée indirectement (dépendance d’une dépendance) contient une faille connue",
+          "Ton propre code contient forcément une faille",
+          "npm audit ne peut détecter que des fautes de syntaxe"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi éviter de committer le dossier `node_modules` dans Git ?",
+        "options": [
+          "Il est volumineux et regénérable à partir de package.json/package-lock.json",
+          "Git ne permet pas de suivre les dossiers",
+          "Ça évite que d’autres développeurs installent une version différente des dépendances"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Une dépendance est déclarée `\"lodash\": \"~4.17.20\"` dans package.json. Que permet le `~` (tilde) contrairement au `^` (caret) ?",
+        "options": [
+          "Le tilde et le caret sont strictement équivalents en npm",
+          "Le tilde n'autorise que les mises à jour de PATCH (4.17.x), alors que le caret autorise aussi les mises à jour MINOR (4.x.x)",
+          "Le tilde bloque toute mise à jour, y compris les patchs de sécurité"
+        ],
+        "correctIndex": 1,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pourquoi `npm ci` est-il recommandé en environnement de CI/CD plutôt que `npm install` ?",
+        "options": [
+          "`npm ci` installe strictement les versions figées dans package-lock.json et échoue si le lock file et package.json sont incohérents, garantissant un build reproductible",
+          "`npm ci` est simplement un alias plus court de `npm install`",
+          "`npm ci` met à jour automatiquement toutes les dépendances vers leur dernière version majeure"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Le \"dependency hell\" (l'enfer des dépendances) est un vécu culturel partagé par tous les développeurs ayant travaillé sur un vieux projet : des dizaines de dépendances aux versions incompatibles entre elles, impossibles à mettre à jour sans tout casser.",
+    "ambiguite": {
+      "question": "Mettre à jour une dépendance mineure (minor) est-ce toujours sans risque ?",
+      "reponse": "En théorie oui selon semver (une mise à jour minor doit rester rétrocompatible), en pratique non : des bugs de mauvais versionnage existent. D'où l'usage de package-lock.json pour figer les versions testées plutôt que de faire confiance aveuglément au semver."
+    }
+  }
+]

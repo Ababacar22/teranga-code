@@ -1,0 +1,698 @@
+[
+  {
+    "id": "big-o",
+    "title": "Complexité algorithmique (Big O)",
+    "category": "Algorithmie",
+    "badge": {
+      "id": "badge-bigo",
+      "name": "Maître de la Complexité",
+      "emoji": "📈"
+    },
+    "griotIntro": [
+      "Compter les grains de mil un par un, ou peser un sac d'un coup — le résultat est le même, mais pas le temps que ça prend.",
+      "La notation Big O mesure comment le temps (ou la mémoire) d’un algorithme grandit avec la taille des données."
+    ],
+    "explanation": {
+      "text": "Big O mesure comment le temps (ou la mémoire) d'un algorithme grandit avec la taille des données, en ignorant les constantes — utile pour comparer deux solutions indépendamment de la machine. Clique sur les lignes ci-dessous pour voir la complexité de chaque étape.",
+      "code": "function contientDoublon(arr) {\n  const vus = new Set(); // O(n) en temps, O(n) en espace\n  for (const x of arr) {\n    if (vus.has(x)) return true;\n    vus.add(x);\n  }\n  return false;\n}\n\ncontientDoublon([]); // Cas limite : tableau vide, la boucle ne s'exécute jamais\ncontientDoublon([5, 5]); // Cas avec doublon dès le 2e élément",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`new Set()` crée une structure vide en O(1). Elle grandit avec les données ajoutées : O(n) en espace."
+        },
+        {
+          "line": 2,
+          "note": "Parcourt chaque élément une seule fois — c'est le O(n) en temps de la fonction."
+        },
+        {
+          "line": 3,
+          "note": "`has(x)` vérifie l'appartenance en O(1) en moyenne (table de hachage). Avec un tableau + `.includes()`, ce serait O(n) ici, donc O(n²) au total sur toute la boucle."
+        },
+        {
+          "line": 4,
+          "note": "`add(x)` aussi en O(1) en moyenne."
+        },
+        {
+          "line": 6,
+          "note": "Pire cas (aucun doublon) : la boucle va jusqu'au bout — O(n) au total, contre O(n²) pour deux boucles imbriquées sans Set."
+        },
+        {
+          "line": 10,
+          "note": "Cas limite : tableau vide. La boucle ne s'exécute jamais (0 itération), la fonction retourne false immédiatement — toujours vérifier ce cas en entretien, même si la complexité O(n) reste la borne annoncée."
+        },
+        {
+          "line": 11,
+          "note": "Cas avec doublon dès le 2e élément : `vus.has(x)` détecte le doublon immédiatement, on sort avec `return true` sans parcourir le reste du tableau — le meilleur cas est donc O(1), mais on continue d'annoncer la complexité du pire cas, O(n)."
+        }
+      ]
+    },
+    "useCases": [
+      "Choisir entre une recherche linéaire O(n) et une recherche dans une base indexée O(log n) pour une fonctionnalité de recherche utilisateur sur des millions de lignes.",
+      "Expliquer en entretien pourquoi une boucle imbriquée sur une liste de 100 000 éléments (O(n²)) fait planter un service en timeout, alors que 100 éléments passaient sans problème.",
+      "Justifier le choix d'une structure de données (Set vs Array) pour vérifier l'appartenance d'un élément des milliers de fois dans une boucle."
+    ],
+    "relatedTools": [
+      {
+        "name": "Big O Cheat Sheet (bigocheatsheet.com)",
+        "description": "Référence rapide très utilisée pour vérifier la complexité des structures de données et algorithmes courants."
+      },
+      {
+        "name": "LeetCode / HackerRank",
+        "description": "Plateformes d'entraînement qui mesurent explicitement le temps d'exécution — apprendre à repérer la complexité de son propre code."
+      },
+      {
+        "name": "Chrome DevTools (Performance tab)",
+        "description": "Permet de profiler concrètement où un algorithme trop lent ralentit réellement une application web."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function contientPaire(arr, cible) {",
+        "  // Complexité : O(n)",
+        "  for (let i = 0; i < arr.length; i++) {",
+        "    for (let j = 0; j < arr.length; j++) {",
+        "      if (arr[i] + arr[j] === cible) return true;",
+        "    }",
+        "  }",
+        "  return false;",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Le commentaire annonce O(n) mais la double boucle imbriquée donne une complexité réelle de O(n²) — toujours vérifier la complexité réelle du code, pas celle supposée au premier coup d'œil."
+    },
+    "practice": {
+      "question": "Quelle est la complexité en temps d’une recherche dans un tableau non trié ?",
+      "options": [
+        "O(n)",
+        "O(1)",
+        "O(log n)"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — dans le pire cas, il faut parcourir tous les éléments.",
+        "incorrect": "Sans tri ni structure spéciale, il faut potentiellement vérifier chaque élément : O(n)."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle est la complexité d’un accès par index dans un tableau (array) ?",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(log n)"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi un algorithme O(n²) devient-il problématique sur de grandes données ?",
+        "options": [
+          "Le temps d’exécution croît au carré de la taille des données (ex: 1000 éléments = 1 million d’opérations)",
+          "Il devient lent uniquement si le tableau contient des doublons",
+          "C’est négligeable tant que le code tourne sur un serveur puissant"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Tu analyses une fonction avec deux boucles imbriquées, chacune parcourant l’intégralité d’un tableau de taille n, sans arrêt anticipé. Quelle est sa complexité ?",
+        "options": [
+          "O(n²)",
+          "O(2n)",
+          "O(n log n)"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Tu dois chercher une valeur dans un tableau déjà trié de 1 million d’éléments. Quelle est la complexité d’une recherche dichotomique (binary search) par rapport à un simple parcours linéaire ?",
+        "options": [
+          "La recherche dichotomique est en O(log n), bien plus rapide qu’un parcours linéaire en O(n)",
+          "Les deux sont en O(log n), puisque le tableau est trié",
+          "Un tableau trié n’accélère rien : la recherche reste O(n) dans les deux cas"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien, on te présente deux solutions pour détecter un doublon dans un tableau de 100 000 éléments : une avec un Set (O(n) en temps, O(n) en espace) et une avec deux boucles imbriquées (O(n²) en temps, O(1) en espace). Quel est le bon raisonnement pour choisir ?",
+        "options": [
+          "Si la mémoire disponible n’est pas un facteur limitant, la version O(n) en temps est largement préférable dès que n est grand — le coût mémoire est un compromis acceptable pour éviter une explosion du temps d’exécution",
+          "La version O(n²) est toujours préférable car elle ne consomme aucune mémoire supplémentaire",
+          "Le choix n’a pas d’importance : les deux ont la même complexité asymptotique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Quand on dit que `push()` sur un tableau JavaScript est en O(1) amorti, que signifie exactement « amorti » ?",
+        "options": [
+          "La plupart des appels sont O(1), mais occasionnellement un redimensionnement interne du tableau coûte O(n) ; sur une longue série d'opérations, le coût moyen par opération reste O(1)",
+          "Cela signifie que `push()` est toujours exactement O(1), sans aucune exception, quel que soit le nombre d'appels",
+          "Cela signifie que `push()` devient de plus en plus lent à chaque appel, jusqu'à atteindre O(n) au bout d'un moment"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Une fonction contient une boucle imbriquée dans une autre, mais la boucle interne s'arrête avec un `break` dès qu'elle trouve une correspondance, en moyenne après quelques itérations seulement. Quelle est la complexité à annoncer correctement en entretien ?",
+        "options": [
+          "Le pire cas reste O(n²) (si la correspondance n'est jamais trouvée tôt), même si le cas moyen peut être meilleur — il faut préciser les deux",
+          "C'est automatiquement O(n) grâce au `break`, quel que soit le contenu du tableau",
+          "Le `break` n'a aucun effet sur la complexité : il faut toujours annoncer O(n²) sans nuance"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Les questions de complexité algorithmique sont culturellement associées aux entretiens \"à l'américaine\" (LeetCode-style) — une pratique controversée : de nombreux ingénieurs expérimentés critiquent ce format car il teste peu ce qu'on fait réellement au quotidien, mais il reste très répandu.",
+    "ambiguite": {
+      "question": "Un algorithme O(n) est-il toujours plus rapide qu'un O(n²) en pratique ?",
+      "reponse": "Pas forcément pour de petites données : les constantes cachées par la notation Big O peuvent rendre un O(n²) simple plus rapide qu'un O(n) avec une lourde initialisation, tant que n reste petit. Big O décrit le comportement asymptotique, pas la performance réelle à toute échelle."
+    }
+  },
+  {
+    "id": "structures-lineaires",
+    "title": "Tableaux, listes chaînées, piles & files",
+    "category": "Algorithmie",
+    "badge": {
+      "id": "badge-structures",
+      "name": "Maître des Structures",
+      "emoji": "🧱"
+    },
+    "griotIntro": [
+      "Une file d'attente au marché fonctionne différemment d'une pile de calebasses empilées les unes sur les autres.",
+      "Chaque structure de données a ses règles d'accès — les connaître, c'est choisir le bon outil pour le bon problème."
+    ],
+    "explanation": {
+      "text": "Le choix entre tableau et liste chaînée, pile et file, change radicalement les performances selon l'opération. Clique sur les lignes pour voir le détail LIFO vs FIFO.",
+      "code": "// Pile avec un tableau\nconst pile = [];\npile.push('a'); pile.push('b');\npile.pop(); // 'b' (LIFO)\n\n// File avec un tableau (shift coûte O(n) — à connaître en entretien !)\nconst file = [];\nfile.push('a'); file.push('b');\nfile.shift(); // 'a' (FIFO)\n\npile.pop(); // 'a' — la pile est maintenant vide\npile.pop(); // undefined — cas limite : pop() sur une pile vide ne lève pas d'erreur en JS",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "Un tableau JS peut servir de pile directement — pas besoin de structure spéciale."
+        },
+        {
+          "line": 2,
+          "note": "`push` ajoute toujours à la fin — O(1) amorti."
+        },
+        {
+          "line": 3,
+          "note": "`pop` retire et retourne le dernier élément ajouté : LIFO (dernier entré, premier sorti)."
+        },
+        {
+          "line": 7,
+          "note": "`push` ajoute à la fin, comme pour la pile."
+        },
+        {
+          "line": 8,
+          "note": "`shift` retire le PREMIER élément : FIFO. Mais il doit décaler tous les éléments restants d'un cran — O(n), à connaître en entretien."
+        },
+        {
+          "line": 11,
+          "note": "On vide complètement la pile : après ce `pop()`, elle ne contient plus aucun élément."
+        },
+        {
+          "line": 12,
+          "note": "Cas limite : appeler `pop()` sur une pile déjà vide ne lève pas d'erreur en JavaScript — il retourne simplement `undefined`. Un piège classique si on ne vérifie pas `estVide()` avant d'utiliser le résultat."
+        }
+      ]
+    },
+    "useCases": [
+      "L'historique de navigation d'un navigateur (bouton \"précédent\") : une pile qui empile chaque page visitée.",
+      "Une file d'attente de traitement de commandes dans un système e-commerce, traitées dans l'ordre d'arrivée (FIFO).",
+      "L'algorithme de gestion des tâches (`event loop`, `job queue` avec Redis/BullMQ) qui traite des tâches asynchrones dans l'ordre."
+    ],
+    "relatedTools": [
+      {
+        "name": "BullMQ / Redis Queue",
+        "description": "Bibliothèques de files de tâches (FIFO) basées sur Redis, très utilisées pour les traitements asynchrones en Node.js."
+      },
+      {
+        "name": "Immutable.js / Linked list libs",
+        "description": "Implémentations prêtes à l'emploi de listes chaînées et structures persistantes pour JavaScript."
+      },
+      {
+        "name": "Redux (undo/redo)",
+        "description": "Certaines librairies d'historique d'actions (redux-undo) s'appuient directement sur une structure de pile."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class File {",
+        "  constructor() { this.items = []; }",
+        "  enfiler(element) {",
+        "    this.items.push(element);",
+        "  }",
+        "  defiler() {",
+        "    return this.items.pop();",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 6,
+      "explanation": "`defiler()` utilise `pop()`, qui retire le DERNIER élément ajouté (LIFO) — cela transforme la file en pile ! Pour une vraie file (FIFO), il faut retirer le PREMIER élément avec `this.items.shift()`."
+    },
+    "practice": {
+      "question": "Quelle structure utiliser pour implémenter un système \"annuler la dernière action\" (undo) ?",
+      "options": [
+        "Une pile (LIFO)",
+        "Une file (FIFO)",
+        "Un tableau trié"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — on annule toujours la dernière action effectuée en premier : c’est du LIFO.",
+        "incorrect": "Pense à l’ordre : la dernière action doit être annulée en premier → LIFO → pile."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi `Array.prototype.shift()` est-il coûteux (O(n)) sur un grand tableau ?",
+        "options": [
+          "Il doit décaler tous les éléments restants d’un cran vers l’index 0",
+          "Il ne fait rien du tout",
+          "Il est en réalité O(1) dans tous les moteurs JS"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Quel est l’avantage d’une liste doublement chaînée par rapport à une liste simplement chaînée ?",
+        "options": [
+          "On peut la parcourir dans les deux sens (chaque nœud connaît son précédent et son suivant)",
+          "Elle permet d’insérer un élément sans jamais avoir besoin de connaître le nœud précédent",
+          "Elle permet un accès direct par index en O(1)"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Une file d’attente de traitement de tâches (job queue) correspond à quelle structure ?",
+        "options": [
+          "FIFO (file)",
+          "LIFO (pile)",
+          "Un arbre binaire"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi une liste chaînée n’offre-t-elle pas d’accès O(1) par index comme un tableau ?",
+        "options": [
+          "Il faut parcourir les nœuds un par un depuis le début pour atteindre une position donnée",
+          "Les listes chaînées sont en réalité plus rapides qu’un tableau pour l’accès par index",
+          "C’est vrai uniquement pour accéder au premier et au dernier élément de la liste"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Dans quel cas préférerais-tu une liste chaînée à un tableau ?",
+        "options": [
+          "Quand on fait beaucoup d’insertions/suppressions en début ou milieu de liste, sans avoir besoin d’accès aléatoire fréquent",
+          "Quand on a besoin d’un accès très fréquent par index",
+          "Uniquement quand on doit trier les données très fréquemment"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Piège classique : si on utilise un tableau comme file (queue) avec `push()` pour ajouter et `shift()` pour retirer, quelle est la complexité totale pour traiter n éléments ?",
+        "options": [
+          "O(n²) au total, car chaque `shift()` coûte O(n) (décalage de tous les éléments restants) et on l'appelle n fois",
+          "O(n) au total, car `push()` et `shift()` sont tous les deux O(1) amorti",
+          "O(n log n), comme pour un algorithme de tri"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Quelle structure permet d'implémenter une file efficace en O(1) pour l'ajout ET le retrait, contrairement à un tableau classique utilisé avec `shift()` ?",
+        "options": [
+          "Une liste chaînée (ou une deque) avec des pointeurs sur la tête et la queue",
+          "Un tableau trié par ordre croissant",
+          "Une pile (stack) classique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Le choix entre tableau et liste chaînée est rarement un vrai dilemme en JavaScript moderne : le moteur V8 optimise tellement les tableaux que les listes chaînées faites main sont rares en pratique web, contrairement à des langages bas niveau (C, Rust).",
+    "ambiguite": {
+      "question": "Une pile (stack) et la \"call stack\" de JavaScript, est-ce lié ?",
+      "reponse": "Oui, littéralement : la call stack de JavaScript qui suit l'exécution des fonctions est elle-même une structure de données de type pile (LIFO). C'est pour ça qu'une récursion infinie provoque un \"Stack Overflow\"."
+    }
+  },
+  {
+    "id": "arbres-graphes",
+    "title": "Arbres & graphes (BFS/DFS)",
+    "category": "Algorithmie",
+    "badge": {
+      "id": "badge-graphes",
+      "name": "Maître des Réseaux",
+      "emoji": "🌳"
+    },
+    "griotIntro": [
+      "L'arbre généalogique d'une grande famille sénégalaise, ou le réseau de pistes reliant les villages — deux façons de représenter des relations.",
+      "Arbres et graphes structurent des données hiérarchiques ou en réseau, et on les explore avec deux méthodes clés : BFS et DFS."
+    ],
+    "explanation": {
+      "text": "BFS explore niveau par niveau avec une file, DFS explore une branche jusqu'au bout avec une pile ou la récursion. Clique sur les lignes de ce BFS pour voir comment la file (FIFO) pilote l'ordre d'exploration.",
+      "code": "function bfs(graphe, depart) {\n  const visites = new Set([depart]);\n  const file = [depart];\n  while (file.length) {\n    const noeud = file.shift();\n    for (const voisin of graphe[noeud]) {\n      if (!visites.has(voisin)) {\n        visites.add(voisin);\n        file.push(voisin);\n      }\n    }\n  }\n  return visites;\n}",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`visites` évite de retraiter un nœud déjà exploré — essentiel si le graphe contient un cycle."
+        },
+        {
+          "line": 2,
+          "note": "`file` (utilisée en FIFO) contient les nœuds à explorer dans l'ordre de découverte — c'est ce qui donne l'exploration \"niveau par niveau\" du BFS."
+        },
+        {
+          "line": 4,
+          "note": "`shift()` retire le prochain nœud à traiter, dans l'ordre où il a été ajouté (FIFO)."
+        },
+        {
+          "line": 6,
+          "note": "On ignore les voisins déjà visités — sans ce test, un cycle ferait boucler l'algorithme à l'infini."
+        },
+        {
+          "line": 8,
+          "note": "Le voisin est ajouté à la fin de la file : il sera traité après tous les nœuds déjà en attente — c'est ça qui garantit l'ordre par niveau."
+        }
+      ]
+    },
+    "useCases": [
+      "Le fil d'actualité et les suggestions d'amis d'un réseau social, représenté comme un graphe de connexions entre utilisateurs.",
+      "Un GPS qui calcule l'itinéraire le plus court entre deux points sur une carte routière (graphe pondéré).",
+      "L'arborescence de fichiers d'un système d'exploitation, ou le DOM d'une page web — tous deux des arbres."
+    ],
+    "relatedTools": [
+      {
+        "name": "Neo4j",
+        "description": "Base de données orientée graphe, conçue spécifiquement pour stocker et parcourir des relations (réseaux sociaux, recommandations)."
+      },
+      {
+        "name": "React (Virtual DOM)",
+        "description": "React représente l'interface sous forme d'arbre de composants et le compare (\"diffing\") à chaque mise à jour."
+      },
+      {
+        "name": "Leaflet (utilisé dans ce projet)",
+        "description": "Les algorithmes de calcul d'itinéraire des cartes interactives reposent sur des parcours de graphes pondérés."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function profondeur(noeud) {",
+        "  if (noeud = null) return 0;",
+        "  const gauche = profondeur(noeud.gauche);",
+        "  const droite = profondeur(noeud.droite);",
+        "  return 1 + Math.max(gauche, droite);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "`if (noeud = null)` utilise `=` (affectation) au lieu de `===` (comparaison) : cela écrase `noeud` avec `null` puis évalue la condition sur `null` (toujours falsy), donc le cas de base ne se déclenche jamais correctement — l'accès à `noeud.gauche` finit par planter sur un nœud réellement `null`. Il faut écrire `if (noeud === null) return 0;`."
+    },
+    "practice": {
+      "question": "Quelle structure de données utilise le BFS (parcours en largeur) ?",
+      "options": [
+        "Une file (FIFO)",
+        "Une pile (LIFO)",
+        "Un tableau trié"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — BFS traite les nœuds dans l’ordre où ils sont découverts, niveau par niveau, via une file.",
+        "incorrect": "BFS = Breadth-First = niveau par niveau = file (FIFO). La pile, c’est DFS."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Pour trouver le plus court chemin (en nombre d’arêtes) dans un graphe non pondéré, quel algorithme utiliser ?",
+        "options": [
+          "BFS",
+          "DFS",
+          "Un tri par insertion"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Quelle est la différence fondamentale entre un arbre et un graphe ?",
+        "options": [
+          "Un arbre n’a pas de cycle et a une racine unique ; un graphe peut avoir des cycles et plusieurs connexions",
+          "Un arbre est un cas particulier de graphe qui autorise les cycles",
+          "Un graphe est toujours orienté, contrairement à un arbre"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "DFS (parcours en profondeur) peut être implémenté naturellement avec quelle technique ?",
+        "options": [
+          "La récursion (ou une pile explicite)",
+          "Uniquement une file (FIFO)",
+          "Le tri par fusion"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un arbre binaire de recherche (BST) permet une recherche en quelle complexité, dans le cas équilibré ?",
+        "options": [
+          "O(log n)",
+          "O(n)",
+          "O(1)"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi faut-il marquer les nœuds \"visités\" lors d’un parcours de graphe ?",
+        "options": [
+          "Pour éviter une boucle infinie si le graphe contient un cycle",
+          "Seulement si le graphe contient plus de 100 nœuds",
+          "Uniquement pour économiser de la mémoire, sans autre raison"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Sur un arbre binaire très large mais peu profond (beaucoup de nœuds par niveau, faible profondeur), pourquoi le BFS peut-il consommer plus de mémoire que le DFS ?",
+        "options": [
+          "BFS doit garder en mémoire tous les nœuds d'un niveau à la fois dans sa file, ce qui peut être très large ; DFS ne garde qu'une branche (profondeur) à la fois dans sa pile",
+          "BFS consomme toujours moins de mémoire que DFS, quelle que soit la forme de l'arbre",
+          "La mémoire utilisée par BFS et DFS est strictement identique dans tous les cas, seule la vitesse change"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pour un graphe avec n sommets et très peu d'arêtes (graphe creux), pourquoi une liste d'adjacence est-elle généralement préférée à une matrice d'adjacence ?",
+        "options": [
+          "La matrice d'adjacence occupe toujours O(n²) en espace, même s'il y a peu d'arêtes, alors que la liste d'adjacence n'occupe que de l'espace proportionnel au nombre réel d'arêtes",
+          "La liste d'adjacence permet un accès direct en O(1) pour savoir si deux sommets sont reliés, contrairement à la matrice",
+          "La matrice d'adjacence ne peut représenter que des graphes non orientés"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "BFS et DFS sont des questions d'entretien récurrentes, mais leur usage réel varie selon la culture d'équipe : une équipe frontend n'implémente presque jamais ces algorithmes à la main (React s'en charge pour le Virtual DOM), alors qu'une équipe data/infra les manipule régulièrement.",
+    "ambiguite": {
+      "question": "Un arbre binaire et un arbre binaire de recherche (BST), est-ce pareil ?",
+      "reponse": "Non : un arbre binaire est juste une structure où chaque nœud a au plus 2 enfants, sans règle d'ordre. Un BST ajoute une contrainte précise (enfant gauche plus petit, enfant droit plus grand) qui permet la recherche en O(log n)."
+    }
+  },
+  {
+    "id": "tri-recherche",
+    "title": "Algorithmes de tri & de recherche",
+    "category": "Algorithmie",
+    "badge": {
+      "id": "badge-tri",
+      "name": "Maître du Tri",
+      "emoji": "🔀"
+    },
+    "griotIntro": [
+      "Trier les mangues par taille au marché peut se faire lentement, une par une, ou intelligemment en divisant le tas en deux.",
+      "Les algorithmes de tri illustrent parfaitement l’impact d’un bon choix algorithmique sur la performance."
+    ],
+    "explanation": {
+      "text": "Le tri fusion illustre le principe \"diviser pour régner\" : O(n log n), bien plus rapide qu'un tri à bulles O(n²) sur de grandes données. Clique sur les lignes pour suivre la récursion.",
+      "code": "function fusionner(gauche, droite) {\n  const res = [];\n  while (gauche.length && droite.length) {\n    res.push(gauche[0] <= droite[0] ? gauche.shift() : droite.shift());\n  }\n  return [...res, ...gauche, ...droite];\n}\n\nfunction triFusion(arr) {\n  if (arr.length <= 1) return arr;\n  const mid = Math.floor(arr.length / 2);\n  return fusionner(triFusion(arr.slice(0, mid)), triFusion(arr.slice(mid)));\n}",
+      "annotations": [
+        {
+          "line": 2,
+          "note": "Tant que les deux moitiés ont encore des éléments, on compare leurs premiers éléments."
+        },
+        {
+          "line": 3,
+          "note": "On prend toujours le plus petit des deux premiers éléments — c'est ce qui garantit un résultat trié."
+        },
+        {
+          "line": 5,
+          "note": "Une des deux moitiés est vide à ce stade ; on ajoute simplement ce qu'il en reste, déjà trié."
+        },
+        {
+          "line": 9,
+          "note": "Cas de base de la récursion : un tableau à 0 ou 1 élément est déjà trié, on arrête de diviser."
+        },
+        {
+          "line": 10,
+          "note": "On coupe le tableau en deux moitiés à peu près égales."
+        },
+        {
+          "line": 11,
+          "note": "On trie récursivement chaque moitié, puis on les fusionne — c'est le \"diviser pour régner\"."
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "label": "Division",
+        "description": "Le tableau est coupé en deux moitiés à peu près égales."
+      },
+      {
+        "label": "Récursion",
+        "description": "Chaque moitié est triée récursivement en appliquant le même principe."
+      },
+      {
+        "label": "Cas de base",
+        "description": "Un tableau à 0 ou 1 élément est déjà trié — la récursion s'arrête là."
+      },
+      {
+        "label": "Fusion",
+        "description": "Les deux moitiés triées sont recombinées en une seule liste ordonnée."
+      },
+      {
+        "label": "Résultat",
+        "description": "Le tableau complet est trié, en complexité O(n log n)."
+      }
+    ],
+    "useCases": [
+      "Trier une liste de produits par prix ou par popularité sur un site e-commerce (`Array.prototype.sort` utilise un algorithme proche du tri fusion en V8).",
+      "Rechercher un utilisateur par son identifiant dans une base indexée triée, en O(log n) plutôt qu'en parcourant toute la table.",
+      "Trier des millions de lignes de logs par timestamp pour analyser un incident de production dans l'ordre chronologique."
+    ],
+    "relatedTools": [
+      {
+        "name": "PostgreSQL (index B-tree)",
+        "description": "Les index de base de données utilisent des structures d'arbres triés pour permettre des recherches en O(log n) plutôt qu'un scan complet."
+      },
+      {
+        "name": "Array.prototype.sort() (V8)",
+        "description": "Le moteur JavaScript de Chrome/Node utilise un algorithme proche du tri fusion/TimSort en interne."
+      },
+      {
+        "name": "Elasticsearch",
+        "description": "Moteur de recherche qui indexe massivement des données pour permettre des recherches quasi instantanées à grande échelle."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function rechercheBinaire(arr, cible) {",
+        "  let bas = 0, haut = arr.length;",
+        "  while (bas <= haut) {",
+        "    const mid = Math.floor((bas + haut) / 2);",
+        "    if (arr[mid] === cible) return mid;",
+        "    if (arr[mid] < cible) bas = mid + 1;",
+        "    else haut = mid - 1;",
+        "  }",
+        "  return -1;",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "`haut` est initialisé à `arr.length` au lieu de `arr.length - 1` : erreur classique d'off-by-one. Avec `haut = arr.length`, `mid` peut valoir `arr.length`, un index hors du tableau (`arr[mid]` vaut alors `undefined`), ce qui fausse les comparaisons. Il faut écrire `let haut = arr.length - 1;`."
+    },
+    "practice": {
+      "question": "Quel est le principe du tri fusion (merge sort) ?",
+      "options": [
+        "Diviser le tableau en deux, trier récursivement chaque moitié, puis fusionner les résultats triés",
+        "Comparer chaque paire d’éléments adjacents un million de fois",
+        "Trier uniquement les nombres pairs"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — c’est le principe \"diviser pour régner\", qui donne une complexité O(n log n).",
+        "incorrect": "Le tri fusion divise récursivement le problème, il ne compare pas juste les paires adjacentes (ça, c’est le tri à bulles)."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle est la complexité moyenne du tri rapide (quicksort) ?",
+        "options": [
+          "O(n log n)",
+          "O(n)",
+          "O(n²) dans tous les cas"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Dans quel cas le quicksort peut-il dégénérer en O(n²) ?",
+        "options": [
+          "Quand le pivot choisi est systématiquement le plus petit ou le plus grand élément (ex: tableau déjà trié avec un mauvais choix de pivot)",
+          "Seulement quand le tableau contient des doublons",
+          "Uniquement sur des tableaux de nombres négatifs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "La recherche dichotomique nécessite quelle condition préalable sur les données ?",
+        "options": [
+          "Le tableau doit être trié",
+          "Le tableau doit contenir des doublons",
+          "Le tableau doit être vide"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi le tri par sélection/insertion (O(n²)) peut-il rester un bon choix dans certains cas ?",
+        "options": [
+          "Sur de très petits tableaux, sa simplicité peut le rendre aussi rapide en pratique qu’un algorithme plus complexe",
+          "Il trouve toujours le bon résultat en une seule passe, contrairement au tri fusion",
+          "Il ne fonctionne que sur des nombres pairs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Que signifie \"diviser pour régner\" (divide and conquer) ?",
+        "options": [
+          "Décomposer un problème en sous-problèmes plus petits, les résoudre, puis combiner les résultats",
+          "Résoudre le problème toujours d’un seul bloc, sans le diviser",
+          "Une technique réservée uniquement au tri"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Dans une recherche dichotomique, pourquoi calcule-t-on parfois le milieu avec `mid = bas + Math.floor((haut - bas) / 2)` plutôt que `mid = Math.floor((bas + haut) / 2)` ?",
+        "options": [
+          "Pour éviter un dépassement de capacité (overflow) sur `bas + haut` quand les indices sont très grands, dans des langages à entiers de taille fixe — un classique d'entretien, même si ce n'est pas un souci en JavaScript sur des tableaux réalistes",
+          "Les deux formules donnent toujours des résultats différents, quel que soit le langage",
+          "C'est uniquement une question de style, sans impact sur la correction de l'algorithme dans n'importe quel langage"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Un tri est dit \"stable\" quand...",
+        "options": [
+          "...deux éléments égaux conservent leur ordre relatif d'origine après le tri (utile par exemple pour trier une liste déjà triée par nom, ensuite par date, sans perdre l'ordre alphabétique en cas d'égalité de date)",
+          "...il a toujours une complexité O(n log n) dans le pire cas",
+          "...il ne peut jamais échouer, même sur un tableau contenant des valeurs non comparables"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "\"Ne réimplémente jamais ton propre tri en production\" est un conseil culturel très répandu — les algorithmes de tri intégrés aux langages sont hautement optimisés ; les questions de tri en entretien servent à évaluer le raisonnement, pas à préparer une vraie tâche du quotidien.",
+    "ambiguite": {
+      "question": "Array.prototype.sort() de JavaScript, quel algorithme utilise-t-il vraiment ?",
+      "reponse": "Ça dépend du moteur JS : V8 (Chrome/Node) utilise TimSort (un hybride entre tri par insertion et tri fusion), pas un tri fusion pur. Le détail change avec le temps — c'est justement pourquoi on ne réimplémente pas soi-même ces algorithmes."
+    }
+  }
+]

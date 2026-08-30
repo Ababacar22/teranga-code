@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Teranga Code — Sujet",
+  "description": "Forme attendue d'un sujet dans un fichier content/topics/*.json. Sert de référence pour valider les contributions (npm run validate:content).",
+  "type": "object",
+  "required": ["id", "title", "category", "badge", "griotIntro", "explanation", "practice", "quiz"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "title": { "type": "string", "minLength": 1 },
+    "category": { "type": "string", "minLength": 1 },
+    "badge": {
+      "type": "object",
+      "required": ["id", "name", "emoji"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^badge-[a-z0-9-]+$" },
+        "name": { "type": "string", "minLength": 1 },
+        "emoji": { "type": "string", "minLength": 1 }
+      }
+    },
+    "griotIntro": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "explanation": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "code": { "type": "string" },
+        "annotations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["line", "note"],
+            "properties": {
+              "line": { "type": "integer", "minimum": 0 },
+              "note": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "useCases": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "culture": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ambiguite": {
+      "type": "object",
+      "required": ["question", "reponse"],
+      "properties": {
+        "question": { "type": "string", "minLength": 1 },
+        "reponse": { "type": "string", "minLength": 1 }
+      }
+    },
+    "relatedTools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "description"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "practice": {
+      "type": "object",
+      "required": ["question", "options", "correctIndex", "feedback"],
+      "properties": {
+        "question": { "type": "string", "minLength": 1 },
+        "options": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+        "correctIndex": { "type": "integer", "minimum": 0 },
+        "feedback": {
+          "type": "object",
+          "required": ["correct", "incorrect"],
+          "properties": {
+            "correct": { "type": "string", "minLength": 1 },
+            "incorrect": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "bugHunt": {
+      "type": "object",
+      "required": ["lines", "buggyLineIndex", "explanation"],
+      "properties": {
+        "lines": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "buggyLineIndex": { "type": "integer", "minimum": 0 },
+        "explanation": { "type": "string", "minLength": 1 }
+      }
+    },
+    "quiz": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["question", "options", "correctIndex"],
+        "properties": {
+          "question": { "type": "string", "minLength": 1 },
+          "options": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+          "correctIndex": { "type": "integer", "minimum": 0 },
+          "difficulty": { "type": "string", "enum": ["facile", "moyen", "difficile"] }
+        }
+      }
+    }
+  }
+}

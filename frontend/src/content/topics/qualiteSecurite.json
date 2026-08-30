@@ -1,0 +1,638 @@
+[
+  {
+    "id": "owasp",
+    "title": "Sécurité web — bases OWASP",
+    "category": "Sécurité",
+    "badge": {
+      "id": "badge-owasp",
+      "name": "Maître du Bouclier",
+      "emoji": "🛡️"
+    },
+    "griotIntro": [
+      "Le gardien du village vérifie toujours qui passe la porte avant de laisser entrer une charrette de marchandises.",
+      "En sécurité web, ne jamais faire confiance aveuglément à une entrée utilisateur — c'est la règle d'or."
+    ],
+    "explanation": {
+      "text": "L'OWASP Top 10 liste les vulnérabilités web les plus critiques — l'injection SQL et le XSS en tête. Clique sur les lignes pour voir la faille et sa protection.",
+      "code": "// Vulnérable à l'injection SQL :\nconst query = `SELECT * FROM users WHERE email = '${email}'`;\n\n// Protégé avec une requête préparée (paramétrée) :\nawait prisma.user.findUnique({ where: { email } }); // Prisma échappe automatiquement\n\n// Autre piège : comparer un mot de passe en clair, même avec une requête sécurisée :\nconst valide = password === user.password; // FAUX : le mot de passe ne doit jamais être stocké en clair\n\n// Bonne pratique : comparer le hash bcrypt\nconst valide2 = await bcrypt.compare(password, user.passwordHash); // vérifie sans jamais exposer le mot de passe en clair",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "Si `email` vaut `' OR '1'='1`, la requête devient `... WHERE email = '' OR '1'='1'` — elle retourne TOUS les utilisateurs. La valeur est directement collée dans le texte SQL."
+        },
+        {
+          "line": 4,
+          "note": "Prisma envoie `email` comme un paramètre séparé de la requête SQL, jamais concaténé dans le texte — impossible d'injecter du SQL par cette valeur."
+        },
+        {
+          "line": 7,
+          "note": "Même en récupérant l'utilisateur via une requête sécurisée, comparer `password === user.password` suppose que le mot de passe est stocké en clair en base — une faille grave en cas de fuite de données."
+        },
+        {
+          "line": 10,
+          "note": "La bonne pratique consiste à hasher le mot de passe dès l'inscription (avec bcrypt) et à comparer avec `bcrypt.compare()`, qui vérifie le hash sans jamais manipuler le mot de passe en clair côté serveur."
+        }
+      ]
+    },
+    "useCases": [
+      "Ce projet utilise bcrypt pour hasher les mots de passe (`backend/src/auth/auth.routes.js`) et Prisma pour éviter les injections SQL — deux protections OWASP appliquées concrètement.",
+      "Un formulaire de commentaires qui échappe le HTML saisi par l'utilisateur avant affichage, pour empêcher une attaque XSS stockée.",
+      "Une API qui vérifie systématiquement le JWT sur chaque route protégée, pour empêcher un accès non authentifié aux données sensibles."
+    ],
+    "relatedTools": [
+      {
+        "name": "OWASP ZAP / Burp Suite",
+        "description": "Outils de scan de sécurité utilisés par les pentesters pour détecter automatiquement des failles web courantes."
+      },
+      {
+        "name": "helmet (Express)",
+        "description": "Middleware qui ajoute des en-têtes HTTP de sécurité de base à une API Express en une ligne."
+      },
+      {
+        "name": "express-rate-limit (utilisé dans ce projet)",
+        "description": "Limite le nombre de requêtes par IP, une protection simple contre le brute force sur les routes d'authentification."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "app.post('/login', async (req, res) => {",
+        "  const { email, password } = req.body;",
+        "  const query = `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;",
+        "  const user = await db.raw(query);",
+        "  if (user) {",
+        "    return res.json({ token: generateToken(user) });",
+        "  }",
+        "  res.status(401).json({ error: 'Identifiants invalides' });",
+        "});"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "La requête SQL concatène directement `email` et `password` fournis par l'utilisateur dans le texte de la requête : un attaquant peut envoyer `email = ' OR '1'='1' --` pour contourner l'authentification et se connecter sans connaître le mot de passe. De plus, comparer `password` directement dans la requête suppose qu'il est stocké en clair en base, ce qui est une autre faille grave. Il faut utiliser une requête paramétrée (ou un ORM comme Prisma) pour l'email, et hasher les mots de passe avec bcrypt puis comparer via `bcrypt.compare()`, jamais une concaténation ou comparaison directe de chaînes."
+    },
+    "practice": {
+      "question": "Comment se protéger d’une injection SQL ?",
+      "options": [
+        "Utiliser des requêtes préparées/paramétrées (ou un ORM comme Prisma) plutôt que de concaténer des chaînes",
+        "Ne jamais utiliser de base de données",
+        "Utiliser uniquement du JavaScript côté client"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — les requêtes préparées séparent le code SQL des données fournies par l’utilisateur.",
+        "incorrect": "La protection contre l’injection SQL passe par les requêtes préparées/paramétrées, pas par le choix du langage."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Qu’est-ce qu’une attaque XSS (Cross-Site Scripting) ?",
+        "options": [
+          "Injecter du code JavaScript malveillant qui s’exécute dans le navigateur d’autres utilisateurs",
+          "Une attaque qui vise uniquement les bases de données",
+          "Une technique de compression de fichiers"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi ne jamais stocker un mot de passe en clair en base de données ?",
+        "options": [
+          "En cas de fuite de données, tous les mots de passe seraient directement exposés",
+          "Ça ralentit toujours l’application",
+          "Ce n’est pas un problème de sécurité important"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "À quoi sert le hachage (ex: bcrypt) d’un mot de passe ?",
+        "options": [
+          "Transformer le mot de passe en une empreinte irréversible, impossible à retrouver directement même en cas de fuite",
+          "Le compresser pour économiser de l’espace",
+          "Le chiffrer de façon réversible avec une clé publique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Qu’est-ce que CSRF (Cross-Site Request Forgery) ?",
+        "options": [
+          "Forcer un utilisateur authentifié à exécuter une action non voulue sur un site où il est connecté",
+          "Un type de base de données NoSQL",
+          "Une méthode de compression d’images"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi valider et échapper les entrées utilisateur, même côté serveur, si le frontend valide déjà ?",
+        "options": [
+          "La validation côté client peut toujours être contournée (requêtes directes à l’API)",
+          "La validation côté serveur est redondante et inutile",
+          "Le frontend suffit toujours à protéger l’application"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Une requête paramétrée protège contre l’injection SQL sur les VALEURS. Laquelle de ces situations reste vulnérable même avec des requêtes paramétrées ?",
+        "options": [
+          "Construire dynamiquement le nom d’une table ou d’une colonne à partir d’une entrée utilisateur non validée (les paramètres ne protègent que les valeurs, pas les identifiants SQL)",
+          "Utiliser un ORM comme Prisma pour toutes les requêtes",
+          "Hasher le mot de passe avant de le stocker"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pourquoi stocker un token JWT dans le localStorage est-il considéré comme risqué face au XSS, comparé à un cookie httpOnly ?",
+        "options": [
+          "Un script JavaScript injecté par XSS peut lire le localStorage et voler le token, alors qu’un cookie httpOnly est inaccessible en JavaScript",
+          "Le localStorage est plus lent que les cookies",
+          "Un JWT ne peut pas être stocké dans le localStorage"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "L'OWASP Top 10 est mis à jour tous les 3-4 ans et fait consensus dans toute l'industrie de la sécurité — le citer précisément en entretien montre une vraie culture sécurité, très valorisée pour des postes backend.",
+    "ambiguite": {
+      "question": "Utiliser HTTPS suffit-il à protéger contre l'injection SQL ou le XSS ?",
+      "reponse": "Non : HTTPS chiffre la communication entre client et serveur (protège contre l'interception), mais ne protège absolument pas contre l'injection SQL, le XSS, ou une mauvaise gestion des mots de passe — ce sont des failles côté code, pas côté transport."
+    }
+  },
+  {
+    "id": "clean-code-solid",
+    "title": "Clean Code & principes SOLID",
+    "category": "Qualité",
+    "badge": {
+      "id": "badge-clean",
+      "name": "Maître du Code Propre",
+      "emoji": "🧹"
+    },
+    "griotIntro": [
+      "Une case bien tenue se reconnaît d'un coup d'œil ; un code bien écrit se comprend sans qu'on ait besoin d'expliquer chaque ligne.",
+      "Le Clean Code et les principes SOLID guident vers un code lisible, maintenable et facile à faire évoluer."
+    ],
+    "explanation": {
+      "text": "SOLID regroupe 5 principes de conception, dont le premier — une classe, une responsabilité — est le plus fréquemment violé. Clique sur les lignes pour voir pourquoi.",
+      "code": "// Violation du principe de responsabilité unique :\nclass Facture {\n  calculerTotal() { /* ... */ }\n  sauvegarderEnBDD() { /* ... */ } // ne devrait pas être ici\n  envoyerParEmail() { /* ... */ } // ni ici\n}\n// Mieux : séparer en Facture, FactureRepository, FactureMailer",
+      "annotations": [
+        {
+          "line": 2,
+          "note": "Celle-ci a du sens : calculer le total, c'est la responsabilité métier de `Facture`."
+        },
+        {
+          "line": 3,
+          "note": "Sauvegarder en base de données est une responsabilité D'INFRASTRUCTURE — changer de base de données ne devrait jamais forcer à modifier `Facture`."
+        },
+        {
+          "line": 4,
+          "note": "Envoyer un email est encore une AUTRE responsabilité — trois raisons différentes de modifier cette classe, ce qui viole le principe de responsabilité unique."
+        },
+        {
+          "line": 6,
+          "note": "En séparant, chaque classe ne change que pour une seule raison — plus facile à tester et à faire évoluer indépendamment."
+        }
+      ]
+    },
+    "useCases": [
+      "Ce projet sépare `auth.routes.js`, `progress.routes.js` et `prisma.js` : chaque module a une responsabilité claire, plus facile à maintenir.",
+      "Une équipe qui impose ESLint + Prettier en CI pour garantir un style de code cohérent, quel que soit le développeur qui écrit le code.",
+      "Refactorer une fonction de 200 lignes qui gère validation, calcul et sauvegarde en 3 fonctions plus petites et testables séparément."
+    ],
+    "relatedTools": [
+      {
+        "name": "ESLint / Prettier",
+        "description": "Détectent automatiquement les violations de style et certaines mauvaises pratiques, avant même la relecture humaine."
+      },
+      {
+        "name": "SonarQube",
+        "description": "Analyse statique qui mesure la dette technique, la duplication de code et les violations de principes comme SOLID à l'échelle d'un projet entier."
+      },
+      {
+        "name": "oxlint (utilisé dans ce projet)",
+        "description": "Linter JavaScript/React rapide, utilisé ici pour garder un code frontend propre et cohérent."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class RapportVentes {",
+        "  calculerTotal(ventes) { /* ... */ }",
+        "  genererPDF(total) { /* ... */ }",
+        "  envoyerEmailAuDirecteur(pdf) { /* ... */ }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Cette classe mélange calcul, génération de PDF et envoi d'email — trois responsabilités différentes, ce qui viole le principe de responsabilité unique (SRP). L'envoi d'email devrait être délégué à un service séparé."
+    },
+    "practice": {
+      "question": "Quel principe SOLID est violé quand une classe `Facture` gère à la fois le calcul, la sauvegarde en base ET l’envoi d’email ?",
+      "options": [
+        "Le principe de responsabilité unique (Single Responsibility)",
+        "Le principe de substitution de Liskov",
+        "Aucun principe n’est violé"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — une classe qui fait \"trop de choses\" est le signe classique d’une violation du SRP.",
+        "incorrect": "C’est bien une question de responsabilité : la classe a trop de raisons de changer."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que signifie le \"O\" de SOLID (Open/Closed) ?",
+        "options": [
+          "Le code doit être ouvert à l’extension, mais fermé à la modification directe",
+          "Le code doit toujours rester entièrement modifiable",
+          "Le code ne doit jamais être testé"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi donner des noms de variables/fonctions explicites est-il considéré comme du \"Clean Code\" ?",
+        "options": [
+          "Ça rend le code auto-documenté, moins besoin de commentaires pour comprendre l’intention",
+          "Ça rend le code plus rapide à l’exécution",
+          "Ça n’a aucun impact sur la qualité du code"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Le principe de substitution de Liskov dit qu’une sous-classe doit :",
+        "options": [
+          "Pouvoir remplacer sa classe parente sans changer le comportement attendu par le code appelant",
+          "Toujours avoir plus de méthodes que sa classe parente",
+          "Ne jamais hériter de méthodes"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi préférer des fonctions courtes qui font \"une seule chose\" ?",
+        "options": [
+          "C’est plus facile à tester, comprendre et réutiliser",
+          "Les fonctions courtes s’exécutent toujours plus vite",
+          "Ça n’a aucun intérêt pratique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Qu’est-ce que l’inversion de dépendance (Dependency Inversion) ?",
+        "options": [
+          "Dépendre d’abstractions (interfaces) plutôt que d’implémentations concrètes, pour rester flexible au changement",
+          "Inverser l’ordre des lignes de code",
+          "Un principe qui ne s’applique qu’au SQL"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Une classe `UserService` n’expose qu’une seule méthode publique `creerUtilisateur()`, mais cette méthode valide les données, hashe le mot de passe, insère en base ET envoie un email de bienvenue. Respecte-t-elle le principe de responsabilité unique ?",
+        "options": [
+          "Non — le nombre de méthodes publiques ne détermine pas la conformité au SRP ; ce qui compte, c’est le nombre de raisons de changer, ici il y en a plusieurs (règles métier, persistance, email)",
+          "Oui, puisqu’elle n’expose qu’une seule méthode publique",
+          "Oui, tant que la méthode fait moins de 50 lignes"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Que dit le principe de ségrégation des interfaces (Interface Segregation) ?",
+        "options": [
+          "Il vaut mieux plusieurs interfaces petites et spécifiques qu’une seule grande interface générale imposant des méthodes inutiles aux classes qui l’implémentent",
+          "Toutes les classes doivent implémenter la même interface unique",
+          "Les interfaces ne doivent jamais avoir plus d’une méthode"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "SOLID fait partie de la culture \"Clean Code\" popularisée par Robert C. Martin dans les années 2000-2010. Une partie de la communauté (mouvement \"pragmatic programming\") juge parfois ces principes trop dogmatiques quand appliqués sans discernement à de petits projets.",
+    "ambiguite": {
+      "question": "Faut-il toujours appliquer les 5 principes SOLID, même sur un petit script ?",
+      "reponse": "Non — c'est un vrai débat : appliquer SOLID rigoureusement à un script de 50 lignes ajoute souvent plus de complexité que de valeur. La plupart des praticiens recommandent SOLID pour du code destiné à évoluer longtemps, pas comme une règle absolue partout."
+    }
+  },
+  {
+    "id": "tests",
+    "title": "Tests logiciels (unitaires, intégration, TDD)",
+    "category": "Qualité",
+    "badge": {
+      "id": "badge-tests",
+      "name": "Maître des Tests",
+      "emoji": "🧪"
+    },
+    "griotIntro": [
+      "Avant de servir un plat à toute la famille, on en goûte une cuillère pour vérifier l'assaisonnement.",
+      "Les tests automatisés goûtent ton code avant que l'utilisateur final ne le fasse."
+    ],
+    "explanation": {
+      "text": "Un test unitaire vérifie une fonction isolée ; un test d'intégration vérifie que plusieurs composants fonctionnent bien ensemble. Clique sur les lignes pour voir la logique d'une assertion.",
+      "code": "// Exemple de test unitaire (style Jest/Vitest)\ntest('additionne deux nombres', () => {\n  expect(additionner(2, 3)).toBe(5);\n});\n\ntest('lève une erreur si division par zéro', () => {\n  expect(() => diviser(4, 0)).toThrow();\n});\n\ntest('appelle le callback une seule fois', () => {\n  const spy = vi.fn();\n  appelerCallback(spy);\n  expect(spy).toHaveBeenCalledTimes(1); // vérifie qu'aucun appel superflu n'a eu lieu\n});",
+      "annotations": [
+        {
+          "line": 2,
+          "note": "On appelle la fonction avec des entrées connues et on vérifie que le résultat est exactement celui attendu — le cœur d'un test unitaire."
+        },
+        {
+          "line": 6,
+          "note": "On enveloppe l'appel dans une fonction fléchée pour pouvoir capturer l'erreur qu'elle lève, et vérifier qu'elle a bien lieu — sans ça, le test planterait au lieu de tester le comportement d'erreur."
+        },
+        {
+          "line": 10,
+          "note": "`vi.fn()` crée une fonction espionne (mock) qui enregistre chaque appel, sans exécuter de vraie logique — utile pour vérifier qu'une fonction a été appelée, combien de fois, et avec quels arguments."
+        },
+        {
+          "line": 12,
+          "note": "`toHaveBeenCalledTimes(1)` vérifie précisément le nombre d'appels — un piège classique est d'appeler un callback deux fois par erreur (ex : dans un `useEffect` mal nettoyé), ce qu'un simple test du résultat final ne détecterait pas."
+        }
+      ]
+    },
+    "useCases": [
+      "Tester unitairement la logique d'attribution de badge (score parfait → badge débloqué) sans lancer toute l'application.",
+      "Un test d'intégration qui vérifie qu'un `POST /auth/register` crée bien un utilisateur en base et retourne un token valide.",
+      "Une suite de tests E2E (Cypress, Playwright) qui simule un utilisateur réel : inscription, connexion, quiz, vérification de l'XP affiché."
+    ],
+    "relatedTools": [
+      {
+        "name": "Vitest / Jest",
+        "description": "Frameworks de test JavaScript les plus utilisés pour les tests unitaires et d'intégration."
+      },
+      {
+        "name": "Playwright / Cypress",
+        "description": "Outils de test end-to-end qui pilotent un vrai navigateur pour simuler un parcours utilisateur complet."
+      },
+      {
+        "name": "Supertest",
+        "description": "Bibliothèque pour tester des endpoints Express/API directement, sans navigateur, en simulant des requêtes HTTP."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "test('crée un utilisateur avec un email valide', async () => {",
+        "  const user = await creerUtilisateur({ email: 'test@test.com', password: '123456' });",
+        "  expect(user).toBeDefined();",
+        "});",
+        "test('rejette un email invalide', async () => {",
+        "  try {",
+        "    await creerUtilisateur({ email: 'pas-un-email', password: '123456' });",
+        "  } catch (e) {",
+        "  }",
+        "});"
+      ],
+      "buggyLineIndex": 8,
+      "explanation": "Le second test attrape l'exception avec un bloc `catch` vide, sans jamais vérifier qu'une erreur a bien été levée ni inspecter son message. Résultat : ce test passe même si `creerUtilisateur` accepte silencieusement un email invalide sans lever d'erreur — c'est un \"faux positif\", un test qui ne teste rien en réalité. Pour corriger, utiliser une assertion explicite comme `await expect(creerUtilisateur({ email: 'pas-un-email', password: '123456' })).rejects.toThrow()`."
+    },
+    "practice": {
+      "question": "Quelle est la différence entre un test unitaire et un test d’intégration ?",
+      "options": [
+        "Le test unitaire isole une seule fonction/unité, le test d’intégration vérifie l’interaction entre plusieurs composants réels",
+        "Ce sont des synonymes stricts",
+        "Un test d’intégration ne peut jamais utiliser de base de données"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — c’est une distinction fondamentale à bien maîtriser pour un entretien technique.",
+        "incorrect": "Le niveau d’isolation est la clé : unitaire = une unité isolée, intégration = plusieurs composants ensemble."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Dans le cycle TDD (Red-Green-Refactor), que fait l’étape \"Red\" ?",
+        "options": [
+          "Écrire un test qui échoue car la fonctionnalité n’existe pas encore",
+          "Supprimer tous les tests existants",
+          "Déployer en production"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi \"mocker\" une dépendance externe (API, base de données) dans un test unitaire ?",
+        "options": [
+          "Pour isoler le code testé et rendre le test rapide et fiable, sans dépendre d’un service externe réel",
+          "Pour rendre le test plus lent volontairement",
+          "Ce n’est jamais recommandé"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu’est-ce que la couverture de code (code coverage) ?",
+        "options": [
+          "Le pourcentage de lignes/branches du code exécutées par les tests",
+          "Le nombre total de fichiers du projet",
+          "La vitesse d’exécution des tests"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Une couverture de code à 100% garantit-elle l’absence de bugs ?",
+        "options": [
+          "Non — le code peut être exécuté par les tests sans que tous les cas métier/edge cases soient vérifiés",
+          "Oui, c’est une garantie absolue",
+          "Oui, mais seulement pour les tests d’intégration"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Que vérifie un test end-to-end (E2E) ?",
+        "options": [
+          "Le parcours complet d’un utilisateur réel à travers l’application, du frontend jusqu’au backend",
+          "Uniquement une fonction isolée",
+          "Uniquement la syntaxe du code"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Un test appelle une fonction `creerCommande()` qui interagit avec une vraie base de données SQLite en mémoire (sans mock). Comment qualifier ce test ?",
+        "options": [
+          "Plutôt un test d’intégration : même si la base est en mémoire et rapide, on teste l’interaction réelle entre la logique métier et la couche de persistance, pas une unité isolée",
+          "Un test unitaire, car SQLite en mémoire est très rapide",
+          "Ni l’un ni l’autre, ce n’est pas un vrai test"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pourquoi un test qui dépend de l’ordre d’exécution des autres tests (ex : réutilise un état partagé) est-il considéré comme un mauvais test ?",
+        "options": [
+          "Il devient un test \"flaky\" (instable) : son résultat dépend du contexte d’exécution, ce qui casse la fiabilité de toute la suite de tests",
+          "Ce n’est jamais un problème tant que les tests passent en local",
+          "Les tests doivent toujours partager leur état pour être plus rapides"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "La culture du TDD divise réellement la profession : certaines équipes en font une pratique quasi religieuse, d'autres la jugent trop rigide pour du code exploratoire — beaucoup d'équipes pragmatiques écrivent les tests après avoir stabilisé une première version.",
+    "ambiguite": {
+      "question": "100% de couverture de code veut-il dire 0 bug ?",
+      "reponse": "Non : la couverture mesure seulement quelles lignes sont exécutées par les tests, pas si tous les cas métier sont vérifiés. Un test peut exécuter une ligne sans jamais vérifier son comportement correctement — 100% de couverture n'élimine pas les bugs de logique."
+    }
+  },
+  {
+    "id": "code-review",
+    "title": "Code review — bonnes pratiques",
+    "category": "Qualité",
+    "badge": {
+      "id": "badge-review",
+      "name": "Maître de la Relecture",
+      "emoji": "🔍"
+    },
+    "griotIntro": [
+      "Avant qu'une décision importante soit prise au village, le conseil des sages la relit et en discute ensemble.",
+      "La code review, c’est ce moment collectif où le code est relu avant d’intégrer le projet commun."
+    ],
+    "explanation": {
+      "text": "Une bonne revue de code reste bienveillante et factuelle : critiquer le code, jamais la personne, en expliquant toujours le \"pourquoi\". Clique sur les lignes pour voir un exemple constructif.",
+      "code": "// Exemple de commentaire de review constructif :\n// \"Cette fonction fait 80 lignes et gère 3 responsabilités différentes.\n//  Que penses-tu de la découper en 2-3 fonctions plus petites, ça faciliterait les tests ?\"\n\n// À éviter — un commentaire vague et jugeant :\n// \"Ce code est mauvais, refais-le.\"\n\n// Encore mieux : proposer une piste concrète, pas juste une question :\n// \"On pourrait extraire la validation dans validerCommande() pour la tester isolément, qu'en penses-tu ?\"",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "Le commentaire décrit un fait observable (80 lignes, 3 responsabilités), pas un jugement sur la personne qui a écrit le code."
+        },
+        {
+          "line": 2,
+          "note": "Formulé comme une question ouverte (\"que penses-tu de\"), pas un ordre — ça laisse la porte ouverte à une discussion plutôt qu'à une confrontation."
+        },
+        {
+          "line": 5,
+          "note": "Ce type de commentaire ne dit rien de précis sur le problème et vise la personne plutôt que le code — il ne donne aucune piste d'amélioration et peut braquer l'auteur de la pull request."
+        },
+        {
+          "line": 8,
+          "note": "Proposer une piste concrète (ici un nom de fonction précis) tout en laissant la décision finale à l'auteur combine le meilleur des deux mondes : actionnable et respectueux."
+        }
+      ]
+    },
+    "useCases": [
+      "Une pull request GitHub sur laquelle 2 collègues laissent des commentaires avant d'approuver le merge vers `main`.",
+      "Une équipe qui exige au moins une review approuvée avant de pouvoir merger, configurée directement dans les règles de protection de branche.",
+      "Un junior qui apprend les bonnes pratiques de l'équipe grâce aux retours reçus sur ses premières pull requests."
+    ],
+    "relatedTools": [
+      {
+        "name": "GitHub / GitLab (pull requests)",
+        "description": "Les plateformes qui hébergent le flux de review : commentaires en ligne, approbations, règles de protection de branche."
+      },
+      {
+        "name": "CodeRabbit / GitHub Copilot Review",
+        "description": "Outils d'IA récents qui font une première passe de relecture automatique avant la review humaine."
+      },
+      {
+        "name": "Conventional Commits",
+        "description": "Convention de message de commit qui facilite la lecture de l'historique et la génération automatique de changelogs."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function peutMerger(pullRequest) {",
+        "  const approbations = pullRequest.reviews.filter(r => r.status === 'APPROVED').length;",
+        "  const demandesChangement = pullRequest.reviews.filter(r => r.status === 'CHANGES_REQUESTED').length;",
+        "  if (approbations >= 0) {",
+        "    return true;",
+        "  }",
+        "  return false;",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "La condition `approbations >= 0` est toujours vraie (un nombre d'approbations ne peut jamais être négatif), donc la fonction autorise le merge même avec zéro approbation — et pire, elle ignore complètement `demandesChangement` : une pull request avec des changements demandés non résolus pourrait être mergée. La condition correcte devrait être quelque chose comme `approbations >= 1 && demandesChangement === 0`, selon la règle de protection de branche définie par l'équipe."
+    },
+    "practice": {
+      "question": "Quelle formulation de commentaire de review est la plus constructive ?",
+      "options": [
+        "\"Cette fonction est difficile à tester car elle fait plusieurs choses — on pourrait la découper ?\"",
+        "\"Ce code est mauvais.\"",
+        "\"Pourquoi tu as fait ça comme ça ?!\""
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — factuel, orienté solution, sans attaquer la personne.",
+        "incorrect": "Une bonne review reste factuelle et bienveillante, jamais un jugement de valeur sur la personne."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi faire des pull requests petites et ciblées plutôt que d’énormes changements d’un coup ?",
+        "options": [
+          "Elles sont plus faciles et rapides à relire correctement, avec moins de risque de rater un problème",
+          "Ça n’a aucun impact sur la qualité de la review",
+          "Les grandes PR sont toujours préférables"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "En tant qu’auteur d’une PR, comment bien réagir à une critique sur ton code ?",
+        "options": [
+          "La considérer comme une opportunité d’amélioration, pas une attaque personnelle",
+          "Ignorer systématiquement tous les commentaires",
+          "Fermer la pull request immédiatement"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu’est-ce qu’un \"linter\" et quel rôle joue-t-il avant même la review humaine ?",
+        "options": [
+          "Un outil qui détecte automatiquement des erreurs de style/syntaxe, pour que la review humaine se concentre sur la logique",
+          "Un outil de déploiement en production",
+          "Un type de base de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi expliquer le contexte/motivation dans la description d’une pull request ?",
+        "options": [
+          "Pour que le relecteur comprenne le \"pourquoi\" du changement, pas seulement le \"quoi\"",
+          "Ce n’est jamais utile, le code parle de lui-même",
+          "C’est uniquement une formalité administrative"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Que faire si tu es en désaccord avec une remarque de review ?",
+        "options": [
+          "En discuter ouvertement avec des arguments techniques, plutôt que d’ignorer ou d’accepter sans comprendre",
+          "Toujours obéir sans discuter",
+          "Supprimer le commentaire"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Un relecteur passe 40 minutes à débattre du nom d’une variable mais approuve sans remarque une fonction contenant une faille de logique évidente. Comment qualifie-t-on ce biais de review ?",
+        "options": [
+          "Le \"bikeshedding\" (loi de futilité) : se concentrer sur des détails mineurs et faciles à juger, au détriment des problèmes de fond plus complexes à analyser",
+          "Une revue exemplaire et rigoureuse",
+          "Le principe de responsabilité unique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Que signifie généralement un commentaire de review marqué \"nit:\" (nitpick) ?",
+        "options": [
+          "Une remarque mineure, non bloquante pour le merge — souvent une préférence de style plutôt qu’un vrai problème",
+          "Une faille de sécurité critique qui bloque obligatoirement le merge",
+          "Une demande de suppression complète de la pull request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "La culture de la code review varie énormément d'une entreprise à l'autre : certaines exigent 2-3 approbations avant de merger, d'autres font confiance et mergent avec une seule review rapide (\"move fast\") — ni l'une ni l'autre n'est universellement \"la bonne\".",
+    "ambiguite": {
+      "question": "Un \"LGTM\" rapide est-il une vraie code review ?",
+      "reponse": "Techniquement oui (c'est une approbation), mais dans la culture de beaucoup d'équipes, un LGTM sans commentaire sur une grosse PR est vu comme une review superficielle plutôt qu'une vraie relecture."
+    }
+  }
+]

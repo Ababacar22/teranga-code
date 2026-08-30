@@ -1,0 +1,115 @@
+:root {
+  /* Palette Teranga Code — inspirée du Sénégal (drapeau + terre/sable/wax) */
+  --sn-green: #00853f;
+  --sn-green-dark: #05612e;
+  --sn-yellow: #fdc700;
+  --sn-red: #e31b23;
+  --sand: #f2dfb8;
+  --sand-dark: #d9bd85;
+  --clay: #c97b3d;
+  --ink: #2b1d0e;
+  --paper: #fffaf0;
+
+  --text: var(--ink);
+  --text-muted: #6b5a42;
+  --bg: var(--sand);
+  --surface: var(--paper);
+  --border: var(--sand-dark);
+  --accent: var(--sn-green);
+  --accent-contrast: var(--paper);
+  --shadow: rgba(43, 29, 14, 0.18) 0 8px 24px -8px;
+
+  /* Tokens fixes, indépendants du thème : texte clair posé sur un fond saturé
+     (boutons/badges verts-rouges-jaunes), et fond sombre des blocs "code/terminal"
+     qui doivent rester visuellement identiques en clair comme en sombre. */
+  --on-accent: #fffaf0;
+  --code-ink: #2b1d0e;
+
+  --sans: 'Segoe UI', system-ui, Roboto, sans-serif;
+  --heading: 'Segoe UI', system-ui, Roboto, sans-serif;
+
+  font: 18px/145% var(--sans);
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --sn-green: #22b96b;
+    --sn-green-dark: #4fd68a;
+    --sn-yellow: #ffd93d;
+    --sn-red: #ff6b6b;
+    --sand: #1b140c;
+    --sand-dark: #3a2c1c;
+    --clay: #e0956b;
+    --ink: #f2e9d8;
+    --paper: #241a10;
+
+    --text: var(--ink);
+    --text-muted: #b8a98c;
+    --bg: var(--sand);
+    --surface: var(--paper);
+    --border: var(--sand-dark);
+    --accent: var(--sn-green);
+    --accent-contrast: var(--code-ink);
+    --shadow: rgba(0, 0, 0, 0.45) 0 8px 24px -8px;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --sn-green: #22b96b;
+  --sn-green-dark: #4fd68a;
+  --sn-yellow: #ffd93d;
+  --sn-red: #ff6b6b;
+  --sand: #1b140c;
+  --sand-dark: #3a2c1c;
+  --clay: #e0956b;
+  --ink: #f2e9d8;
+  --paper: #241a10;
+
+  --text: var(--ink);
+  --text-muted: #b8a98c;
+  --bg: var(--sand);
+  --surface: var(--paper);
+  --border: var(--sand-dark);
+  --accent: var(--sn-green);
+  --accent-contrast: var(--code-ink);
+  --shadow: rgba(0, 0, 0, 0.45) 0 8px 24px -8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  width: 100vw;
+  min-height: 100svh;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--heading);
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}

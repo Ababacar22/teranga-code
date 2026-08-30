@@ -1,0 +1,495 @@
+[
+  {
+    "id": "cache-strategies",
+    "title": "Stratégies de cache : write-through, write-back, cache-aside",
+    "category": "Architecture des Systèmes d'Information",
+    "badge": { "id": "badge-cache-strategies", "name": "Maître des Caches", "emoji": "🗃️" },
+    "griotIntro": [
+      "À Diourbel, le grand magasin central du marché garde toujours une réserve des produits les plus demandés à portée de main, plutôt que d'aller les chercher à chaque fois à l'entrepôt.",
+      "Un cache fait pareil pour une application — mais il existe plusieurs façons de le remplir et de le maintenir à jour, chacune avec ses compromis."
+    ],
+    "explanation": {
+      "text": "Il ne suffit pas de dire \"on met ça en cache\" — la stratégie compte : quand écrire dans le cache, quand l'invalider, que faire quand il est plein. Clique sur les lignes pour comparer deux stratégies d'écriture.",
+      "code": "// Write-through : on écrit dans le cache ET la base en même temps\nasync function sauvegarderUtilisateur(id, data) {\n  await db.user.update({ where: { id }, data });\n  await cache.set(`user:${id}`, data); // synchrone, avant de continuer\n}\n\n// Write-back (write-behind) : on écrit d'abord dans le cache, la base suit plus tard\nasync function sauvegarderUtilisateurRapide(id, data) {\n  await cache.set(`user:${id}`, data);\n  queue.push({ type: 'sync-db', id, data }); // écriture différée, en arrière-plan\n}",
+      "annotations": [
+        { "line": 2, "note": "L'écriture en base de données se fait d'abord — c'est la source de vérité qui est mise à jour en priorité." },
+        { "line": 3, "note": "Le cache est mis à jour immédiatement après, de façon synchrone — cache et base restent toujours cohérents, au prix d'une écriture un peu plus lente." },
+        { "line": 8, "note": "Ici, c'est le CACHE qui est écrit en premier — la réponse à l'utilisateur est immédiate." },
+        { "line": 9, "note": "La synchronisation avec la base est différée. Plus rapide pour l'utilisateur, mais un vrai risque : si le système tombe avant la synchronisation, la donnée peut être perdue." }
+      ]
+    },
+    "useCases": [
+      "Write-through pour des données critiques (solde bancaire) où la cohérence immédiate entre cache et base est non négociable.",
+      "Write-back pour des compteurs à très fort volume d'écriture (vues d'une vidéo), où perdre quelques millisecondes de données est acceptable.",
+      "Politique d'éviction LRU (Least Recently Used), utilisée par défaut dans la plupart des systèmes de cache comme Redis, pour décider quoi supprimer quand le cache est plein."
+    ],
+    "relatedTools": [
+      { "name": "Redis", "description": "Permet de configurer sa politique d'éviction (`maxmemory-policy`) : LRU, LFU, TTL — un choix concret à faire en production." },
+      { "name": "Memcached", "description": "Cache mémoire simple et rapide, historiquement très utilisé avant la généralisation de Redis." },
+      { "name": "Varnish", "description": "Cache HTTP spécialisé, placé devant un serveur web pour absorber une grande partie du trafic sans jamais l'atteindre." }
+    ],
+    "practice": {
+      "question": "Dans le pattern \"cache-aside\", qui est responsable de charger la donnée dans le cache lors d'un cache miss ?",
+      "options": [
+        "L'application elle-même, au moment de la lecture, plutôt que le cache automatiquement",
+        "Le cache se remplit tout seul en arrière-plan, sans jamais impliquer l'application",
+        "La base de données pousse activement toutes ses données vers le cache en continu"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — cache-aside laisse le contrôle total à l'application, contrairement à write-through qui automatise l'écriture.",
+        "incorrect": "En cache-aside, c'est le code applicatif qui vérifie le cache, va chercher en base si absent, puis remplit le cache lui-même."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle est la différence entre write-through et write-back ?",
+        "options": [
+          "Write-through écrit cache et base en même temps ; write-back écrit le cache d'abord et différé la base",
+          "Ce sont deux noms pour exactement la même stratégie",
+          "Write-back n'existe pas en pratique, c'est un concept purement théorique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu'est-ce que la politique d'éviction LRU (Least Recently Used) ?",
+        "options": [
+          "Supprimer en priorité les données les moins récemment utilisées quand le cache est plein",
+          "Supprimer toujours les données les plus récentes en premier",
+          "Ne jamais supprimer aucune donnée du cache, quelle que soit sa taille"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi write-back est-il risqué en cas de panne serveur ?",
+        "options": [
+          "Les données écrites dans le cache mais pas encore synchronisées vers la base peuvent être perdues",
+          "Il n'y a aucun risque, le cache est toujours sauvegardé automatiquement sur disque",
+          "Write-back ne peut techniquement jamais tomber en panne"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Qu'est-ce que le pattern \"cache-aside\" ?",
+        "options": [
+          "L'application vérifie le cache, et si absent (cache miss), va chercher en base puis remplit le cache elle-même",
+          "Le cache est toujours rempli avant même la première requête de l'application",
+          "L'application ne vérifie jamais le cache, seulement la base de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien, pourquoi choisirais-tu LFU (Least Frequently Used) plutôt que LRU pour un cache de recommandations produits ?",
+        "options": [
+          "LFU garde les éléments les plus consultés au global, utile si certains produits restent populaires sur la durée même sans consultation récente",
+          "LFU et LRU sont rigoureusement identiques dans tous les cas d'usage",
+          "LFU est toujours strictement pire que LRU, sans aucune exception"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Le choix de la politique de cache est un sujet aussi débattu dans l'ingénierie que le choix d'un framework — Facebook a par exemple développé McRouter, sa propre couche de routage au-dessus de Memcached, uniquement pour affiner ces stratégies à très grande échelle.",
+    "ambiguite": {
+      "question": "Un cache-aside et un write-through, est-ce la même chose ?",
+      "reponse": "Non : cache-aside concerne la LECTURE (l'appli va chercher en base au cache miss, puis remplit le cache elle-même) ; write-through concerne l'ÉCRITURE (le cache est mis à jour en même temps que la base). Les deux peuvent d'ailleurs être combinés dans un même système."
+    }
+  },
+  {
+    "id": "load-balancing-algorithmes",
+    "title": "Algorithmes de répartition de charge",
+    "category": "Architecture des Systèmes d'Information",
+    "badge": { "id": "badge-lb-algo", "name": "Maître des Algorithmes de Répartition", "emoji": "🧮" },
+    "griotIntro": [
+      "Au grand marché de Diourbel, on peut répartir les clients entre les vendeurs à tour de rôle, ou les envoyer vers celui qui a le moins de monde devant lui.",
+      "Un load balancer choisit lui aussi parmi plusieurs algorithmes pour décider quel serveur reçoit chaque requête."
+    ],
+    "explanation": {
+      "text": "\"Répartir la charge\" cache plusieurs algorithmes différents, chacun avec ses forces. Clique sur les lignes pour comparer round-robin et least connections.",
+      "code": "// Round-robin : chaque serveur reçoit les requêtes à tour de rôle\nservers = [serverA, serverB, serverC];\nfunction roundRobin() {\n  const server = servers[current % servers.length];\n  current++;\n  return server;\n}\n\n// Least connections : la requête va au serveur le moins chargé actuellement\nfunction leastConnections() {\n  return servers.reduce((min, s) => (s.activeConnections < min.activeConnections ? s : min));\n}",
+      "annotations": [
+        { "line": 3, "note": "Le modulo (`%`) fait boucler l'index sur la liste des serveurs — après le dernier, on revient automatiquement au premier." },
+        { "line": 4, "note": "Le compteur avance à chaque appel, garantissant que le PROCHAIN appel ira au serveur suivant, dans l'ordre." },
+        { "line": 10, "note": "Contrairement au round-robin, cet algorithme regarde l'état RÉEL de chaque serveur (nombre de connexions actives) avant de choisir — plus adapté si les requêtes ont des durées très inégales." }
+      ]
+    },
+    "useCases": [
+      "Round-robin pour des serveurs de capacité identique et des requêtes de coût similaire — le cas le plus simple et le plus courant.",
+      "Least connections quand certaines requêtes prennent beaucoup plus de temps que d'autres, pour éviter de surcharger un serveur déjà occupé sur de longues requêtes.",
+      "Répartition par hachage IP (IP hash) pour garantir qu'un même client soit toujours dirigé vers le même serveur, utile pour des sessions non partagées entre serveurs."
+    ],
+    "relatedTools": [
+      { "name": "Nginx", "description": "Supporte plusieurs algorithmes de répartition configurables (round-robin par défaut, least_conn, ip_hash)." },
+      { "name": "Envoy Proxy", "description": "Proxy moderne très utilisé dans les architectures de service mesh, avec des algorithmes de répartition avancés." },
+      { "name": "AWS Application Load Balancer", "description": "Load balancer managé de couche 7, capable de router selon le contenu de la requête HTTP." }
+    ],
+    "practice": {
+      "question": "Quelle est la différence entre un load balancer de couche 4 (L4) et de couche 7 (L7) ?",
+      "options": [
+        "L4 route selon IP/port sans lire le contenu, L7 peut router selon le contenu de la requête HTTP (URL, headers)",
+        "Ce sont deux noms différents pour exactement le même mécanisme",
+        "L7 ne peut router que du trafic non chiffré, jamais du HTTPS"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — L7 est plus \"intelligent\" mais plus coûteux en calcul que L4.",
+        "incorrect": "L4 ignore le contenu de la requête (juste IP/port), L7 peut lire et router selon le contenu HTTP lui-même."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que fait l'algorithme round-robin ?",
+        "options": [
+          "Il distribue les requêtes aux serveurs à tour de rôle, dans l'ordre",
+          "Il envoie toujours toutes les requêtes au même serveur",
+          "Il choisit un serveur totalement au hasard à chaque requête"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Quand privilégier l'algorithme \"least connections\" plutôt que round-robin ?",
+        "options": [
+          "Quand les requêtes ont des durées très variables, pour éviter de surcharger un serveur déjà occupé",
+          "Jamais, round-robin est toujours suffisant quel que soit le contexte",
+          "Uniquement quand il n'y a qu'un seul serveur disponible"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu'est-ce que le \"IP hash\" en répartition de charge ?",
+        "options": [
+          "Un même client (même IP) est systématiquement dirigé vers le même serveur",
+          "Chaque requête chiffre son IP avant d'être envoyée au serveur",
+          "L'IP du serveur cible change aléatoirement à chaque requête"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi un load balancer L7 peut-il router différemment selon l'URL demandée (ex: /api vers un pool, /images vers un autre) ?",
+        "options": [
+          "Parce qu'il lit le contenu de la requête HTTP, contrairement à un L4 qui ne voit que l'adresse IP/port",
+          "Un load balancer ne peut techniquement jamais faire ce genre de routage conditionnel",
+          "Le routage par URL est une fonctionnalité réservée aux bases de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien, pourquoi \"IP hash\" peut-il poser un problème d'équilibrage si un petit nombre de clients génère énormément de trafic ?",
+        "options": [
+          "Ces clients seront toujours dirigés vers le même serveur, qui peut se retrouver surchargé malgré l'algorithme",
+          "IP hash garantit toujours un équilibrage parfait, sans aucune exception possible",
+          "Ce problème ne peut techniquement jamais se produire avec IP hash"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Le débat \"L4 vs L7\" revient souvent en entretien infra : L4 est plus rapide et simple (il ne regarde presque rien), L7 est plus intelligent mais plus coûteux en calcul — le choix dépend souvent de si l'équipe a besoin de règles de routage fines ou juste de répartir le trafic simplement.",
+    "ambiguite": {
+      "question": "Un load balancer et un reverse proxy, est-ce la même chose ?",
+      "reponse": "Ils se recoupent beaucoup en pratique (Nginx fait les deux), mais le rôle premier d'un reverse proxy est de masquer/protéger les serveurs en amont, alors que celui d'un load balancer est de RÉPARTIR la charge entre plusieurs d'entre eux — un load balancer est souvent un cas particulier de reverse proxy, pas l'inverse."
+    }
+  },
+  {
+    "id": "orchestration-conteneurs",
+    "title": "Orchestration de conteneurs (Kubernetes)",
+    "category": "Architecture des Systèmes d'Information",
+    "badge": { "id": "badge-orchestration", "name": "Maître de l'Orchestration", "emoji": "🎼" },
+    "griotIntro": [
+      "Un chef d'orchestre à Diourbel ne joue d'aucun instrument lui-même — il coordonne des dizaines de musiciens et remplace immédiatement celui qui tombe malade.",
+      "Un orchestrateur de conteneurs fait pareil avec des dizaines de conteneurs applicatifs : il les démarre, les surveille, et les remplace automatiquement en cas de problème."
+    ],
+    "explanation": {
+      "text": "Faire tourner UN conteneur Docker est simple. En faire tourner des dizaines, sur plusieurs machines, avec redémarrage automatique en cas de crash — c'est le rôle d'un orchestrateur. Clique sur les lignes d'un déploiement Kubernetes simplifié.",
+      "code": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api-backend\nspec:\n  replicas: 3\n  template:\n    spec:\n      containers:\n        - name: api\n          image: teranga-code/api:v2\n          livenessProbe:\n            httpGet: { path: /health, port: 4000 }",
+      "annotations": [
+        { "line": 1, "note": "On décrit ici l'état SOUHAITÉ de l'application, pas des commandes à exécuter pas à pas — Kubernetes se charge de faire correspondre la réalité à cette description." },
+        { "line": 5, "note": "Kubernetes garantit qu'il y a TOUJOURS 3 instances de ce conteneur en cours d'exécution — s'il en tombe une, une nouvelle est recréée automatiquement, sans intervention humaine." },
+        { "line": 10, "note": "L'image définit précisément quelle version du code tourne — changer cette ligne et redéployer suffit à mettre à jour toute l'application." },
+        { "line": 11, "note": "Kubernetes appelle périodiquement cette route pour vérifier que le conteneur est en bonne santé — sinon, il le redémarre automatiquement." }
+      ]
+    },
+    "useCases": [
+      "Redémarrer automatiquement un conteneur qui plante en production, sans qu'un humain ait besoin d'intervenir au milieu de la nuit.",
+      "Augmenter automatiquement le nombre d'instances (auto-scaling) pendant un pic de trafic, puis les réduire une fois le calme revenu.",
+      "Déployer une nouvelle version progressivement (rolling update), en remplaçant les anciens conteneurs par les nouveaux un par un, sans interruption de service."
+    ],
+    "relatedTools": [
+      { "name": "Kubernetes", "description": "L'orchestrateur de conteneurs de référence, devenu un standard de fait pour les déploiements à grande échelle." },
+      { "name": "Docker Swarm", "description": "Alternative plus simple à Kubernetes, intégrée directement à Docker, adaptée à des besoins moins complexes." },
+      { "name": "Helm", "description": "Gestionnaire de paquets pour Kubernetes, permettant de packager et versionner des configurations de déploiement complètes." }
+    ],
+    "practice": {
+      "question": "Pourquoi déclarer `replicas: 3` dans un déploiement Kubernetes, plutôt que de lancer manuellement 3 conteneurs ?",
+      "options": [
+        "Kubernetes maintient continuellement ce nombre : si un conteneur tombe, il en recrée un automatiquement",
+        "Ça ne change rien, `replicas: 3` ne fait que lancer 3 conteneurs une seule fois",
+        "C'est juste une convention de nommage, sans effet réel sur le déploiement"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — c'est la différence entre une commande ponctuelle et un état continuellement maintenu.",
+        "incorrect": "`replicas: 3` déclare un état CIBLE que Kubernetes maintient en continu, pas une action ponctuelle."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que fait un orchestrateur de conteneurs comme Kubernetes, en une phrase ?",
+        "options": [
+          "Il démarre, surveille et remplace automatiquement des conteneurs applicatifs sur plusieurs machines",
+          "Il compile le code source en conteneurs exécutables",
+          "Il remplace complètement le besoin d'avoir une base de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu'est-ce qu'un \"pod\" dans le vocabulaire Kubernetes ?",
+        "options": [
+          "La plus petite unité déployable, contenant un ou plusieurs conteneurs étroitement liés",
+          "Un type de base de données spécifique à Kubernetes",
+          "Un synonyme strict de \"serveur physique\""
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Que se passe-t-il si un conteneur échoue à répondre correctement à son \"liveness probe\" ?",
+        "options": [
+          "Kubernetes considère le conteneur défaillant et le redémarre automatiquement",
+          "Rien, le liveness probe est purement informatif et n'a aucun effet",
+          "Le cluster Kubernetes entier s'arrête immédiatement"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi l'auto-scaling est-il un des grands intérêts de l'orchestration de conteneurs ?",
+        "options": [
+          "Le nombre d'instances s'ajuste automatiquement selon la charge réelle, sans intervention manuelle constante",
+          "L'auto-scaling supprime totalement le besoin d'un load balancer",
+          "L'auto-scaling ne peut fonctionner que sur une seule machine physique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien infra, pourquoi un \"rolling update\" est-il préféré à un redémarrage complet de tous les conteneurs en même temps lors d'un déploiement ?",
+        "options": [
+          "Il garde une partie du service disponible pendant tout le déploiement, en remplaçant les instances progressivement",
+          "Un rolling update est toujours plus lent, sans aucun bénéfice réel",
+          "Redémarrer tout en même temps est en réalité toujours préférable"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Kubernetes (souvent abrégé \"K8s\") est né chez Google, qui gérait déjà un orchestrateur interne similaire (Borg) depuis des années avant de rendre l'idée open source en 2014 — un cas assez rare d'une entreprise partageant publiquement une technologie aussi centrale à sa propre infrastructure.",
+    "ambiguite": {
+      "question": "Docker et Kubernetes, est-ce concurrents ou complémentaires ?",
+      "reponse": "Complémentaires, pas concurrents : Docker crée et fait tourner UN conteneur ; Kubernetes orchestre des dizaines de conteneurs (potentiellement construits avec Docker) à travers plusieurs machines. Kubernetes a besoin d'un runtime de conteneurs pour fonctionner, il ne le remplace pas."
+    }
+  },
+  {
+    "id": "typologie-bases-donnees",
+    "title": "Typologie des bases de données",
+    "category": "Architecture des Systèmes d'Information",
+    "badge": { "id": "badge-db-types", "name": "Maître des Typologies", "emoji": "🗂️" },
+    "griotIntro": [
+      "Au marché de Diourbel, on ne range pas les céréales, les épices et les tissus de la même façon — chaque type de marchandise a son propre système de rangement optimal.",
+      "Il existe de la même façon plusieurs familles de bases de données, chacune pensée pour un type de donnée et d'usage différent."
+    ],
+    "explanation": {
+      "text": "\"Base de données\" ne veut pas dire une seule chose : relationnelle, document, clé-valeur, colonne, graphe... chaque famille fait un compromis différent. Clique sur les lignes pour comparer deux façons de représenter la même relation.",
+      "code": "// Relationnelle (PostgreSQL) : données dans des tables liées par des clés\n// users(id, nom) + commandes(id, user_id, montant)\n\n// Graphe (Neo4j) : données comme des nœuds reliés par des relations explicites\nCREATE (aissatou:User)-[:A_COMMANDE]->(commande1:Order {montant: 4500})",
+      "annotations": [
+        { "line": 1, "note": "Dans le modèle relationnel, la relation entre un utilisateur et sa commande passe par une clé étrangère (`user_id`) — il faut une JOINTURE pour la reconstituer." },
+        { "line": 4, "note": "Dans un graphe, la relation `A_COMMANDE` est stockée DIRECTEMENT comme une connexion entre deux nœuds — parcourir des relations complexes (amis d'amis, recommandations) devient beaucoup plus naturel et rapide." }
+      ]
+    },
+    "useCases": [
+      "Une base clé-valeur (Redis) pour des sessions utilisateur ou un cache, où l'accès ultra-rapide par identifiant unique prime sur tout le reste.",
+      "Une base orientée colonnes (Cassandra) pour des séries temporelles à très grand volume (capteurs IoT, logs), optimisée pour l'écriture massive.",
+      "Une base orientée graphe (Neo4j) pour un moteur de recommandation qui doit parcourir des relations complexes (amis d'amis, produits similaires)."
+    ],
+    "relatedTools": [
+      { "name": "PostgreSQL", "description": "Référence des bases relationnelles, avec en plus un support JSON avancé qui brouille un peu la frontière avec le document." },
+      { "name": "Redis", "description": "Base clé-valeur en mémoire, extrêmement rapide, utilisée pour le cache, les sessions ou les files de tâches." },
+      { "name": "Neo4j", "description": "Base orientée graphe conçue spécifiquement pour stocker et parcourir efficacement des relations complexes." }
+    ],
+    "practice": {
+      "question": "Pourquoi une base orientée colonnes (comme Cassandra) est-elle particulièrement adaptée à des données de capteurs IoT à très fort volume d'écriture ?",
+      "options": [
+        "Elle est optimisée pour des écritures massives et rapides, avec un schéma flexible adapté à des séries temporelles",
+        "Elle ne peut techniquement stocker que des nombres entiers",
+        "Elle est strictement identique à une base relationnelle classique"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — les bases orientées colonnes brillent sur l'écriture massive et la lecture de séries temporelles.",
+        "incorrect": "L'atout des bases orientées colonnes est justement leur capacité à absorber des écritures massives et continues."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle famille de base de données organise les données en tables liées par des clés ?",
+        "options": ["La base relationnelle", "La base orientée graphe", "La base clé-valeur"],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pour quel besoin une base clé-valeur (Redis) est-elle typiquement utilisée ?",
+        "options": [
+          "Un accès ultra-rapide par identifiant unique, comme un cache ou une session",
+          "Stocker des relations complexes entre des millions d'entités",
+          "Faire des jointures complexes entre de nombreuses tables"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi une base orientée graphe est-elle plus adaptée qu'une base relationnelle pour un moteur de recommandation \"amis d'amis\" ?",
+        "options": [
+          "Les relations sont stockées directement comme des connexions, évitant des jointures multiples et coûteuses",
+          "Une base relationnelle ne peut techniquement jamais stocker de relations entre utilisateurs",
+          "Les deux types de bases sont rigoureusement équivalents pour ce besoin"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Qu'est-ce qui différencie une base orientée document (MongoDB) d'une base orientée colonnes (Cassandra) ?",
+        "options": [
+          "Le document stocke des objets complets et flexibles, la colonne optimise l'écriture massive de données similaires à grande échelle",
+          "Ce sont deux noms différents pour exactement la même famille de bases",
+          "Une base orientée colonnes ne peut techniquement stocker que du texte brut"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien architecture, comment justifierais-tu d'utiliser plusieurs types de bases de données dans un même système (\"polyglot persistence\") ?",
+        "options": [
+          "Chaque famille de base fait un compromis différent ; choisir la plus adaptée à chaque besoin précis bat un choix unique pour tout le système",
+          "Utiliser plusieurs bases est toujours une erreur de conception, il faut n'en choisir qu'une seule",
+          "Le choix du type de base n'a en réalité jamais d'impact sur les performances"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Le terme \"polyglot persistence\" (utiliser plusieurs types de bases dans un même système, chacune pour son usage) s'est imposé dans l'industrie vers 2011, en réaction à des années où \"une seule grosse base relationnelle pour tout\" était la norme quasi unique — une architecture moderne combine aujourd'hui souvent 2 à 4 familles différentes.",
+    "ambiguite": {
+      "question": "MongoDB (document) et Redis (clé-valeur), est-ce juste deux variantes du même type NoSQL ?",
+      "reponse": "Non, ce sont deux familles bien distinctes malgré le label commun \"NoSQL\" : MongoDB stocke des documents complexes et interrogeables en profondeur, Redis stocke des paires clé-valeur simples optimisées pour la vitesse pure — leurs cas d'usage se recoupent rarement en pratique."
+    }
+  },
+  {
+    "id": "patterns-architecture-si",
+    "title": "Patterns d'architecture : n-tier, event-driven, API Gateway",
+    "category": "Architecture des Systèmes d'Information",
+    "badge": { "id": "badge-patterns-si", "name": "Maître des Patterns", "emoji": "🏛️" },
+    "griotIntro": [
+      "Construire une maison à Diourbel, un quartier entier, ou toute une ville ne suit pas le même plan d'organisation — chaque échelle a ses propres plans éprouvés.",
+      "Un système d'information a lui aussi de grands patterns d'architecture, reconnus et réutilisés d'un projet à l'autre plutôt que réinventés à chaque fois."
+    ],
+    "explanation": {
+      "text": "Un \"pattern d'architecture\" est une façon éprouvée d'organiser un système entier — pas juste une classe ou une fonction. Clique sur les lignes pour comparer deux approches d'un même besoin : notifier après une action.",
+      "code": "// Architecture classique (appel direct, synchrone)\nawait notificationService.envoyer(userId, 'Commande confirmée');\nawait facturationService.genererFacture(commandeId);\n\n// Architecture événementielle (event-driven)\neventBus.publish('commande.confirmee', { userId, commandeId });\n// -> notificationService ET facturationService écoutent cet événement, chacun de son côté",
+      "annotations": [
+        { "line": 1, "note": "Le service appelant doit connaître ET attendre chaque service concerné, un par un — ajouter un nouveau service à notifier demande de modifier ce code." },
+        { "line": 2, "note": "Si CE service est lent ou tombe en panne, toute la chaîne d'appels est bloquée ou échoue avec lui." },
+        { "line": 5, "note": "Le code qui déclenche l'événement ne connaît AUCUN des services qui vont réagir — il publie juste un fait, sans savoir qui écoute." },
+        { "line": 6, "note": "De nouveaux services peuvent s'abonner à cet événement plus tard, sans jamais toucher au code qui le publie — un vrai découplage." }
+      ]
+    },
+    "useCases": [
+      "Un API Gateway comme point d'entrée unique qui route vers les bons microservices, gère l'authentification et le rate limiting de façon centralisée.",
+      "Une architecture n-tier classique (présentation / logique métier / données) pour une application d'entreprise avec des responsabilités clairement séparées par couche.",
+      "Une architecture événementielle pour un système e-commerce où une commande déclenche en parallèle facturation, notification et mise à jour du stock, sans les coupler entre eux."
+    ],
+    "relatedTools": [
+      { "name": "Kong / AWS API Gateway", "description": "Solutions d'API Gateway managées ou open source, pour centraliser routage, authentification et limitation de débit." },
+      { "name": "Apache Kafka / RabbitMQ", "description": "Bus d'événements très utilisés pour implémenter concrètement une architecture événementielle entre services." },
+      { "name": "NestJS", "description": "Framework backend dont la structure en modules/couches impose naturellement une organisation proche du n-tier." }
+    ],
+    "practice": {
+      "question": "Quel est l'avantage principal d'une architecture événementielle par rapport à des appels directs entre services ?",
+      "options": [
+        "Les services sont découplés : celui qui publie un événement ne connaît pas ceux qui l'écoutent",
+        "Une architecture événementielle est toujours plus simple à déboguer qu'un appel direct",
+        "Les événements garantissent une exécution instantanée, sans aucun délai"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — le découplage est la valeur centrale de ce pattern.",
+        "incorrect": "L'intérêt principal est le découplage entre le service qui publie et ceux qui réagissent, pas la vitesse ou la simplicité de débogage."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Qu'est-ce qu'un API Gateway, en une phrase ?",
+        "options": [
+          "Un point d'entrée unique qui route les requêtes vers les bons services et centralise des préoccupations transverses",
+          "Une base de données spécialisée pour stocker des API",
+          "Un langage de programmation dédié à l'écriture d'API"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Dans une architecture n-tier classique, pourquoi sépare-t-on présentation, logique métier et données en couches distinctes ?",
+        "options": [
+          "Pour isoler les responsabilités et pouvoir faire évoluer chaque couche indépendamment",
+          "Pour ralentir volontairement l'application, sans autre bénéfice",
+          "C'est une contrainte imposée par tous les langages de programmation"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi une architecture événementielle découple-t-elle mieux les services qu'un appel direct entre eux ?",
+        "options": [
+          "Le service qui publie un événement n'a besoin de connaître aucun des services qui y réagissent",
+          "Les événements suppriment totalement le besoin de réseau entre services",
+          "Ce n'est pas vraiment un découplage, juste un nom différent pour le même mécanisme"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel est un risque réel d'une architecture événementielle mal maîtrisée ?",
+        "options": [
+          "Il devient difficile de suivre le flux complet d'une opération, dispersé entre de nombreux abonnés indépendants",
+          "Il n'existe aucun risque, c'est toujours strictement supérieur aux appels directs",
+          "Les événements ne peuvent techniquement jamais être perdus, quel que soit le système"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien architecture, comment choisirais-tu entre appel direct (synchrone) et événementiel (asynchrone) pour notifier un service après une commande ?",
+        "options": [
+          "Ça dépend si la suite dépend immédiatement du résultat (synchrone) ou si le traitement peut être différé sans bloquer l'utilisateur (événementiel)",
+          "Il faut toujours choisir l'architecture événementielle, sans aucune exception",
+          "Le choix n'a en réalité jamais d'impact réel sur l'expérience utilisateur"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Le pattern API Gateway s'est généralisé avec la montée des microservices dans les années 2015-2020 : sans lui, chaque client (web, mobile) devait connaître l'adresse de CHAQUE microservice individuellement — un vrai casse-tête de maintenance que le Gateway a résolu en centralisant le point d'entrée.",
+    "ambiguite": {
+      "question": "Une architecture événementielle élimine-t-elle le besoin d'appels directs entre services ?",
+      "reponse": "Non — la plupart des systèmes réels combinent les deux : appels directs (synchrones) pour ce qui doit répondre immédiatement à l'utilisateur (ex: vérifier un stock avant de confirmer un achat), événementiel (asynchrone) pour ce qui peut être traité en différé (ex: envoyer un email de confirmation)."
+    }
+  }
+]

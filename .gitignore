@@ -1,0 +1,15 @@
+node_modules
+dist
+dev-dist
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+
+# Rust / Tauri build output (rebuilt by CI, not committed)
+frontend/src-tauri/target
+frontend/src-tauri/gen
+
+# Installateurs générés localement (voir GitHub Actions pour les builds officiels)
+installateurs/

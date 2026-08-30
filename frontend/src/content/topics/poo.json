@@ -1,0 +1,647 @@
+[
+  {
+    "id": "encapsulation-abstraction",
+    "title": "Encapsulation & abstraction",
+    "category": "POO",
+    "badge": {
+      "id": "badge-encapsulation",
+      "name": "Maître de l’Enveloppe",
+      "emoji": "📦"
+    },
+    "griotIntro": [
+      "Le calebassier protège ses graines à l'intérieur d'une coque solide — on utilise le fruit sans avoir besoin de connaître chaque graine.",
+      "L'encapsulation cache les détails internes d'un objet ; l'abstraction n'expose que ce qui est essentiel à l'utilisation."
+    ],
+    "explanation": {
+      "text": "L'encapsulation protège les données internes d'un objet ; l'abstraction expose une interface simple en cachant la complexité. Clique sur les lignes pour voir comment ce compte bancaire protège son solde.",
+      "code": "class CompteBancaire {\n  #solde = 0; // privé : inaccessible depuis l'extérieur\n\n  deposer(montant) {\n    if (montant <= 0) throw new Error('Montant invalide');\n    this.#solde += montant;\n  }\n\n  get solde() { return this.#solde; } // accès contrôlé en lecture\n}",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`#solde` est privé : aucun code extérieur ne peut faire `compte.#solde = 1000000` directement — c'est l'encapsulation."
+        },
+        {
+          "line": 4,
+          "note": "On protège l'invariant \"le solde ne peut pas devenir invalide à cause d'un dépôt négatif\" dès l'entrée de la méthode."
+        },
+        {
+          "line": 5,
+          "note": "Seule cette méthode, à l'intérieur de la classe, a le droit de modifier `#solde`."
+        },
+        {
+          "line": 8,
+          "note": "`get solde()` expose une interface de lecture simple, sans jamais révéler comment la donnée est stockée en interne — c'est l'abstraction."
+        }
+      ]
+    },
+    "useCases": [
+      "Le `PrismaClient` de ce projet (`backend/src/db/prisma.js`) cache toute la complexité de connexion à PostgreSQL derrière une API simple (`.user.create()`, `.user.findUnique()`).",
+      "Une classe `PaiementWave` qui expose seulement `payer(montant)`, en cachant les détails d'appel à l'API externe de Wave.",
+      "Un composant React qui expose seulement ses props, en cachant son state interne et sa logique de rendu au reste de l'application."
+    ],
+    "relatedTools": [
+      {
+        "name": "TypeScript (private / #private)",
+        "description": "Renforce l'encapsulation à la compilation, en plus des champs privés natifs (`#champ`) de JavaScript moderne."
+      },
+      {
+        "name": "Interfaces (TypeScript, Java)",
+        "description": "Définissent un contrat public sans révéler l'implémentation — l'abstraction formalisée dans le typage."
+      },
+      {
+        "name": "API publiques de librairies (ex: Prisma)",
+        "description": "Exposent volontairement peu de méthodes publiques tout en cachant une implémentation interne complexe."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class CompteBancaire {",
+        "  solde = 0;",
+        "  deposer(montant) { this.solde += montant; }",
+        "}",
+        "",
+        "const compte = new CompteBancaire();",
+        "compte.solde = -500;"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "La propriété `solde` est publique et modifiable directement sans passer par `deposer()`, ce qui permet de casser l'invariant (comme un solde négatif). Elle devrait être privée (`#solde`) avec un accès contrôlé."
+    },
+    "practice": {
+      "question": "Pourquoi rendre une propriété privée (`#solde`) plutôt que publique dans une classe ?",
+      "options": [
+        "Pour empêcher toute modification directe qui contournerait les règles métier (ex: solde négatif)",
+        "Pour que le code s’exécute plus vite",
+        "Ça n’a aucun intérêt réel"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — l’encapsulation protège les invariants de l’objet (ici, empêcher un solde incohérent).",
+        "incorrect": "La visibilité privée n’a pas d’impact sur la vitesse ; elle protège l’intégrité des données internes."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle est la différence entre encapsulation et abstraction ?",
+        "options": [
+          "L’encapsulation cache les détails d’implémentation ; l’abstraction définit une interface simplifiée pour l’utilisateur de la classe",
+          "C’est l’inverse : l’abstraction cache les détails, l’encapsulation définit l’interface",
+          "L’abstraction concerne uniquement les bases de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi préférer un getter à un accès direct sur une propriété privée ?",
+        "options": [
+          "Ça permet de contrôler/valider l’accès, et de changer l’implémentation interne sans casser le code appelant",
+          "Un getter est toujours plus rapide qu’un accès direct",
+          "Ce n’est jamais recommandé"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Une interface (ou classe abstraite) permet principalement de :",
+        "options": [
+          "Définir un contrat que les classes concrètes doivent respecter, sans imposer l’implémentation",
+          "Stocker des données en base",
+          "Remplacer complètement les tests"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel est le risque si toutes les propriétés d’une classe sont publiques ?",
+        "options": [
+          "N’importe quel code externe peut modifier l’état de l’objet et casser ses invariants internes",
+          "Le code devient automatiquement plus rapide",
+          "Il n’y a aucun risque"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien, comment illustrerais-tu l’abstraction avec un exemple simple ?",
+        "options": [
+          "\"Quand je conduis une voiture, je n’ai pas besoin de comprendre le moteur pour appuyer sur l’accélérateur\"",
+          "\"L’abstraction, c’est juste rendre une variable globale\"",
+          "\"L’abstraction n’a pas d’exemple concret possible\""
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Que se passe-t-il si une classe expose un setter public sans validation sur une propriété censée être encapsulée ?",
+        "options": [
+          "Elle recrée une brèche dans l’encapsulation, permettant de contourner les règles métier comme si la propriété était publique",
+          "Rien, un setter est toujours sûr par définition",
+          "Cela améliore automatiquement les performances"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En TypeScript, une méthode publique qui fait `return this.#items;` (retourne directement la référence vers un tableau privé) viole quel principe ?",
+        "options": [
+          "L’encapsulation, car l’appelant peut muter directement le tableau interne (`.push()`) sans passer par les méthodes prévues, même si la propriété semble protégée",
+          "Le principe de responsabilité unique, et uniquement celui-ci",
+          "Aucun principe : retourner une référence est toujours sûr"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Les langages modernes divergent culturellement sur l'encapsulation stricte : Java/C# l'imposent par convention (private/public), tandis que Python n'a aucune vraie encapsulation (juste une convention _nom) — un choix assumé (\"we're all consenting adults\").",
+    "ambiguite": {
+      "question": "Un champ privé (#solde) en JavaScript, est-ce vraiment infranchissable ?",
+      "reponse": "Oui, contrairement à la convention _solde (juste une convention, contournable) : les champs #privés de JavaScript moderne (ES2022) sont réellement inaccessibles depuis l'extérieur de la classe, appliqués par le moteur JS lui-même."
+    }
+  },
+  {
+    "id": "heritage-polymorphisme",
+    "title": "Héritage & polymorphisme",
+    "category": "POO",
+    "badge": {
+      "id": "badge-heritage",
+      "name": "Maître de la Lignée",
+      "emoji": "🌳"
+    },
+    "griotIntro": [
+      "Un enfant hérite des traits de sa famille, mais chacun exprime ces traits à sa manière.",
+      "L'héritage partage un comportement commun entre classes ; le polymorphisme permet à chacune de l'exprimer différemment."
+    ],
+    "explanation": {
+      "text": "L'héritage permet à une classe fille de réutiliser le comportement d'une classe mère ; le polymorphisme permet d'appeler la même méthode sur des objets différents, chacun réagissant à sa façon. Clique sur les lignes pour voir les deux à l'œuvre.",
+      "code": "class Animal {\n  parler() { return '...'; }\n}\nclass Chien extends Animal {\n  parler() { return 'Wouf !'; }\n}\nclass Chat extends Animal {\n  parler() { return 'Miaou !'; }\n}\n\n[new Chien(), new Chat()].forEach((a) => console.log(a.parler())); // polymorphisme",
+      "annotations": [
+        {
+          "line": 3,
+          "note": "`extends Animal` : `Chien` hérite de tout ce que possède `Animal`, sans avoir à le réécrire."
+        },
+        {
+          "line": 4,
+          "note": "`Chien` redéfinit (\"override\") `parler()` avec son propre comportement — ça remplace celui d'`Animal` pour cette classe."
+        },
+        {
+          "line": 6,
+          "note": "`Chat` hérite aussi d'`Animal`, indépendamment de `Chien`."
+        },
+        {
+          "line": 7,
+          "note": "Sa propre version de `parler()`, différente de celle de `Chien`."
+        },
+        {
+          "line": 10,
+          "note": "Même appel `a.parler()` sur chaque objet, mais un comportement différent selon la classe réelle de `a` — c'est le polymorphisme."
+        }
+      ]
+    },
+    "useCases": [
+      "Différents moyens de paiement (`PaiementCarte`, `PaiementWave`, `PaiementEspeces`) qui héritent tous d'une classe `Paiement` et implémentent `payer()` différemment.",
+      "Une hiérarchie de notifications (`EmailNotification`, `SmsNotification`) qui partagent un comportement commun mais l'expriment différemment.",
+      "Le DOM du navigateur : `HTMLButtonElement` et `HTMLInputElement` héritent tous deux de `HTMLElement` et partagent ses méthodes de base."
+    ],
+    "relatedTools": [
+      {
+        "name": "Java / C# / PHP (POO classique)",
+        "description": "Langages où l'héritage de classes est central et très utilisé dans les frameworks d'entreprise."
+      },
+      {
+        "name": "JavaScript (class extends)",
+        "description": "Implémente l'héritage par prototypes sous une syntaxe de classe moderne, depuis ES6."
+      },
+      {
+        "name": "DOM du navigateur",
+        "description": "Toute la hiérarchie d'éléments HTML (`HTMLButtonElement`, `HTMLInputElement`...) est un exemple natif et massif d'héritage."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class Rectangle {",
+        "  constructor(largeur, hauteur) { this.largeur = largeur; this.hauteur = hauteur; }",
+        "  aire() { return this.largeur * this.hauteur; }",
+        "}",
+        "",
+        "class Carre extends Rectangle {",
+        "  setLargeur(l) { this.largeur = l; this.hauteur = l; }",
+        "}",
+        "",
+        "function testerAire(rect) { rect.largeur = 5; rect.hauteur = 4; return rect.aire() === 20; }"
+      ],
+      "buggyLineIndex": 9,
+      "explanation": "`testerAire` suppose que `largeur` et `hauteur` peuvent être modifiées indépendamment pour n'importe quel `Rectangle`, ce qui est vrai pour un `Rectangle` mais faux pour un `Carre` (où largeur doit toujours égaler hauteur) : appelée avec un `Carre`, la fonction donne un résultat incohérent car `Carre` viole le principe de substitution de Liskov — une sous-classe ne devrait jamais changer le comportement attendu de sa classe mère."
+    },
+    "practice": {
+      "question": "Que permet le polymorphisme dans l’exemple ci-dessus ?",
+      "options": [
+        "Appeler `parler()` sur des objets de classes différentes, chacun exécutant sa propre implémentation",
+        "Empêcher toute redéfinition de méthode",
+        "Fusionner les classes Chien et Chat en une seule"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — même appel, comportement différent selon le type réel de l’objet.",
+        "incorrect": "Le polymorphisme, c’est justement la possibilité d’un même appel de méthode avec des comportements différents."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi l’héritage peut-il devenir un piège s’il est trop utilisé ?",
+        "options": [
+          "Il crée un couplage fort entre classes parentes et filles, rendant le code rigide face au changement",
+          "L’héritage n’a jamais aucun inconvénient",
+          "Il rend le code toujours plus rapide"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu’est-ce que le \"duck typing\" (utilisé en JS/Python) lié au polymorphisme ?",
+        "options": [
+          "Si un objet a la méthode/le comportement attendu, on peut l’utiliser sans vérifier sa classe exacte",
+          "Une technique de typage strict obligatoire",
+          "Un pattern réservé aux bases de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Que signifie \"override\" (redéfinition de méthode) dans l’héritage ?",
+        "options": [
+          "Une classe fille fournit sa propre implémentation d’une méthode déjà définie dans la classe mère",
+          "Supprimer une méthode de la classe mère",
+          "Créer une nouvelle classe sans lien avec la mère"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Le principe de substitution de Liskov (le \"L\" de SOLID) est directement lié à :",
+        "options": [
+          "L’héritage : une sous-classe doit pouvoir remplacer sa classe mère sans changer le comportement attendu",
+          "La gestion de base de données uniquement",
+          "Le pattern Singleton"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel est un exemple classique où l’héritage est mal utilisé ?",
+        "options": [
+          "`Carre extends Rectangle` alors que changer la largeur d’un Carré doit aussi changer sa hauteur, ce qui viole le comportement attendu du Rectangle",
+          "Une classe `Chien extends Animal` qui redéfinit `parler()`",
+          "Il n’existe aucun mauvais usage de l’héritage"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Qu’est-ce qu’une méthode \"abstraite\" dans une classe mère ?",
+        "options": [
+          "Une méthode déclarée mais sans implémentation dans la classe mère, que chaque classe fille doit obligatoirement implémenter",
+          "Une méthode qui ne peut jamais être appelée",
+          "Une méthode automatiquement privée"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Une classe `Oiseau` a une méthode `voler()`. Une classe `Pingouin extends Oiseau` redéfinit `voler()` pour lever une exception \"Je ne vole pas\". Quel est le problème ?",
+        "options": [
+          "Ça viole le principe de substitution de Liskov : un `Pingouin` ne peut pas être utilisé partout où un `Oiseau` est attendu sans casser le comportement",
+          "Aucun problème, c’est une redéfinition normale de méthode",
+          "Le problème est uniquement une question de performance"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "\"Favor composition over inheritance\" est devenu un mantra culturel dominant dans l'industrie depuis les années 2000, en réaction aux abus d'héritage profond des années 90 (hiérarchies de classes à 6-7 niveaux devenues ingérables).",
+    "ambiguite": {
+      "question": "Le polymorphisme nécessite-t-il obligatoirement de l'héritage ?",
+      "reponse": "Non : en JavaScript/Python (typage dynamique), le \"duck typing\" permet du polymorphisme sans aucune relation d'héritage — si un objet a la méthode attendue, il peut être utilisé, peu importe sa classe."
+    }
+  },
+  {
+    "id": "composition-heritage",
+    "title": "Composition vs héritage",
+    "category": "POO",
+    "badge": {
+      "id": "badge-composition",
+      "name": "Maître de l’Assemblage",
+      "emoji": "🔧"
+    },
+    "griotIntro": [
+      "Un bon artisan assemble des pièces indépendantes pour construire un objet flexible, plutôt que de sculpter un bloc unique impossible à modifier.",
+      "\"Préférer la composition à l’héritage\" est l’un des conseils les plus répétés en conception orientée objet moderne."
+    ],
+    "explanation": {
+      "text": "La composition construit un objet en lui donnant d'autres objets comme dépendances (\"a un\"), plutôt qu'en héritant (\"est un\") — plus flexible à l'exécution. Clique sur les lignes pour comparer les deux approches.",
+      "code": "// Héritage rigide :\nclass CanardRobot extends Canard { voler() { /* moteur */ } }\n\n// Composition flexible :\nclass Canard {\n  constructor(comportementVol) { this.comportementVol = comportementVol; }\n  voler() { return this.comportementVol.voler(); }\n}\nconst canardRobot = new Canard({ voler: () => 'vole avec un moteur' });",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "Avec l'héritage, chaque nouveau comportement de vol demande une nouvelle sous-classe figée dans le code — rigide à faire évoluer."
+        },
+        {
+          "line": 5,
+          "note": "Le comportement de vol est injecté depuis l'extérieur, en paramètre du constructeur — c'est la relation \"a un\" (le canard A un comportement de vol)."
+        },
+        {
+          "line": 6,
+          "note": "`voler()` délègue simplement au comportement injecté, quel qu'il soit."
+        },
+        {
+          "line": 8,
+          "note": "On peut donner n'importe quel comportement de vol à l'exécution, sans créer de nouvelle classe ni toucher à `Canard`."
+        }
+      ]
+    },
+    "useCases": [
+      "Les hooks React (`useProgress`, `useAuth` dans ce projet) composent des comportements réutilisables dans un composant, sans hiérarchie de classes.",
+      "Un middleware Express injecté dans une route (`requireAuth`) plutôt qu'une classe `RouteProtegee` qui hériterait d'une classe `Route`.",
+      "Un service de notification qui reçoit en paramètre sa stratégie d'envoi (email, SMS, push) au lieu d'hériter d'une classe spécifique."
+    ],
+    "relatedTools": [
+      {
+        "name": "React Hooks",
+        "description": "`useProgress`, `useAuth` (ce projet) composent des comportements réutilisables sans hiérarchie de classes — l'exemple le plus visible de composition en React."
+      },
+      {
+        "name": "Dependency Injection (NestJS, Spring)",
+        "description": "Injecte des dépendances (services) dans un objet plutôt que de les faire hériter, favorisant la composition."
+      },
+      {
+        "name": "Middlewares Express",
+        "description": "S'assemblent (`app.use(middleware1, middleware2)`) plutôt que de former une hiérarchie de classes."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class Logger { log(msg) { console.log(msg); } }",
+        "",
+        "class Service {",
+        "  constructor(logger = new Logger()) { this.logger = logger; }",
+        "}",
+        "",
+        "const loggerPartage = new Logger();",
+        "const serviceA = new Service(loggerPartage);",
+        "const serviceB = new Service(loggerPartage);",
+        "serviceA.logger.prefix = '[A] ';"
+      ],
+      "buggyLineIndex": 9,
+      "explanation": "En composition, injecter la même instance partagée (`loggerPartage`) entre plusieurs objets crée un couplage caché : modifier `serviceA.logger.prefix` affecte aussi `serviceB.logger`, car c'est le même objet en mémoire. Pour une composition sûre, il faut soit créer une nouvelle instance de `Logger` par service, soit rendre le comportement injecté immuable."
+    },
+    "practice": {
+      "question": "Quel est l’avantage principal de la composition par rapport à l’héritage ?",
+      "options": [
+        "Elle permet de changer un comportement à l’exécution sans dépendre d’une hiérarchie de classes rigide",
+        "Elle rend le code impossible à tester",
+        "Elle est toujours plus lente que l’héritage"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — flexibilité à l’exécution, faible couplage : c’est la promesse de \"favor composition over inheritance\".",
+        "incorrect": "La composition n’a pas d’impact négatif sur la testabilité, bien au contraire — elle facilite l’injection de mocks."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle relation la composition représente-t-elle typiquement ?",
+        "options": [
+          "\"a un\" (has-a)",
+          "\"est un\" (is-a)",
+          "Aucune relation"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi la composition facilite-t-elle les tests unitaires ?",
+        "options": [
+          "On peut injecter une dépendance factice (mock) facilement à la place de la vraie",
+          "Elle supprime le besoin de tests",
+          "Elle rend le code non testable"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Le célèbre conseil \"favor composition over inheritance\" signifie :",
+        "options": [
+          "Préférer assembler des comportements via composition plutôt que créer des hiérarchies d’héritage profondes et rigides",
+          "Ne jamais utiliser l’héritage, dans aucun cas",
+          "Composition et héritage sont incompatibles techniquement"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Dans quel cas l’héritage reste-t-il tout de même pertinent ?",
+        "options": [
+          "Quand il existe une vraie relation \"est-un\" stable et que la hiérarchie ne changera pas souvent",
+          "Toujours, dans 100% des cas",
+          "Jamais, l’héritage est un anti-pattern"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En React, quelle approche est officiellement recommandée entre composition et héritage de composants ?",
+        "options": [
+          "La composition (composants qui s’assemblent via `children`/props), l’héritage entre composants est déconseillé",
+          "L’héritage systématique entre composants",
+          "React ne permet ni l’un ni l’autre"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Une classe `Employe extends Personne` ajoute un salaire. Un `Manager` supervise aussi une liste d’employés. Comment modéliser cette relation \"supervise\" ?",
+        "options": [
+          "Par composition : le `Manager` a une liste d’`Employe` (relation \"a un\"), pas par héritage",
+          "Par héritage : `Manager extends Employe[]`",
+          "Peu importe, héritage et composition sont interchangeables ici"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi la composition rend-elle plus délicat le polymorphisme classique basé sur `instanceof` ?",
+        "options": [
+          "Un objet composé n’hérite pas du type de ses dépendances internes : `objet instanceof ComportementVol` sera faux même si le comportement est injecté",
+          "Elle ne le rend pas plus difficile, c’est strictement équivalent à l’héritage",
+          "La composition interdit totalement le polymorphisme"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "React a fortement popularisé la composition dans la culture frontend : les composants s'assemblent via children/props plutôt que par héritage de classes, ce qui a habitué toute une génération de développeurs web à penser \"composition\" par défaut.",
+    "ambiguite": {
+      "question": "Utiliser des Hooks React (useEffect, useState), est-ce de la composition ?",
+      "reponse": "Oui, dans l'esprit : les Hooks permettent de composer des comportements réutilisables dans un composant sans hériter d'une classe de base — une application directe du principe \"composition over inheritance\"."
+    }
+  },
+  {
+    "id": "fp-vs-oop",
+    "title": "Programmation fonctionnelle vs orientée objet",
+    "category": "POO",
+    "badge": {
+      "id": "badge-fp",
+      "name": "Maître des Paradigmes",
+      "emoji": "🧮"
+    },
+    "griotIntro": [
+      "Deux griots peuvent raconter la même histoire différemment : l'un en décrivant des personnages qui évoluent, l'autre en enchaînant des transformations pures, sans jamais changer le passé.",
+      "La POO organise le code autour d’objets avec état ; la programmation fonctionnelle privilégie des fonctions pures et l’immutabilité."
+    ],
+    "explanation": {
+      "text": "Une fonction pure retourne toujours le même résultat pour les mêmes entrées, sans effet de bord — l'immutabilité en est un pilier, largement utilisée par React et Redux. Clique sur les lignes pour voir la différence.",
+      "code": "// Impure, mute le tableau original :\nfunction ajouterImpure(arr, x) { arr.push(x); return arr; }\n\n// Pure, ne modifie rien, retourne un nouveau tableau :\nfunction ajouterPure(arr, x) { return [...arr, x]; }\n\n// Piège : la copie \"pure\" n'est que superficielle (shallow) !\nfunction ajouterPureButPiege(liste, obj) { const copie = [...liste]; copie[0].nom = 'modifié'; return copie; }",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`push` modifie le tableau `arr` original EN PLACE — tout autre code qui gardait une référence vers ce même tableau voit le changement, même sans l'avoir demandé."
+        },
+        {
+          "line": 4,
+          "note": "`[...arr, x]` crée un tout nouveau tableau — l'original `arr` n'est jamais touché. Même entrée → toujours le même résultat, sans effet de bord."
+        },
+        {
+          "line": 7,
+          "note": "Le spread `[...liste]` ne copie que le premier niveau (copie superficielle) — les objets qu'il contient restent les mêmes références."
+        },
+        {
+          "line": 8,
+          "note": "`copie[0].nom = 'modifié'` mute donc l'objet original `liste[0]` malgré l'apparence d'une fonction \"pure\" — un piège classique en entretien sur l'immutabilité."
+        }
+      ]
+    },
+    "useCases": [
+      "Le hook `useProgress` de ce projet met à jour l'XP avec `{ ...prev, xp: prev.xp + amount }`, sans jamais muter l'objet précédent — pattern React classique.",
+      "Les fonctions `.map()`, `.filter()`, `.reduce()` de JavaScript, très utilisées pour transformer des listes de données sans boucles impératives.",
+      "Redux ou Zustand qui exigent des reducers purs pour garantir que l'état prévisible et débogable via des outils comme Redux DevTools."
+    ],
+    "relatedTools": [
+      {
+        "name": "Redux / Redux Toolkit",
+        "description": "Impose des reducers purs et un état immutable, au cœur de la programmation fonctionnelle appliquée à la gestion d'état."
+      },
+      {
+        "name": "Ramda / Lodash/fp",
+        "description": "Bibliothèques JavaScript dédiées à la programmation fonctionnelle (composition, currying, immutabilité)."
+      },
+      {
+        "name": "Elixir / Haskell / Clojure",
+        "description": "Langages fonctionnels \"purs\" par conception, bons exemples pour comprendre le paradigme en profondeur."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function calculerTotal(items) {",
+        "  let total = 0;",
+        "  items.forEach((item) => { total += item.prix; });",
+        "  return total;",
+        "}",
+        "",
+        "function appliquerRemise(items, pourcentage) {",
+        "  items.forEach((item) => { item.prix = item.prix * (1 - pourcentage); });",
+        "  return items;",
+        "}"
+      ],
+      "buggyLineIndex": 7,
+      "explanation": "`appliquerRemise` mute directement chaque `item.prix` du tableau original passé en paramètre — un effet de bord caché : tout code appelant qui gardait une référence vers `items` voit ses prix changer sans l'avoir demandé. Une version fonctionnelle pure retournerait un nouveau tableau avec de nouveaux objets : `items.map(item => ({ ...item, prix: item.prix * (1 - pourcentage) }))`."
+    },
+    "practice": {
+      "question": "Qu’est-ce qu’une fonction pure ?",
+      "options": [
+        "Une fonction qui retourne toujours le même résultat pour les mêmes entrées, sans effet de bord (pas de mutation externe, pas d’I/O)",
+        "Une fonction qui n’a aucun paramètre",
+        "Une fonction qui modifie toujours une variable globale"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — prévisibilité et absence d’effet de bord sont les deux critères clés d’une fonction pure.",
+        "incorrect": "Une fonction pure se définit par sa prévisibilité et l’absence d’effets de bord, pas par son nombre de paramètres."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi l’immutabilité facilite-t-elle le débogage dans une grosse application ?",
+        "options": [
+          "Les données ne changent jamais \"sous le pied\" ailleurs dans le code, ce qui réduit les effets de bord inattendus",
+          "Elle rend le code plus difficile à comprendre",
+          "Elle n’a aucun rapport avec le débogage"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Dans React, pourquoi ne doit-on jamais muter directement le state (ex: `state.push(x)`) ?",
+        "options": [
+          "React compare les références pour détecter les changements et déclencher un re-render ; muter directement casse cette détection",
+          "Ça n’a techniquement aucune conséquence",
+          "React interdit toute forme de tableau dans le state"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu’est-ce qu’une fonction d’ordre supérieur (higher-order function) ?",
+        "options": [
+          "Une fonction qui prend une autre fonction en paramètre et/ou retourne une fonction (ex: `map`, `filter`)",
+          "Une fonction définie tout en haut d’un fichier",
+          "Une fonction qui ne retourne jamais rien"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "La POO et la programmation fonctionnelle sont-elles incompatibles dans un même langage ?",
+        "options": [
+          "Non — JavaScript, par exemple, permet de mélanger les deux paradigmes selon le besoin",
+          "Oui, il faut choisir un seul paradigme pour tout le projet",
+          "Oui, ce sont des langages totalement séparés"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel est un avantage des fonctions pures pour les tests unitaires ?",
+        "options": [
+          "Pas besoin de mocker quoi que ce soit : mêmes entrées, mêmes sorties, toujours",
+          "Elles sont impossibles à tester",
+          "Elles nécessitent toujours une base de données pour être testées"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pourquoi `const obj = Object.freeze({ profil: { age: 20 } })` ne garantit-il pas une immutabilité profonde ?",
+        "options": [
+          "`Object.freeze` est superficiel (shallow) : les objets imbriqués comme `obj.profil` restent mutables",
+          "`Object.freeze` rend absolument tout immuable, y compris les objets imbriqués",
+          "`Object.freeze` n’a aucun effet en JavaScript moderne"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel est l’effet de bord caché dans ce code : `function trier(arr) { return arr.sort(); }` ?",
+        "options": [
+          "`Array.prototype.sort()` trie le tableau EN PLACE et retourne la même référence : la fonction mute son argument malgré son apparence de fonction pure",
+          "Aucun, `sort()` retourne toujours une copie du tableau",
+          "Le problème est seulement lié à la performance, pas à la pureté de la fonction"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "La programmation fonctionnelle a connu un vrai retour en force dans la culture JS depuis l'essor de React/Redux (2015+) : des concepts historiquement académiques (Haskell, Lisp) comme l'immutabilité sont devenus des attentes standards en entretien frontend moderne.",
+    "ambiguite": {
+      "question": "JavaScript est-il un langage fonctionnel ou orienté objet ?",
+      "reponse": "Ni strictement l'un ni l'autre : JavaScript est multi-paradigme, il permet les deux styles (classes ES6 pour l'OOP, fonctions pures pour le FP) sans en imposer aucun — un choix de style laissé au développeur ou à l'équipe."
+    }
+  }
+]

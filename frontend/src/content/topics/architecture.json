@@ -1,0 +1,682 @@
+[
+  {
+    "id": "api-rest",
+    "title": "API REST",
+    "category": "Architecture",
+    "badge": {
+      "id": "badge-rest",
+      "name": "Maître des API",
+      "emoji": "🔗"
+    },
+    "griotIntro": [
+      "À la grande mosquée de Touba, chaque porte a un usage précis et connu de tous : entrer, sortir, se recueillir.",
+      "Une API REST fonctionne pareil : chaque verbe HTTP a un usage précis et prévisible sur une ressource."
+    ],
+    "explanation": {
+      "text": "Le verbe HTTP exprime l'action à effectuer sur une ressource, pas l'URL — évite des URLs comme `/getUserById`. Une bonne API est aussi stateless (chaque requête porte tout le nécessaire, sans mémoire côté serveur) et retourne le bon code de statut. Clique sur chaque ligne pour le détail.",
+      "code": "GET    /users/42        // récupérer l'utilisateur 42\nPOST   /users           // créer un nouvel utilisateur\nPUT    /users/42        // remplacer entièrement l'utilisateur 42\nPATCH  /users/42        // modifier partiellement l'utilisateur 42\nDELETE /users/42        // supprimer l'utilisateur 42\nHEAD   /users/42        // comme GET mais sans corps : utile pour vérifier l'existence d'une ressource\nGET    /users?role=admin // filtrer une collection via des query params, jamais via un nouveau verbe\nPATCH  /users/42  { email: null }  // piège : null efface le champ, un champ absent du JSON le laisse inchangé",
+      "annotations": [
+        {
+          "line": 0,
+          "note": "Lit sans jamais modifier — une requête GET doit rester \"sûre\" : on peut l'appeler autant de fois qu'on veut sans effet de bord."
+        },
+        {
+          "line": 1,
+          "note": "Crée une nouvelle ressource. PAS idempotent : deux appels créent deux utilisateurs différents. Réponse attendue : 201."
+        },
+        {
+          "line": 2,
+          "note": "Remplace ENTIÈREMENT la ressource — un champ omis est effacé. Idempotent : rappeler avec les mêmes données donne toujours le même état final."
+        },
+        {
+          "line": 3,
+          "note": "Ne modifie que les champs fournis, le reste reste inchangé. Contrairement à POST, PATCH est pensé pour être idempotent."
+        },
+        {
+          "line": 4,
+          "note": "Supprime la ressource. Idempotent en pratique : la supprimer une seconde fois ne doit rien casser, même si la réponse passe à 404."
+        },
+        {
+          "line": 5,
+          "note": "HEAD renvoie les mêmes en-têtes qu'un GET mais sans le corps de la réponse — pratique pour vérifier qu'une ressource existe sans télécharger tout son contenu."
+        },
+        {
+          "line": 6,
+          "note": "Le filtrage, le tri et la pagination passent par des query parameters sur la ressource existante, jamais par un endpoint ou un verbe inventé pour l'occasion."
+        },
+        {
+          "line": 7,
+          "note": "Piège classique en entretien : dans un PATCH, une valeur `null` explicite efface le champ, alors qu'un champ simplement absent du JSON n'est pas touché — bien distinguer les deux côté backend."
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "label": "Requête HTTP",
+        "description": "Le client envoie une requête (ex: GET /users/42) vers le serveur."
+      },
+      {
+        "label": "Routage",
+        "description": "Le serveur identifie quelle route/contrôleur doit traiter la demande."
+      },
+      {
+        "label": "Traitement",
+        "description": "La logique métier s'exécute, avec éventuellement un accès à la base de données."
+      },
+      {
+        "label": "Réponse",
+        "description": "Le serveur renvoie un code de statut HTTP et des données (souvent en JSON)."
+      },
+      {
+        "label": "Rendu côté client",
+        "description": "Le frontend reçoit la réponse et met à jour l'interface pour l'utilisateur."
+      }
+    ],
+    "useCases": [
+      "Le backend de ce projet Teranga Code lui-même : `POST /auth/register`, `GET /progress`, `POST /progress/xp` suivent exactement ces conventions REST.",
+      "Une application mobile qui consomme la même API REST qu'un site web, sans dupliquer la logique métier côté serveur.",
+      "Un système de gestion de commandes où `GET /orders/:id` récupère une commande et `PATCH /orders/:id` met à jour uniquement son statut."
+    ],
+    "relatedTools": [
+      {
+        "name": "Express / NestJS / Fastify",
+        "description": "Frameworks Node.js les plus utilisés pour construire des API REST, chacun avec un compromis différent flexibilité/structure."
+      },
+      {
+        "name": "Postman / Insomnia",
+        "description": "Outils pour tester manuellement des endpoints REST sans écrire de frontend, indispensables en développement backend."
+      },
+      {
+        "name": "Swagger / OpenAPI",
+        "description": "Standard pour documenter une API REST de façon lisible et générer automatiquement une documentation interactive."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "router.get('/users/:id/delete', (req, res) => {",
+        "  db.user.delete({ where: { id: req.params.id } });",
+        "  res.json({ ok: true });",
+        "});"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "Une requête GET ne doit jamais avoir d'effet de bord (elle doit rester sans danger et idempotente) — la suppression devrait utiliser la méthode DELETE, pas GET."
+    },
+    "practice": {
+      "question": "Quelle est la différence entre PUT et PATCH ?",
+      "options": [
+        "PUT remplace la ressource entière, PATCH modifie seulement les champs fournis",
+        "PUT et PATCH sont interchangeables tant que le corps de la requête contient tous les champs",
+        "PATCH nécessite toujours un identifiant dans le corps de la requête, jamais dans l’URL"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — question très classique en entretien technique backend.",
+        "incorrect": "PUT = remplacement complet (un champ omis est effacé). PATCH = modification partielle (les champs non fournis restent inchangés). C’est la distinction clé."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que signifie \"stateless\" pour une API REST ?",
+        "options": [
+          "Le serveur ne conserve aucun état de session entre deux requêtes ; chaque requête contient tout le nécessaire",
+          "Le serveur peut traiter les requêtes dans n’importe quel ordre, peu importe leur contenu",
+          "Chaque requête doit obligatoirement ouvrir une nouvelle connexion TCP"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Une requête POST /users crée avec succès un nouvel utilisateur. Quel code de statut la réponse doit-elle renvoyer ?",
+        "options": [
+          "201",
+          "200",
+          "204"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Un client envoie deux fois de suite la même requête DELETE /orders/17 (par exemple à cause d’un problème réseau qui l’a fait réessayer). Si l’API est bien conçue de façon idempotente, quel est le comportement attendu ?",
+        "options": [
+          "L’état final est le même après les deux appels : la commande 17 est supprimée, peu importe qu’un des deux appels renvoie 404 la seconde fois",
+          "Le deuxième appel doit obligatoirement renvoyer une erreur 500 pour signaler la répétition",
+          "Le deuxième appel supprime une autre commande pour compenser"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Que signifie le code de statut 401 par opposition au 403 ?",
+        "options": [
+          "401 = non authentifié (pas connecté), 403 = authentifié mais non autorisé (pas les droits)",
+          "401 concerne les erreurs du client, 403 concerne les erreurs du serveur",
+          "401 et 403 sont interchangeables selon le framework backend utilisé"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien, on te demande comment faire évoluer une API REST déjà utilisée par plusieurs clients mobiles en production, si tu dois changer la structure de la réponse de GET /users/:id. Quelle approche est la plus pertinente ?",
+        "options": [
+          "Introduire une nouvelle version versionnée (ex: /api/v2/users/:id) et garder l’ancienne en fonctionnement le temps que les clients migrent",
+          "Modifier directement l’endpoint existant : les clients mobiles se mettront à jour automatiquement",
+          "Supprimer l’ancien endpoint immédiatement pour forcer la migration"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pour filtrer, trier ou paginer une collection en REST (ex: GET /users?role=admin&sort=name&page=2), quelle est la bonne pratique ?",
+        "options": [
+          "Utiliser des query parameters sur l’endpoint GET existant, sans changer la ressource elle-même",
+          "Créer un endpoint distinct pour chaque combinaison de filtres possible",
+          "Envoyer les critères de filtrage dans le corps d’une requête GET"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel en-tête HTTP permet à un client d’éviter de re-télécharger une ressource qui n’a pas changé depuis son dernier appel ?",
+        "options": [
+          "ETag, combiné avec If-None-Match sur les requêtes suivantes",
+          "Content-Type",
+          "Authorization"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "REST n'est pas la seule culture d'API : GraphQL (Facebook) et gRPC (Google) ont chacun leurs communautés convaincues que leur approche est supérieure. REST reste dominant par simplicité et universalité, mais le débat \"REST vs GraphQL\" revient très souvent en entretien architecture.",
+    "ambiguite": {
+      "question": "Une API \"RESTful\" respecte-t-elle toujours strictement REST ?",
+      "reponse": "Rarement à 100% : REST défini par Roy Fielding impose des contraintes strictes (HATEOAS notamment, quasi jamais implémenté). En pratique, la plupart des \"API REST\" du marché ne respectent qu'une partie des contraintes."
+    }
+  },
+  {
+    "id": "sql-nosql",
+    "title": "Bases de données : SQL vs NoSQL",
+    "category": "Architecture",
+    "badge": {
+      "id": "badge-db",
+      "name": "Maître des Données",
+      "emoji": "🗃️"
+    },
+    "griotIntro": [
+      "Le grenier à mil range chaque sac selon un ordre précis et fixe ; le marché, lui, s'organise différemment chaque jour selon ce qui arrive.",
+      "SQL structure les données selon un schéma rigide ; NoSQL s'adapte à des données plus flexibles ou massives."
+    ],
+    "explanation": {
+      "text": "SQL garantit des relations strictes et la cohérence (ACID) ; NoSQL sacrifie parfois cette rigueur pour la flexibilité du schéma ou la scalabilité. Clique sur les lignes pour comparer les deux approches.",
+      "code": "-- SQL : relation stricte entre tables\nSELECT commandes.id, users.pseudo\nFROM commandes\nJOIN users ON commandes.user_id = users.id;\n\n// NoSQL (document, ex: MongoDB) : données imbriquées\n{ _id: 1, pseudo: 'aissatou', commandes: [{ id: 1, total: 4500 }] }\n\n-- Un index accélère les lectures par email, au prix d'un coût à chaque écriture\nCREATE INDEX idx_users_email ON users(email);\n\n// NoSQL : la donnée peut être dupliquée volontairement (dénormalisation) pour éviter les jointures,\n// au prix d'un risque d'incohérence si elle change ailleurs sans être resynchronisée",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "On sélectionne des colonnes venant de DEUX tables différentes — typique du modèle relationnel."
+        },
+        {
+          "line": 3,
+          "note": "`JOIN` relie deux tables via une clé étrangère (`user_id`) — sans ça, impossible de combiner les deux."
+        },
+        {
+          "line": 6,
+          "note": "Ici, les commandes sont directement imbriquées dans le document utilisateur — pas de jointure nécessaire, mais la donnée est dupliquée si un même élément apparaît ailleurs."
+        },
+        {
+          "line": 9,
+          "note": "Un index accélère les lectures par email mais ralentit chaque écriture, car l'index doit lui aussi être mis à jour — un compromis très classique en base relationnelle."
+        },
+        {
+          "line": 12,
+          "note": "C'est le vrai coût caché de la dénormalisation NoSQL : la vitesse de lecture se paie par un risque de désynchronisation si la donnée dupliquée n'est pas mise à jour partout où elle apparaît."
+        }
+      ]
+    },
+    "useCases": [
+      "PostgreSQL (utilisé dans ce projet via Prisma) pour des données fortement relationnelles : utilisateurs, XP, badges avec des contraintes claires.",
+      "MongoDB pour stocker des profils utilisateurs dont la structure varie beaucoup (préférences, historique) sans schéma rigide.",
+      "Redis (clé-valeur) pour du cache très rapide ou des données temporaires (sessions, compteurs) qui n'ont pas besoin de relations complexes."
+    ],
+    "relatedTools": [
+      {
+        "name": "Prisma (utilisé dans ce projet)",
+        "description": "ORM qui simplifie l'accès à PostgreSQL en JavaScript/TypeScript, avec migrations et typage automatique."
+      },
+      {
+        "name": "MongoDB / Mongoose",
+        "description": "Base NoSQL orientée documents la plus utilisée en JavaScript, avec Mongoose comme couche de modélisation."
+      },
+      {
+        "name": "Redis",
+        "description": "Base clé-valeur en mémoire, extrêmement rapide, utilisée pour le cache, les sessions ou les files de tâches."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function getUserByEmail(email) {",
+        "  const query = `SELECT * FROM users WHERE email = '${email}'`;",
+        "  return db.raw(query);",
+        "}",
+        "",
+        "getUserByEmail(userInput);"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Concaténer directement l'entrée utilisateur dans la requête SQL ouvre une faille d'injection SQL (ex: un email malveillant comme `' OR '1'='1`). Il faut utiliser des requêtes paramétrées (placeholders) ou un ORM comme Prisma, qui échappe automatiquement les valeurs."
+    },
+    "practice": {
+      "question": "Dans quel cas une base NoSQL orientée document est-elle particulièrement adaptée ?",
+      "options": [
+        "Quand la structure des données varie beaucoup d’un enregistrement à l’autre, ou qu’on privilégie la scalabilité horizontale",
+        "Quand on a besoin de transactions ACID strictes sur des relations complexes",
+        "Jamais, SQL est toujours préférable"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — c’est un vrai compromis, pas une hiérarchie absolue entre les deux mondes.",
+        "incorrect": "C’est l’inverse : pour des transactions strictes et des relations complexes, SQL reste souvent préférable."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que signifie l’acronyme ACID en base de données ?",
+        "options": [
+          "Atomicité, Cohérence, Isolation, Durabilité — garanties de fiabilité des transactions",
+          "Un langage de requête alternatif à SQL",
+          "Un type de base de données NoSQL"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu’est-ce qu’un index en base de données, et pourquoi l’utiliser ?",
+        "options": [
+          "Une structure qui accélère les recherches sur une colonne, au prix d’un coût supplémentaire à l’écriture",
+          "Une copie complète de la base de données",
+          "Un type de jointure"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Quelle est la différence entre une jointure (JOIN) SQL et une donnée imbriquée dans un document NoSQL ?",
+        "options": [
+          "JOIN relie des tables séparées à la lecture ; NoSQL peut stocker directement les données liées dans un même document",
+          "JOIN et donnée imbriquée produisent toujours exactement le même résultat, peu importe le cas d’usage",
+          "NoSQL représente les relations uniquement via des jointures, exactement comme SQL"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi la scalabilité horizontale (ajouter des serveurs) est-elle souvent plus simple avec certaines bases NoSQL ?",
+        "options": [
+          "Elles sont conçues dès le départ pour répartir (sharder) les données sur plusieurs machines",
+          "Elles stockent systématiquement moins de données que les bases SQL",
+          "SQL ne peut techniquement jamais être distribué sur plusieurs serveurs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien, quelle réponse montre une bonne maturité sur le choix SQL vs NoSQL ?",
+        "options": [
+          "\"Ça dépend du besoin : structure des données, cohérence requise, volume et pattern d’accès\"",
+          "\"NoSQL est toujours meilleur, c’est plus moderne\"",
+          "\"SQL est obsolète, personne ne l’utilise plus\""
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Une application doit gérer des virements entre comptes bancaires, où le débit d’un compte et le crédit d’un autre doivent réussir ou échouer ensemble, sans jamais laisser un état incohérent. Quel type de base est le plus adapté ?",
+        "options": [
+          "Une base SQL avec des transactions ACID",
+          "Une base NoSQL orientée document, pour sa flexibilité de schéma",
+          "Une base clé-valeur comme Redis, pour sa rapidité"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Dans un document NoSQL qui imbrique les commandes directement dans le document utilisateur, quel est le risque principal si le nom d’un produit doit être corrigé alors qu’il apparaît dans des centaines de commandes déjà enregistrées ?",
+        "options": [
+          "Il faut mettre à jour la donnée dupliquée à chaque endroit où elle apparaît, sous peine d’incohérence si un endroit est oublié",
+          "Aucun risque : NoSQL synchronise automatiquement toutes les copies dupliquées d’une donnée",
+          "Le problème ne se pose pas car NoSQL interdit la duplication de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "La \"guerre SQL vs NoSQL\" des années 2010 (portée par le boom de MongoDB) s'est largement calmée : la culture actuelle privilégie le pragmatisme — utiliser PostgreSQL par défaut, et NoSQL seulement pour des besoins précis de scalabilité ou de flexibilité de schéma.",
+    "ambiguite": {
+      "question": "PostgreSQL est-il purement une base SQL ?",
+      "reponse": "Pas seulement : PostgreSQL supporte nativement des colonnes JSON/JSONB, ce qui lui permet d'imiter certains usages NoSQL tout en gardant les garanties ACID. La frontière SQL/NoSQL est plus floue qu'il y a dix ans."
+    }
+  },
+  {
+    "id": "monolithe-microservices",
+    "title": "Monolithe vs microservices",
+    "category": "Architecture",
+    "badge": {
+      "id": "badge-archi",
+      "name": "Maître de l’Architecture",
+      "emoji": "🏗️"
+    },
+    "griotIntro": [
+      "Une grande concession familiale unique, ou plusieurs petites maisons indépendantes reliées par les mêmes chemins : deux façons d'organiser une communauté.",
+      "Le monolithe regroupe tout en une seule application ; les microservices séparent chaque fonction en services indépendants."
+    ],
+    "explanation": {
+      "text": "Un monolithe est simple à développer et déployer au début, mais couple tout ensemble à grande échelle. Les microservices découplent, au prix d'une complexité opérationnelle bien plus grande.",
+      "code": "// Monolithe : tout dans une seule app\napp.use('/users', usersRouter);\napp.use('/orders', ordersRouter);\napp.use('/payments', paymentsRouter);\n\n// Microservices : chaque domaine est un service séparé\n// users-service:3001, orders-service:3002, payments-service:3003\n\n// Monolithe modulaire : un compromis, modules séparés mais un seul déploiement\napp.use('/users', usersModule.router); // frontière claire, mais toujours un seul process\n\n// Un API Gateway route les requêtes clients vers le bon microservice, en cachant la complexité interne",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "Toutes les routes tournent dans le même process, déployées ensemble — un bug dans `payments` peut faire planter tout le service, y compris `users`."
+        },
+        {
+          "line": 3,
+          "note": "Un seul déploiement pour toute l'app : simple à développer au début, mais tout est couplé."
+        },
+        {
+          "line": 6,
+          "note": "Chaque service tourne sur son propre port, potentiellement sa propre base de données et sa propre équipe — déployable et scalable indépendamment, au prix d'une vraie complexité réseau."
+        },
+        {
+          "line": 9,
+          "note": "Le monolithe modulaire garde un seul déploiement (donc plus simple à opérer) tout en imposant des frontières claires entre modules — souvent une bonne étape intermédiaire avant de vraiment découper en microservices."
+        },
+        {
+          "line": 11,
+          "note": "L'API Gateway est le point d'entrée unique côté client : il route vers le bon microservice, gère l'authentification centralisée, et évite au frontend de connaître l'adresse de chaque service."
+        }
+      ]
+    },
+    "useCases": [
+      "Le backend de ce projet (`backend/`) est un monolithe simple : un seul serveur Express regroupant auth et progression, adapté à sa taille actuelle.",
+      "Netflix ou Amazon utilisent des microservices à grande échelle : le service de paiement peut être déployé et scalé indépendamment du service de recommandation.",
+      "Une startup qui démarre avec un monolithe, puis extrait le service de paiement en microservice séparé quand celui-ci devient un goulot d'étranglement."
+    ],
+    "relatedTools": [
+      {
+        "name": "Kubernetes",
+        "description": "Standard pour orchestrer de nombreux microservices en production (déploiement, mise à l'échelle, résilience)."
+      },
+      {
+        "name": "RabbitMQ / Kafka",
+        "description": "Files de messages qui permettent aux microservices de communiquer de façon asynchrone et découplée."
+      },
+      {
+        "name": "Docker Compose (utilisé dans ce projet)",
+        "description": "Bon point de départ pour orchestrer quelques services liés en local, avant d'avoir besoin de Kubernetes."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "// orders-service accède directement à la base de données de users-service",
+        "const db = require('../users-service/db');",
+        "",
+        "async function getOrderWithUser(orderId) {",
+        "  const order = await db.orders.findUnique({ where: { id: orderId } });",
+        "  const user = await db.users.findUnique({ where: { id: order.userId } });",
+        "  return { ...order, user };",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Un microservice ne doit jamais accéder directement à la base de données d'un autre service — cela recrée un couplage fort typique d'un \"monolithe distribué\". La bonne approche est d'appeler l'API (REST/gRPC) exposée par users-service pour récupérer les données utilisateur."
+    },
+    "practice": {
+      "question": "Pour une petite équipe qui démarre un nouveau produit, quelle architecture est généralement recommandée en premier ?",
+      "options": [
+        "Un monolithe bien structuré, plus simple et rapide à développer",
+        "Des microservices dès le premier jour, quel que soit le contexte",
+        "Aucune des deux, il faut toujours du serverless"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — c’est un conseil très fréquent en entretien : \"commence monolithe, découpe si/quand le besoin apparaît\".",
+        "incorrect": "Les microservices ajoutent une vraie complexité opérationnelle, rarement justifiée au tout début d’un projet."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quel est le principal inconvénient des microservices par rapport à un monolithe ?",
+        "options": [
+          "La complexité opérationnelle accrue : réseau, cohérence des données distribuées, observabilité",
+          "Ils sont toujours moins coûteux à héberger, quel que soit le trafic",
+          "Ils ne peuvent pas être conteneurisés"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu’est-ce qu’un \"single point of failure\" dans un monolithe mal conçu ?",
+        "options": [
+          "Un composant dont la panne fait tomber toute l’application",
+          "Un endroit du code où il n’y a qu’une seule fonction",
+          "Un type de base de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Comment les microservices communiquent-ils généralement entre eux ?",
+        "options": [
+          "Via des appels réseau (API REST, gRPC) ou des files de messages (message queues)",
+          "Uniquement en partageant la même mémoire",
+          "Ils partagent toujours la même base de données pour rester synchronisés"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel est un signe qu’un monolithe devrait envisager d’être découpé ?",
+        "options": [
+          "Plusieurs équipes se marchent dessus sur le même code, ou un composant a des besoins de scalabilité très différents des autres",
+          "Le projet compte moins de 100 lignes de code",
+          "Uniquement quand l’équipe dépasse 50 développeurs, jamais avant"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Qu’est-ce qu’un \"monolithe modulaire\" ?",
+        "options": [
+          "Un monolithe organisé en modules bien séparés (frontières claires), facilitant un futur découpage en microservices si besoin",
+          "Un synonyme strict de microservices",
+          "Une architecture qui n’existe pas en pratique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Quel est un signal clair qu’il ne FAUT PAS migrer vers des microservices tout de suite ?",
+        "options": [
+          "L’équipe est petite (2-3 développeurs) et le produit n’a pas encore trouvé son marché",
+          "Une équipe distincte gère chaque domaine métier depuis plus d’un an",
+          "Un composant précis a des besoins de scalabilité très différents du reste du système"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Dans une architecture microservices, comment garantir la cohérence d’une opération qui traverse plusieurs services (ex: commande + paiement + stock) sans transaction ACID globale possible ?",
+        "options": [
+          "Le pattern Saga : une séquence d’étapes locales, chacune avec une action de compensation en cas d’échec",
+          "Une transaction SQL classique partagée directement entre tous les services",
+          "Ce n’est pas gérable : il faut obligatoirement revenir à un monolithe"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Les microservices ont connu un effet de mode fort dans les années 2015-2020 ; la culture actuelle est plus nuancée, avec un mouvement de retour vers des \"monolithes modulaires\" chez certaines entreprises (dont des cas médiatisés comme Amazon Prime Video).",
+    "ambiguite": {
+      "question": "Avoir plusieurs services = avoir des microservices ?",
+      "reponse": "Pas nécessairement : découper une application en plusieurs services n'en fait des microservices que s'ils sont vraiment indépendants (déploiement, base de données, équipe). Des services qui partagent la même base de données sont plutôt un monolithe distribué."
+    }
+  },
+  {
+    "id": "scalabilite-cache",
+    "title": "Scalabilité & cache",
+    "category": "Architecture",
+    "badge": {
+      "id": "badge-scale",
+      "name": "Maître de l’Échelle",
+      "emoji": "📶"
+    },
+    "griotIntro": [
+      "Un seul vendeur de bissap peut servir dix clients ; pour en servir mille, il faut plusieurs vendeurs et un système pour répartir la foule.",
+      "La scalabilité, c’est justement préparer ton système à absorber beaucoup plus de charge sans s’effondrer."
+    ],
+    "explanation": {
+      "text": "Le cache réduit la charge en évitant de recalculer ou re-requêter ce qui a déjà été demandé récemment — un sujet très attendu en entretien system design. Clique sur les lignes pour voir le pattern cache-aside.",
+      "code": "// Exemple simple de cache avec Redis (pseudo-code)\nconst cached = await redis.get(`user:${id}`);\nif (cached) return JSON.parse(cached);\n\nconst user = await db.user.findUnique({ where: { id } });\nawait redis.set(`user:${id}`, JSON.stringify(user), 'EX', 60); // expire après 60s\nreturn user;\n\n// Variante : invalider explicitement le cache dès qu'on modifie la donnée en base\nawait db.user.update({ where: { id }, data: changes });\nawait redis.del(`user:${id}`); // évite de servir une version périmée jusqu'à expiration du TTL",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "On vérifie d'abord si la donnée est déjà en cache — un accès Redis est bien plus rapide qu'une requête base de données."
+        },
+        {
+          "line": 2,
+          "note": "Cache trouvé (\"cache hit\") : on retourne directement, sans jamais toucher la base de données."
+        },
+        {
+          "line": 4,
+          "note": "Cache manqué (\"cache miss\") : on va chercher la donnée à sa source, la base de données — plus lent."
+        },
+        {
+          "line": 5,
+          "note": "On stocke le résultat en cache pour la prochaine fois, avec une expiration de 60s (`EX 60`) — évite de servir une donnée périmée indéfiniment."
+        },
+        {
+          "line": 10,
+          "note": "Invalider activement la clé au moment de l'écriture (plutôt que d'attendre le TTL) garantit que la prochaine lecture ira chercher la donnée fraîche en base — une stratégie complémentaire au TTL, pas un remplacement."
+        }
+      ]
+    },
+    "useCases": [
+      "Un CDN (Cloudflare, CloudFront) qui met en cache les images et fichiers statiques près de l'utilisateur pour réduire la latence.",
+      "Un load balancer devant plusieurs instances d'un même serveur Node.js pendant un pic de trafic (ex: lancement d'une promotion).",
+      "Mettre en cache le résultat d'une requête de classement (leaderboard) coûteuse pour ne la recalculer qu'une fois par minute plutôt qu'à chaque visite."
+    ],
+    "relatedTools": [
+      {
+        "name": "Redis",
+        "description": "Le choix le plus courant pour implémenter un cache applicatif rapide devant une base de données plus lente."
+      },
+      {
+        "name": "Cloudflare / CloudFront (CDN)",
+        "description": "Réseaux de diffusion de contenu qui mettent en cache fichiers statiques et pages près de l'utilisateur final."
+      },
+      {
+        "name": "Nginx / HAProxy",
+        "description": "Répartiteurs de charge (load balancers) qui distribuent le trafic entre plusieurs instances d'un serveur."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "async function getUserProfile(req, res) {",
+        "  const cached = await redis.get('user-profile');",
+        "  if (cached) return res.json(JSON.parse(cached));",
+        "",
+        "  const user = await db.user.findUnique({ where: { id: req.user.id } });",
+        "  await redis.set('user-profile', JSON.stringify(user));",
+        "  res.json(user);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "La clé de cache 'user-profile' est fixe et partagée par tous les utilisateurs : le premier utilisateur qui déclenche un cache miss verra son profil mis en cache puis servi à TOUS les autres utilisateurs ensuite. Il faut une clé par utilisateur (ex: `user-profile:${req.user.id}`), et idéalement un TTL pour éviter de servir une donnée périmée indéfiniment."
+    },
+    "practice": {
+      "question": "Quelle est la différence entre scalabilité verticale et horizontale ?",
+      "options": [
+        "Verticale = augmenter la puissance d’une seule machine ; horizontale = ajouter plusieurs machines",
+        "Verticale = ajouter plusieurs machines ; horizontale = augmenter la puissance d’une seule machine",
+        "La scalabilité horizontale concerne uniquement le frontend"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — et la scalabilité horizontale est généralement préférée à grande échelle, malgré sa complexité.",
+        "incorrect": "Verticale = plus grosse machine. Horizontale = plus de machines. C’est la distinction fondamentale."
+      }
+    },
+    "quiz": [
+      {
+        "question": "À quoi sert un load balancer (répartiteur de charge) ?",
+        "options": [
+          "Répartir les requêtes entrantes entre plusieurs serveurs pour éviter qu’un seul soit surchargé",
+          "Stocker des données en cache",
+          "Compiler le code en production"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi un service doit-il être \"stateless\" pour bien profiter de la scalabilité horizontale ?",
+        "options": [
+          "N’importe quelle instance peut traiter n’importe quelle requête sans dépendre d’un état stocké localement",
+          "Un service stateless consomme systématiquement moins de mémoire",
+          "Ce n’est pas une condition nécessaire"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Quel est le principal risque lié à l’utilisation d’un cache ?",
+        "options": [
+          "Servir des données périmées (stale) si l’invalidation du cache n’est pas bien gérée",
+          "Le cache double systématiquement l’espace disque nécessaire côté serveur",
+          "Un cache ne peut jamais expirer"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Qu’est-ce que la réplication d’une base de données ?",
+        "options": [
+          "Dupliquer les données sur plusieurs serveurs pour la disponibilité et répartir la charge de lecture",
+          "Supprimer les doublons automatiquement",
+          "Chiffrer la base de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Dans un système à forte charge, pourquoi mettre en cache le résultat d’une requête coûteuse plutôt que de la relancer à chaque fois ?",
+        "options": [
+          "Pour réduire la charge sur la base de données et améliorer le temps de réponse",
+          "Le cache n’a aucun effet mesurable sur les performances",
+          "Parce que la base de données ne peut être interrogée qu’une seule fois"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Quelle stratégie permet de garder le cache synchronisé dès qu'une donnée change en base, sans attendre l'expiration du TTL ?",
+        "options": [
+          "Invalider (supprimer) explicitement la clé du cache au moment même où la donnée est modifiée en base",
+          "Attendre systématiquement l’expiration du TTL, quelle que soit la fraîcheur nécessaire",
+          "Désactiver complètement le cache dès qu’une donnée est susceptible de changer un jour"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Une clé de cache très consultée (ex: un classement) expire, et des milliers de requêtes arrivent au même instant. Quel problème cela peut-il causer, et comment l'éviter ?",
+        "options": [
+          "Un \"cache stampede\" : toutes les requêtes frappent la base en même temps ; on peut l'éviter avec un verrou ou en régénérant le cache avant son expiration",
+          "Aucun problème : Redis répartit automatiquement la charge sans configuration particulière",
+          "Il faut supprimer définitivement le cache pour cette clé afin d'éviter le problème"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "\"There are only two hard things in Computer Science: cache invalidation and naming things\" est une citation culte (Phil Karlton) que tout développeur backend croise tôt ou tard.",
+    "ambiguite": {
+      "question": "Un cache expire-t-il toujours au bon moment ?",
+      "reponse": "Non, c'est le piège classique : un TTL trop long sert des données périmées, un TTL trop court annule les bénéfices du cache. Il n'y a pas de bonne réponse universelle, seulement un compromis à ajuster selon la fréquence de changement réelle des données."
+    }
+  }
+]

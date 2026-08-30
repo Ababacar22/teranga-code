@@ -1,0 +1,541 @@
+[
+  {
+    "id": "load-balancing",
+    "title": "Répartition de charge & haute disponibilité",
+    "category": "Cloud & Systèmes distribués",
+    "badge": { "id": "badge-load-balancing", "name": "Maître de l'Équilibre", "emoji": "⚖️" },
+    "griotIntro": [
+      "Au grand marché de Kolda, un seul vendeur de bissap déborde vite face à la foule — plusieurs vendeurs répartissent naturellement la file.",
+      "Un load balancer répartit le trafic entrant entre plusieurs serveurs, pour qu'aucun ne soit débordé et que le service continue même si l'un tombe."
+    ],
+    "explanation": {
+      "text": "Un seul serveur, c'est un point de défaillance unique : s'il tombe ou sature, tout s'arrête. Un répartiteur de charge distribue les requêtes entre plusieurs instances identiques. Clique sur les lignes de cette config simplifiée pour comprendre le principe.",
+      "code": "upstream backend_pool {\n  server 10.0.0.1:4000;\n  server 10.0.0.2:4000;\n  server 10.0.0.3:4000;\n  server 10.0.0.4:4000 weight=3;\n  server 10.0.0.5:4000 backup;\n}\n\nserver {\n  location / {\n    proxy_pass http://backend_pool;\n  }\n}",
+      "annotations": [
+        { "line": 0, "note": "`backend_pool` regroupe plusieurs serveurs identiques qui exécutent exactement le même code applicatif — n'importe lequel peut traiter n'importe quelle requête." },
+        { "line": 1, "note": "Chaque ligne est une instance distincte de l'application, souvent sur des machines physiques différentes — si l'une tombe, les deux autres continuent de servir." },
+        { "line": 4, "note": "`weight=3` indique que ce serveur peut recevoir environ trois fois plus de requêtes que les autres — utile quand une machine est plus puissante que le reste du pool." },
+        { "line": 5, "note": "`backup` marque ce serveur comme secours : il ne reçoit du trafic que si tous les serveurs \"normaux\" du pool sont devenus indisponibles." },
+        { "line": 10, "note": "`proxy_pass` fait suivre chaque requête entrante vers UN des serveurs du pool — par défaut, en tournant simplement dans l'ordre (round-robin)." }
+      ]
+    },
+    "useCases": [
+      "Un site à fort trafic (soldes, lancement produit) qui doit absorber un pic sans ralentir ni tomber, en répartissant sur plusieurs serveurs.",
+      "Une mise à jour déployée sans interruption de service : le load balancer redirige temporairement le trafic vers les serveurs encore sur l'ancienne version.",
+      "Un \"health check\" qui retire automatiquement un serveur défaillant de la rotation, sans intervention humaine immédiate."
+    ],
+    "relatedTools": [
+      { "name": "Nginx / HAProxy", "description": "Répartiteurs de charge logiciels très utilisés, capables de distribuer du trafic HTTP entre plusieurs serveurs backend." },
+      { "name": "AWS ELB / Google Cloud Load Balancing", "description": "Répartiteurs de charge managés par les fournisseurs cloud, avec mise à l'échelle automatique intégrée." },
+      { "name": "Kubernetes Service", "description": "Dans un cluster Kubernetes, un Service répartit automatiquement le trafic entre les pods (instances) disponibles d'une application." }
+    ],
+    "practice": {
+      "question": "Pourquoi un load balancer réduit-il le risque de panne totale d'un service ?",
+      "options": [
+        "Si un serveur tombe, les autres continuent de traiter les requêtes — il n'y a plus un seul point de défaillance",
+        "Il empêche physiquement les serveurs de tomber en panne",
+        "Un load balancer ralentit volontairement le trafic pour éviter les pannes"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — la redondance est la clé : plusieurs serveurs identiques, aucun n'est indispensable individuellement.",
+        "incorrect": "Le load balancer ne rend pas les serveurs infaillibles ; il fait en sorte qu'une panne individuelle n'arrête pas tout le service."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que fait un load balancer, en une phrase simple ?",
+        "options": [
+          "Il répartit les requêtes entrantes entre plusieurs serveurs pour éviter qu'un seul soit surchargé",
+          "Il stocke des données en cache pour accélérer les réponses",
+          "Il compile le code source de l'application en production"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu'est-ce qu'un \"single point of failure\" (SPOF) qu'un load balancer permet d'éviter ?",
+        "options": [
+          "Un composant unique dont la panne fait tomber tout le système",
+          "Un bug qui n'apparaît qu'une seule fois dans le code",
+          "Une erreur de configuration réseau mineure sans impact"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu'est-ce qu'un \"health check\" effectué régulièrement par un load balancer ?",
+        "options": [
+          "Une vérification périodique que chaque serveur du pool répond correctement, pour le retirer de la rotation sinon",
+          "Un audit annuel de la sécurité globale de l'infrastructure",
+          "Une fonctionnalité réservée uniquement aux bases de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi un service doit-il être \"stateless\" (sans état local) pour bien profiter d'un load balancer ?",
+        "options": [
+          "N'importe quelle instance doit pouvoir traiter n'importe quelle requête, sans dépendre d'une donnée stockée uniquement en mémoire locale",
+          "Le load balancer refuse de fonctionner avec des services qui ont une base de données",
+          "Ce n'est pas une condition nécessaire, le state local n'a aucun impact"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien système, pourquoi \"round-robin\" (tourner simplement dans l'ordre) n'est-il pas toujours la meilleure stratégie de répartition ?",
+        "options": [
+          "Si les requêtes ont des coûts très différents, certains serveurs peuvent se retrouver surchargés malgré une répartition égale en nombre",
+          "Round-robin est en réalité toujours parfaitement optimal, sans exception",
+          "Round-robin ne peut techniquement fonctionner qu'avec un seul serveur"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Piège classique en entretien : un load balancer configuré avec des \"sticky sessions\" (affinité de session) redirige toujours un même utilisateur vers le même serveur. Quel est le risque principal de cette approche ?",
+        "options": [
+          "Si ce serveur précis tombe en panne, l'utilisateur perd son état, et la répartition de charge devient inégale entre les serveurs",
+          "Aucun risque : les sticky sessions améliorent toujours la répartition de charge, sans exception",
+          "Les sticky sessions rendent les health checks totalement inutiles"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Quelle différence distingue un load balancer de couche 4 (L4, transport) d'un load balancer de couche 7 (L7, applicatif) ?",
+        "options": [
+          "Le L4 route selon l'adresse IP et le port, sans regarder le contenu ; le L7 peut router selon l'URL, les en-têtes ou le contenu HTTP",
+          "Le L4 et le L7 désignent exactement le même mécanisme, seul le nom change selon le fournisseur",
+          "Le L7 ne peut fonctionner qu'avec des connexions non chiffrées"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Le principe du load balancing est bien plus ancien qu'internet — les standards téléphoniques et les systèmes de distribution d'énergie répartissaient déjà la charge entre plusieurs lignes ou centrales bien avant le web. C'est un des rares concepts d'ingénierie logicielle directement hérité d'autres industries.",
+    "ambiguite": {
+      "question": "Ajouter plus de serveurs derrière un load balancer résout-il toujours un problème de performance ?",
+      "reponse": "Pas forcément : si le goulot d'étranglement est ailleurs (une base de données unique partagée par tous les serveurs, par exemple), ajouter des serveurs applicatifs ne fait que déplacer la charge vers ce même point unique, sans le résoudre."
+    },
+    "bugHunt": {
+      "lines": [
+        "upstream backend_pool {",
+        "  server 10.0.0.1:4000;",
+        "  server 10.0.0.2:4000;",
+        "  server 10.0.0.3:4000;",
+        "}",
+        "server {",
+        "  location / {",
+        "    proxy_pass http://10.0.0.1:4000;",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 7,
+      "explanation": "`proxy_pass` pointe directement vers l'adresse fixe `10.0.0.1:4000` au lieu du nom du pool `backend_pool` défini plus haut. Résultat : tout le trafic est envoyé vers ce seul serveur, et les deux autres restent inutilisés — le load balancing n'a plus aucun effet, malgré le pool bien configuré. Le correctif est `proxy_pass http://backend_pool;`, pour que nginx répartisse réellement les requêtes entre les trois serveurs."
+    }
+  },
+  {
+    "id": "message-queues",
+    "title": "Files de messages : Kafka, RabbitMQ",
+    "category": "Cloud & Systèmes distribués",
+    "badge": { "id": "badge-message-queues", "name": "Maître des Files", "emoji": "📨" },
+    "griotIntro": [
+      "Un boulanger de Kolda prépare le pain à son rythme, même si les clients passent commande à des moments très différents de la journée.",
+      "Une file de messages fait pareil pour deux services : elle absorbe les pics et laisse chacun traiter les tâches à son propre rythme."
+    ],
+    "explanation": {
+      "text": "Sans file de messages, un service qui appelle directement un autre service doit attendre sa réponse — s'il est lent ou en panne, tout se bloque. Une file découple les deux. Clique sur les lignes de cet exemple simplifié pour comprendre le principe.",
+      "code": "// Producteur : publie un événement sans attendre qu'il soit traité\nawait queue.publish('commande.creee', { commandeId: 42, montant: 4500 });\nconsole.log('Commande enregistrée, traitement en arrière-plan');\n\n// Consommateur : traite les messages à son propre rythme\nqueue.subscribe('commande.creee', async (message) => {\n  await envoyerEmailConfirmation(message.commandeId);\n});",
+      "annotations": [
+        { "line": 1, "note": "`publish` dépose le message dans la file et rend la main immédiatement — le producteur n'attend PAS que le message soit traité." },
+        { "line": 2, "note": "L'utilisateur reçoit une réponse rapide, même si l'envoi de l'email de confirmation prend du temps ou échoue temporairement." },
+        { "line": 6, "note": "Le consommateur traite les messages à SON rythme, indépendamment de la vitesse à laquelle ils sont produits — la file absorbe la différence." },
+        { "line": 7, "note": "Si `envoyerEmailConfirmation` échoue, le message peut être remis en file pour une nouvelle tentative, sans jamais perdre la commande elle-même." }
+      ]
+    },
+    "useCases": [
+      "Envoyer un email de bienvenue après une inscription, sans faire attendre l'utilisateur pendant que l'email part réellement.",
+      "Traiter le redimensionnement d'images uploadées en arrière-plan, pour ne pas bloquer la réponse HTTP de l'upload.",
+      "Absorber un pic de commandes lors d'une promotion, en laissant le système de traitement les consommer progressivement plutôt que de s'effondrer."
+    ],
+    "relatedTools": [
+      { "name": "RabbitMQ", "description": "File de messages traditionnelle, simple à opérer, adaptée à la plupart des besoins de découplage entre services." },
+      { "name": "Apache Kafka", "description": "Plateforme de streaming d'événements à très grande échelle, conçue pour des volumes massifs et la relecture d'historique de messages." },
+      { "name": "BullMQ (Redis)", "description": "Librairie de files de tâches basée sur Redis, très utilisée dans l'écosystème Node.js pour des besoins plus légers." }
+    ],
+    "practice": {
+      "question": "Quel est l'intérêt principal d'une file de messages entre deux services ?",
+      "options": [
+        "Découpler les deux services : le producteur n'attend pas que le message soit traité par le consommateur",
+        "Rendre les deux services plus rapides à écrire, sans changer leur comportement",
+        "Remplacer complètement le besoin d'une base de données"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — le découplage est la valeur centrale d'une file de messages.",
+        "incorrect": "L'intérêt principal est le découplage temporel entre production et traitement, pas la vitesse d'écriture du code."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que fait un \"producteur\" dans une architecture de file de messages ?",
+        "options": [
+          "Il publie des messages dans la file, sans attendre qu'ils soient traités",
+          "Il consomme et traite les messages de la file",
+          "Il supprime automatiquement les anciens messages"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi traiter l'envoi d'un email en arrière-plan via une file plutôt que directement dans la requête HTTP ?",
+        "options": [
+          "L'utilisateur n'a pas à attendre que l'email parte réellement pour recevoir sa réponse",
+          "Ça n'a aucun impact sur le temps de réponse perçu par l'utilisateur",
+          "Les emails ne peuvent techniquement pas être envoyés depuis une requête HTTP"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Que signifie la garantie \"au moins une fois\" (at-least-once) de livraison d'un message ?",
+        "options": [
+          "Un message pourrait être livré plusieurs fois en cas de problème, donc le traitement doit être conçu pour être idempotent",
+          "Un message n'est jamais livré plus d'une fois, sans exception",
+          "Un message n'est jamais garanti d'être livré du tout"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi Kafka est-il souvent préféré à RabbitMQ pour des volumes de données très massifs ?",
+        "options": [
+          "Kafka est conçu pour un débit très élevé et permet de rejouer l'historique des messages, pas seulement les consommer une fois",
+          "RabbitMQ est en réalité toujours plus performant que Kafka, dans tous les cas",
+          "Kafka ne peut fonctionner qu'avec un seul consommateur à la fois"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "En entretien architecture, pourquoi faut-il concevoir le traitement d'un message consommé pour être idempotent ?",
+        "options": [
+          "Parce qu'un même message peut être livré plusieurs fois selon la garantie du système de file utilisé, et le traiter en double ne doit pas causer de bug",
+          "L'idempotence n'a aucun rapport avec les files de messages",
+          "Un message ne peut techniquement jamais être livré deux fois, donc la question ne se pose pas"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Piège classique en entretien : quelle est la différence clé entre un modèle \"file de travail\" (queue classique) et un modèle \"publish/subscribe\" ?",
+        "options": [
+          "Dans une file de travail, un message est consommé par un seul worker parmi plusieurs ; en pub/sub, chaque abonné reçoit sa propre copie du même message",
+          "Ce sont deux noms différents pour exactement le même mécanisme de livraison",
+          "Le pub/sub ne peut techniquement avoir qu'un seul abonné à la fois, comme une file classique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "À quoi sert une \"dead-letter queue\" (file de messages morts) ?",
+        "options": [
+          "Elle stocke les messages qui ont échoué après plusieurs tentatives de traitement, pour analyse ultérieure sans bloquer la file principale",
+          "Elle supprime définitivement tous les messages non lus après 24 heures",
+          "Elle sert uniquement à archiver les messages déjà traités avec succès"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Kafka, créé chez LinkedIn puis rendu open source, tire son nom de l'écrivain Franz Kafka — son créateur a expliqué avoir choisi ce nom simplement parce que c'était \"un système d'écriture optimisé\", en clin d'œil à l'écrivain, sans lien direct avec son œuvre.",
+    "ambiguite": {
+      "question": "Une file de messages garantit-elle que les messages sont traités dans l'ordre exact où ils ont été envoyés ?",
+      "reponse": "Ça dépend du système et de sa configuration : certains garantissent un ordre strict par \"partition\" ou par file, mais avec plusieurs consommateurs en parallèle, l'ordre global de traitement n'est souvent PAS garanti — un point de conception à vérifier selon le besoin réel."
+    },
+    "bugHunt": {
+      "lines": [
+        "queue.subscribe('paiement.recu', async (message) => {",
+        "  const { commandeId, montant } = message;",
+        "  try {",
+        "    await compteBancaire.debiter(commandeId, montant);",
+        "    await marquerCommandePayee(commandeId);",
+        "  } catch (erreur) {",
+        "    console.error('Erreur de traitement', erreur);",
+        "    queue.retry(message);",
+        "  }",
+        "});"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "`compteBancaire.debiter()` est rappelée telle quelle à chaque nouvelle tentative (`queue.retry`), sans jamais vérifier si ce `commandeId` a déjà été débité. Comme la garantie de livraison d'une file de messages est en général \"au moins une fois\", ce message peut être livré et retraité plusieurs fois — si le crash survient juste après le débit mais avant `marquerCommandePayee`, le client sera débité deux fois pour la même commande. Le correctif consiste à vérifier une clé d'idempotence (ex: si `commandeId` est déjà marqué payé) avant d'appeler `debiter`."
+    }
+  },
+  {
+    "id": "cap-theorem",
+    "title": "Le théorème CAP",
+    "category": "Cloud & Systèmes distribués",
+    "badge": { "id": "badge-cap", "name": "Maître des Compromis", "emoji": "🔺" },
+    "griotIntro": [
+      "Si la route entre deux villages de la région de Kolda est coupée par la pluie, chaque village doit décider : attendre des nouvelles, ou agir avec l'information qu'il a déjà.",
+      "Le théorème CAP décrit exactement ce dilemme pour un système distribué quand une partie du réseau est coupée."
+    ],
+    "explanation": {
+      "text": "CAP énonce que face à une coupure réseau (Partition) entre deux nœuds d'un système distribué, il faut choisir entre Cohérence (tout le monde voit la même donnée) et Disponibilité (répondre quand même, même avec une donnée peut-être périmée). Impossible d'avoir les trois à la fois pendant la coupure.",
+      "code": "// Système CP (cohérence prioritaire) :\n// en cas de coupure, le nœud minoritaire refuse d'écrire\nif (!peutContacterMajorite()) throw new Error('Indisponible : cohérence impossible à garantir');\n\n// Système AP (disponibilité prioritaire) :\n// en cas de coupure, le nœud répond quand même, avec ses données locales\nif (!peutContacterMajorite()) return donneesLocales; // potentiellement périmées\n\n// Variante AP avec cohérence à terme (eventual consistency) :\n// le nœud accepte l'écriture localement puis la synchronise plus tard\necrireLocalement(donnee); planifierSynchronisation(donnee); // réconciliation différée",
+      "annotations": [
+        { "line": 0, "note": "Dans un système CP, si le nœud ne peut pas confirmer qu'il fait partie de la majorité (quorum) du cluster, il préfère refuser catégoriquement l'écriture plutôt que de risquer une incohérence." },
+        { "line": 2, "note": "Un système \"CP\" préfère refuser de répondre plutôt que de risquer de donner une information incohérente entre deux nœuds coupés du reste du réseau." },
+        { "line": 6, "note": "Un système \"AP\" préfère répondre quand même, quitte à donner une donnée légèrement périmée — mieux vaut une réponse imparfaite qu'aucune réponse." },
+        { "line": 10, "note": "Cette variante AP va plus loin : elle accepte l'écriture immédiatement en local, puis synchronise avec les autres nœuds une fois la coupure résolue — un compromis d'incohérence temporaire assumé, typique des bases \"eventually consistent\" comme DynamoDB." }
+      ]
+    },
+    "useCases": [
+      "Un système bancaire de transactions choisit généralement la cohérence (CP) : mieux vaut refuser une opération que de risquer un état incohérent des comptes.",
+      "Un réseau social qui affiche un nombre de likes choisit souvent la disponibilité (AP) : un compteur légèrement en retard est acceptable, un site indisponible ne l'est pas.",
+      "Configurer le niveau de cohérence d'une base de données distribuée (comme Cassandra) selon le besoin réel de chaque type de donnée."
+    ],
+    "relatedTools": [
+      { "name": "Cassandra / DynamoDB", "description": "Bases de données distribuées historiquement orientées \"AP\" (disponibilité), avec cohérence ajustable selon les besoins." },
+      { "name": "PostgreSQL en cluster / etcd", "description": "Systèmes orientés \"CP\" (cohérence), qui préfèrent refuser une opération plutôt que risquer une incohérence." },
+      { "name": "Documentation CAP (Eric Brewer)", "description": "Les écrits originaux d'Eric Brewer, qui a formulé le théorème CAP en 2000, restent la référence pour comprendre ses nuances." }
+    ],
+    "practice": {
+      "question": "Que se passe-t-il concrètement quand une \"partition réseau\" survient entre deux nœuds d'un système distribué ?",
+      "options": [
+        "Les deux nœuds ne peuvent plus communiquer entre eux, alors qu'ils continuent chacun de recevoir des requêtes",
+        "Le système entier s'arrête immédiatement et automatiquement",
+        "Les partitions réseau n'affectent jamais les systèmes correctement conçus"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — c'est justement cette situation qui force le choix entre cohérence et disponibilité.",
+        "incorrect": "Une partition réseau coupe la communication entre nœuds, sans forcément arrêter le système — c'est là tout le dilemme du théorème CAP."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que signifie le \"C\" de CAP (Cohérence) ?",
+        "options": [
+          "Tous les nœuds voient la même donnée au même moment",
+          "Le système ne tombe jamais en panne",
+          "Les données sont toujours chiffrées"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Que signifie le \"A\" de CAP (Disponibilité) ?",
+        "options": [
+          "Chaque requête reçoit une réponse, même en cas de coupure réseau partielle",
+          "Le système est accessible uniquement pendant les heures de bureau",
+          "Les données sont accessibles uniquement aux administrateurs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi le \"P\" (tolérance au partitionnement) n'est-il pas vraiment un choix dans un système distribué réel ?",
+        "options": [
+          "Les coupures réseau finissent toujours par arriver ; ne pas les tolérer signifierait accepter que le système s'effondre à chaque incident réseau",
+          "Le P est optionnel et la plupart des systèmes modernes choisissent de ne pas le gérer",
+          "Le P ne concerne que les systèmes qui n'utilisent pas internet"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi dit-on souvent que le vrai choix de CAP se résume à \"CP vs AP\" plutôt qu'à trois options égales ?",
+        "options": [
+          "Parce que la tolérance au partitionnement (P) est en pratique obligatoire, ce qui ne laisse le choix qu'entre C et A pendant une coupure",
+          "Parce que la cohérence et la disponibilité sont en réalité la même chose",
+          "Parce que le P peut toujours être désactivé sans conséquence"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "En entretien système, comment justifierais-tu le choix d'un système \"AP\" pour un compteur de likes sur un réseau social ?",
+        "options": [
+          "Une valeur légèrement en retard reste acceptable pour l'expérience utilisateur, alors qu'un site indisponible serait bien plus dommageable",
+          "Un compteur de likes doit toujours être parfaitement exact, sans aucune tolérance",
+          "Le choix entre CP et AP n'a aucun impact réel pour ce type de fonctionnalité"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Piège fréquent en entretien : la \"disponibilité\" du théorème CAP est-elle la même chose que le \"taux de disponibilité\" (uptime en %) annoncé par un fournisseur cloud ?",
+        "options": [
+          "Non — en CAP, la disponibilité signifie que chaque requête reçoit une réponse pendant une partition ; ce n'est pas un pourcentage de temps de fonctionnement dans l'année",
+          "Oui, ce sont rigoureusement le même concept, exprimé différemment",
+          "La disponibilité CAP ne s'applique qu'aux bases de données relationnelles"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Le \"C\" de CAP (Cohérence) désigne-t-il la même notion que le \"C\" de ACID (Consistency) en base de données ?",
+        "options": [
+          "Non — le C de CAP concerne la cohérence entre copies distribuées d'une même donnée, tandis que le C d'ACID concerne le respect des contraintes d'intégrité d'une transaction",
+          "Oui, il s'agit exactement de la même définition dans les deux cas",
+          "Le C de CAP n'a jamais aucun rapport avec la cohérence des données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Le théorème CAP, formulé par Eric Brewer en 2000, a été tellement cité (et parfois mal compris) dans l'industrie que Brewer lui-même a publié une clarification en 2012 (\"CAP Twelve Years Later\") pour corriger des simplifications abusives — un cas assez rare où l'auteur original doit recadrer l'usage populaire de sa propre théorie.",
+    "ambiguite": {
+      "question": "Le théorème CAP signifie-t-il qu'un système doit choisir C OU A en permanence, tout le temps ?",
+      "reponse": "Non, souvent mal compris : le compromis ne s'applique QUE pendant une partition réseau active. En fonctionnement normal (sans coupure), un système peut très bien offrir à la fois cohérence et disponibilité — CAP décrit un choix à faire uniquement dans le cas dégradé."
+    },
+    "bugHunt": {
+      "lines": [
+        "function peutEcrire(nodesJoignables, totalNodes) {",
+        "  // Le nœud doit vérifier qu'il a un quorum avant d'accepter une écriture",
+        "  return nodesJoignables.length > 0;",
+        "}",
+        "if (peutEcrire(nodesJoignablesDepuisIci, totalNodes)) {",
+        "  accepterEcriture(donnee);",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`peutEcrire()` considère qu'il peut accepter une écriture dès qu'il joint AU MOINS UN autre nœud (`nodesJoignables.length > 0`), au lieu de vérifier qu'il a la MAJORITÉ (quorum) des nœuds du cluster. En cas de partition réseau qui coupe le cluster en deux groupes, les deux côtés peuvent alors croire avoir le droit d'écrire simultanément — un split-brain classique qui viole la cohérence. Le correctif est de vérifier `nodesJoignables.length > totalNodes / 2`."
+    }
+  },
+  {
+    "id": "serverless",
+    "title": "Serverless : fonctions à la demande",
+    "category": "Cloud & Systèmes distribués",
+    "badge": { "id": "badge-serverless", "name": "Maître du Sans-Serveur", "emoji": "☁️" },
+    "griotIntro": [
+      "Plutôt que de louer une boutique à l'année à Kolda, certains commerçants ne paient un stand que les jours de grand marché.",
+      "Le serverless fonctionne pareil : le code ne s'exécute (et n'est facturé) que lorsqu'il est réellement appelé, pas en continu."
+    ],
+    "explanation": {
+      "text": "\"Serverless\" ne veut pas dire qu'il n'y a pas de serveur — juste que tu n'en gères aucun toi-même : le fournisseur cloud démarre ton code à la demande, puis l'arrête. Clique sur les lignes de cette fonction pour comprendre le modèle.",
+      "code": "const db = new DatabaseClient(); // créé hors du handler, réutilisé entre invocations \"chaudes\"\nexport async function handler(event) {\n  const { userId } = JSON.parse(event.body);\n  const user = await db.user.findUnique({ where: { id: userId } });\n  return {\n    statusCode: 200,\n    body: JSON.stringify(user),\n  };\n}\n// Cette fonction ne tourne QUE pendant l'exécution d'une requête",
+      "annotations": [
+        { "line": 0, "note": "`db` est instanciée EN DEHORS du handler : sur un \"warm start\" (une instance déjà démarrée, réutilisée pour un appel suivant), cette connexion est conservée sans être recréée — un gain de performance appréciable, mais jamais garanti (l'instance peut aussi être détruite entre deux appels)." },
+        { "line": 1, "note": "`handler` est le point d'entrée que le fournisseur cloud (AWS Lambda, Vercel...) appelle automatiquement quand une requête arrive — pas de serveur à démarrer soi-même." },
+        { "line": 2, "note": "Chaque appel reçoit un `event` frais — aucune mémoire persistante n'est garantie entre deux appels, contrairement à un serveur classique qui tourne en continu." },
+        { "line": 9, "note": "Entre deux appels, cette fonction n'existe littéralement plus en mémoire — elle est facturée uniquement pour son temps d'exécution réel, pas pour rester \"allumée\"." }
+      ]
+    },
+    "useCases": [
+      "Traiter le redimensionnement d'une image uploadée : une tâche ponctuelle, pas besoin d'un serveur qui tourne 24h/24 pour ça.",
+      "Un webhook qui réagit à un événement externe (paiement validé, nouveau commit) sans qu'un serveur dédié tourne en permanence en attente.",
+      "Un prototype ou un projet à faible trafic, où payer un serveur en continu ne serait pas rentable par rapport au coût à l'usage."
+    ],
+    "relatedTools": [
+      { "name": "AWS Lambda", "description": "Le service serverless historique et le plus utilisé, déclenchable par de nombreux événements (HTTP, fichiers, files de messages)." },
+      { "name": "Vercel / Netlify Functions", "description": "Fonctions serverless intégrées aux plateformes de déploiement frontend, pratiques pour des besoins backend légers." },
+      { "name": "Cloudflare Workers", "description": "Fonctions serverless exécutées en périphérie (edge), au plus près de l'utilisateur, avec un démarrage particulièrement rapide." }
+    ],
+    "practice": {
+      "question": "Pourquoi dit-on que le serverless est facturé \"à l'usage\" plutôt qu'en continu ?",
+      "options": [
+        "Le code ne s'exécute (et n'est facturé) que pendant le temps réel de traitement d'une requête, pas quand il est inactif",
+        "Le serverless est en réalité toujours gratuit, sans aucune facturation",
+        "Le serverless facture un abonnement fixe mensuel, comme un serveur classique"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exact — c'est l'argument économique central du modèle serverless.",
+        "incorrect": "Le serverless facture le temps d'exécution réel, pas un serveur qui reste allumé en continu."
+      }
+    },
+    "quiz": [
+      {
+        "question": "\"Serverless\" signifie-t-il qu'il n'y a vraiment aucun serveur physique impliqué ?",
+        "options": [
+          "Non — il y a bien des serveurs, mais c'est le fournisseur cloud qui les gère, pas le développeur",
+          "Oui, le code s'exécute directement sur l'appareil de l'utilisateur",
+          "Oui, aucune machine n'exécute réellement le code"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu'est-ce qu'un \"cold start\" en serverless ?",
+        "options": [
+          "Le délai supplémentaire du tout premier appel, le temps que le fournisseur démarre une nouvelle instance de la fonction",
+          "Une panne définitive de la fonction serverless",
+          "Un mode de fonctionnement réservé aux heures creuses"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi une fonction serverless ne doit-elle pas compter sur une donnée stockée en mémoire entre deux appels ?",
+        "options": [
+          "L'instance peut être totalement détruite et recréée entre deux appels, sans garantie de continuité de la mémoire locale",
+          "La mémoire entre deux appels est toujours garantie identique, sans exception",
+          "Ce n'est vrai que pour certains fournisseurs cloud, jamais pour AWS Lambda"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Dans quel cas le serverless devient-il moins avantageux économiquement qu'un serveur classique ?",
+        "options": [
+          "Quand le trafic est très élevé et constant, un serveur dédié tournant en continu peut revenir moins cher que payer chaque exécution individuellement",
+          "Le serverless est toujours moins cher qu'un serveur classique, sans aucune exception",
+          "Le coût du serverless ne dépend jamais du volume de trafic"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "En entretien architecture, pourquoi le serverless n'est-il pas toujours le bon choix pour un traitement de longue durée (ex: plusieurs minutes) ?",
+        "options": [
+          "La plupart des plateformes serverless imposent une durée maximale d'exécution par appel, au-delà de laquelle la fonction est interrompue",
+          "Le serverless n'a aucune limite de durée d'exécution, contrairement à un serveur classique",
+          "Un traitement long est toujours interdit par la loi sur le cloud"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pourquoi le serverless est-il souvent un mauvais choix pour maintenir une connexion WebSocket ou un flux de données en continu ?",
+        "options": [
+          "Une fonction serverless est conçue pour un cycle court par requête, pas pour maintenir une connexion ouverte de longue durée entre client et serveur",
+          "Le serverless ne peut techniquement jamais recevoir de requêtes HTTP",
+          "Les WebSockets n'existent que pour les serveurs classiques, jamais en environnement cloud"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Quel est un risque souvent cité en entretien architecture, lié à la dépendance forte du serverless envers un fournisseur cloud ?",
+        "options": [
+          "Le \"vendor lock-in\" : le code et la configuration sont souvent spécifiques à la plateforme (AWS Lambda, etc.), rendant la migration vers un autre fournisseur coûteuse",
+          "Le serverless empêche techniquement d'utiliser plusieurs fournisseurs cloud pour d'autres services de l'application",
+          "Ce risque n'existe pas puisque toutes les plateformes serverless sont strictement identiques entre elles"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Le terme \"serverless\" fait toujours débat dans la communauté : beaucoup d'ingénieurs le trouvent trompeur puisque des serveurs bien réels exécutent le code — certains préfèrent parler de \"Functions as a Service\" (FaaS), plus précis mais moins accrocheur marketing.",
+    "ambiguite": {
+      "question": "Le serverless élimine-t-il complètement le besoin de penser à l'infrastructure ?",
+      "reponse": "Non : il élimine la gestion des SERVEURS (patchs, scaling manuel, provisionnement), mais des sujets comme les limites de durée d'exécution, le cold start, la configuration des permissions ou le monitoring restent bien la responsabilité du développeur."
+    },
+    "bugHunt": {
+      "lines": [
+        "export async function handler(event) {",
+        "  const { userId, montant } = JSON.parse(event.body);",
+        "  const resultat = await appelerServicePaiement(userId, montant);",
+        "  await genererFacturePdf(resultat);",
+        "  await envoyerFactureParEmail(resultat);",
+        "  return { statusCode: 200, body: JSON.stringify(resultat) };",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Enchaîner un appel réseau de paiement, une génération de PDF et un envoi d'email dans le même handler risque de dépasser la durée maximale d'exécution imposée par la plateforme serverless (souvent quelques secondes à quelques minutes selon le fournisseur) — la fonction serait alors interrompue en plein milieu, potentiellement après le paiement mais avant l'envoi de la facture. Le correctif consiste à découper le traitement : le handler ne fait que déclencher le paiement puis publie un événement dans une file de messages pour que la génération de facture et l'envoi d'email se fassent de façon asynchrone et indépendante."
+    }
+  }
+]

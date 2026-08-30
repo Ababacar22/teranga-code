@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  pseudo          String   @unique
+  passwordHash    String
+  xp              Int      @default(0)
+  badges          String[] @default([])
+  onboarded       Boolean  @default(false)
+  missedQuestions String[] @default([])
+  streakCurrent   Int      @default(0)
+  streakLongest   Int      @default(0)
+  lastActiveDate  String?
+  level           String?
+  goal            String?
+  focusAreas      String[] @default([])
+  role            String   @default("user")
+  createdAt       DateTime @default(now())
+
+  sentChallenges     Challenge[] @relation("ChallengesSent")
+  receivedChallenges Challenge[] @relation("ChallengesReceived")
+}
+
+model Challenge {
+  id         String   @id @default(uuid())
+  fromUserId String
+  toUserId   String
+  topicId    String
+  fromScore  Int?
+  toScore    Int?
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  fromUser User @relation("ChallengesSent", fields: [fromUserId], references: [id])
+  toUser   User @relation("ChallengesReceived", fields: [toUserId], references: [id])
+}

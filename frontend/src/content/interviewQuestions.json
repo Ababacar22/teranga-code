@@ -1,0 +1,1016 @@
+[
+  {
+    "type": "comportemental",
+    "question": "Parle-moi d'un projet dont tu es fier.",
+    "options": [
+      "Je décris le contexte, ce que j'ai fait concrètement, et le résultat obtenu (méthode STAR)",
+      "Je dis juste que j'ai fait beaucoup de projets à l'école",
+      "Je change de sujet car je n'ai pas de bon exemple"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exactement — structure ta réponse (Situation, Tâche, Action, Résultat), ça rassure le recruteur.",
+      "incorrect": "Un recruteur veut du concret. Prépare toujours un exemple précis avec un résultat mesurable."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Communication",
+      "Méthode STAR"
+    ],
+    "rubric": "Une bonne réponse suit Situation → Tâche → Action → Résultat, avec un résultat mesurable.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "comportemental",
+    "question": "Comment gères-tu une situation où tu es bloqué sur un bug depuis plusieurs heures ?",
+    "options": [
+      "Je prends du recul, je documente ce que j'ai essayé, et je demande de l'aide si besoin",
+      "Je continue seul sans jamais rien documenter ni demander d'aide",
+      "J'abandonne la tâche"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "C'est ce qu'on attend : méthode, transparence, et savoir demander de l'aide au bon moment.",
+      "incorrect": "Les recruteurs apprécient une méthode claire face au blocage, et la capacité à demander de l'aide."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Résolution de problèmes",
+      "Autonomie"
+    ],
+    "rubric": "Attendu : méthode de debug, documentation de ce qui a été essayé, capacité à demander de l'aide au bon moment.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "comportemental",
+    "question": "Décris une situation où tu n'étais pas d'accord avec un collègue ou un professeur sur un choix technique.",
+    "options": [
+      "J'explique mon point de vue avec des arguments concrets, j'écoute l'autre, et on trouve un compromis ou on tranche ensemble",
+      "J'impose systématiquement mon avis car j'ai raison",
+      "Je laisse toujours faire sans jamais donner mon avis"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — le recruteur évalue ta capacité à collaborer, pas juste à avoir raison.",
+      "incorrect": "Ni l'imposition ni l'évitement ne montrent une bonne capacité de collaboration."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Collaboration",
+      "Communication"
+    ],
+    "rubric": "Attendu : arguments concrets, écoute de l'autre point de vue, recherche de compromis plutôt que d'imposition.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "comportemental",
+    "question": "Comment organises-tu ton travail quand tu as plusieurs tâches urgentes en même temps ?",
+    "options": [
+      "Je priorise selon l'impact et les délais, et je communique si quelque chose ne pourra pas être fait à temps",
+      "Je fais tout en même temps sans ordre précis",
+      "Je fais toujours la tâche la plus facile en premier, peu importe l'urgence"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Bonne réponse — priorisation claire et communication proactive sont très valorisées.",
+      "incorrect": "L'important est la priorisation réfléchie et la communication, pas l'ordre au hasard."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Organisation",
+      "Communication"
+    ],
+    "rubric": "Attendu : critères de priorisation clairs (impact, délai) et communication proactive en cas de retard.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "comportemental",
+    "question": "Comment réagis-tu face à une critique sur ton code en review ?",
+    "options": [
+      "Je la considère comme une opportunité d'apprendre, je pose des questions si je ne comprends pas",
+      "Je le prends personnellement et je me braque",
+      "J'ignore systématiquement les retours"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — la maturité face au feedback est un signal fort recherché par les recruteurs.",
+      "incorrect": "Une bonne réaction au feedback montre ta capacité à progresser en équipe."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Réceptivité au feedback",
+      "Maturité professionnelle"
+    ],
+    "rubric": "Attendu : accueil du feedback comme un apprentissage, questions de clarification plutôt que défense immédiate.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "comportemental",
+    "question": "Parle-moi d'un échec ou d'une erreur que tu as commise dans un projet.",
+    "options": [
+      "Je décris l'erreur honnêtement, ce que j'en ai appris, et ce que je ferais différemment aujourd'hui",
+      "Je dis que je n'ai jamais fait d'erreur",
+      "Je rejette la faute sur les autres"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — l'honnêteté et la capacité de recul sur ses erreurs sont très valorisées.",
+      "incorrect": "Prétendre n'avoir jamais échoué ou rejeter la faute sont des réponses qui inquiètent les recruteurs."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Honnêteté",
+      "Recul critique"
+    ],
+    "rubric": "Attendu : description honnête de l'erreur, leçon tirée, changement concret pour la suite.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "motivation",
+    "question": "Pourquoi veux-tu travailler dans le développement logiciel ?",
+    "options": [
+      "Je donne une motivation authentique liée à ce que j'aime concrètement dans le métier (résoudre des problèmes, créer, apprendre...)",
+      "Je dis juste que ça paie bien",
+      "Je n'ai pas vraiment de réponse préparée"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Une motivation authentique et réfléchie marque plus qu'une réponse générique.",
+      "incorrect": "Prépare une réponse sincère et spécifique — les recruteurs sentent vite les réponses toutes faites."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Motivation",
+      "Authenticité"
+    ],
+    "rubric": "Attendu : motivation concrète et personnelle, pas une réponse générique.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "motivation",
+    "question": "Pourquoi veux-tu rejoindre cette entreprise en particulier ?",
+    "options": [
+      "Je montre que j'ai fait des recherches sur l'entreprise et j'explique un lien concret avec mes objectifs",
+      "Je dis que j'ai postulé un peu partout sans distinction",
+      "Je réponds uniquement en parlant du salaire"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — montrer que tu as fait tes recherches prouve un intérêt sincère.",
+      "incorrect": "Une réponse générique donne l'impression que l'entreprise n'est pas un vrai choix pour toi."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Préparation",
+      "Motivation"
+    ],
+    "rubric": "Attendu : preuve de recherche sur l'entreprise et lien explicite avec le poste.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "motivation",
+    "question": "Où te vois-tu dans 5 ans ?",
+    "options": [
+      "Je partage une trajectoire de progression réaliste et cohérente avec le poste visé",
+      "Je dis que je n'en ai aucune idée",
+      "Je dis que je veux déjà être manager de toute l'équipe"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Une vision réaliste et alignée avec le poste rassure sur ta stabilité et ta motivation.",
+      "incorrect": "L'absence totale de projection ou une ambition déconnectée du poste peuvent inquiéter le recruteur."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Projection professionnelle"
+    ],
+    "rubric": "Attendu : trajectoire réaliste et cohérente avec le poste visé.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "question": "Quelle est la différence entre une pile (stack) et une file (queue) ?",
+    "options": [
+      "Une pile est LIFO (dernier entré, premier sorti), une file est FIFO (premier entré, premier sorti)",
+      "Ce sont deux noms différents pour la même structure",
+      "Une pile est plus rapide qu'une file dans tous les cas"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Bonne réponse, question classique de fondamentaux.",
+      "incorrect": "Retiens bien : pile = LIFO, file = FIFO."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Fondamentaux algorithmiques"
+    ],
+    "rubric": "Attendu : LIFO vs FIFO énoncés clairement, idéalement avec un exemple d'usage.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "technique",
+    "question": "Pourquoi utiliser Git plutôt que de copier des dossiers pour versionner du code ?",
+    "options": [
+      "Git permet de suivre l'historique, de collaborer et de revenir en arrière facilement",
+      "Git est juste un outil pour héberger du code en ligne",
+      "Git ne sert que pour les gros projets d'entreprise"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — historique, branches, collaboration, retour arrière.",
+      "incorrect": "Git apporte surtout un historique fiable et la collaboration à plusieurs."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Outils & collaboration"
+    ],
+    "rubric": "Attendu : historique, collaboration à plusieurs, possibilité de revenir en arrière.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "technique",
+    "question": "Qu'est-ce qu'une API REST, en une phrase simple ?",
+    "options": [
+      "Une interface qui permet à des applications de communiquer via des requêtes HTTP standardisées sur des ressources",
+      "Un langage de programmation",
+      "Une base de données"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — sois capable d'expliquer ça simplement, sans jargon inutile.",
+      "incorrect": "REST décrit une façon de structurer des échanges HTTP entre applications, ce n'est ni un langage ni une base de données."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Fondamentaux architecture"
+    ],
+    "rubric": "Attendu : définition simple sans jargon, verbes HTTP et ressources mentionnés si possible.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "technique",
+    "question": "Pourquoi la complexité algorithmique (Big O) est-elle importante à connaître ?",
+    "options": [
+      "Elle permet d'anticiper comment un algorithme se comportera sur de grandes quantités de données",
+      "Elle n'a aucune utilité pratique",
+      "Elle concerne uniquement le design d'interface"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — c'est une question presque systématique en entretien technique.",
+      "incorrect": "Le Big O est central pour évaluer la performance et la scalabilité d'un code."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Fondamentaux algorithmiques"
+    ],
+    "rubric": "Attendu : lien entre complexité et comportement sur de grandes données.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "question": "Quelle est la différence entre une erreur de compilation et une erreur d'exécution (runtime) ?",
+    "options": [
+      "La première est détectée avant l'exécution du programme, la seconde survient pendant l'exécution",
+      "Ce sont exactement les mêmes types d'erreurs",
+      "Il n'existe pas d'erreur d'exécution en JavaScript"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — distinction de base utile pour parler de débogage en entretien.",
+      "incorrect": "Compilation = avant exécution, runtime = pendant l'exécution du programme."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Fondamentaux techniques"
+    ],
+    "rubric": "Attendu : distinction claire avant/pendant l'exécution, idéalement avec un exemple.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "recruteur",
+    "question": "En fin d'entretien, on te demande : \"As-tu des questions ?\" Quelle est la meilleure attitude ?",
+    "options": [
+      "Poser 1 à 2 questions préparées sur l'équipe, la stack technique ou les défis actuels du poste",
+      "Répondre \"non, aucune question\"",
+      "Demander uniquement le salaire dès la première question"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — poser des questions pertinentes montre un vrai intérêt pour le poste.",
+      "incorrect": "Ne pas poser de question peut donner l'impression d'un désintérêt pour le poste."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Posture professionnelle",
+      "Engagement"
+    ],
+    "rubric": "Attendu : 1-2 questions préparées, spécifiques au poste ou à l'équipe.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "recruteur",
+    "question": "Quelle question est pertinente à poser sur l'équipe technique ?",
+    "options": [
+      "\"Comment est organisée l'équipe technique, et quel serait mon rôle au quotidien ?\"",
+      "\"Combien de jours de retard sont tolérés avant d'être viré ?\"",
+      "Aucune, il ne faut jamais poser de question sur l'équipe"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — ça montre que tu te projettes concrètement dans le poste.",
+      "incorrect": "Évite les questions négatives ou qui donnent une mauvaise image de ton engagement."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Curiosité professionnelle"
+    ],
+    "rubric": "Attendu : question qui montre une projection concrète dans le poste.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "recruteur",
+    "question": "Comment aborder la question du salaire si elle vient de toi ?",
+    "options": [
+      "Se renseigner en amont sur les fourchettes du marché et proposer une réponse réaliste et argumentée",
+      "Refuser catégoriquement d'en parler",
+      "Donner un chiffre au hasard sans aucune préparation"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — arriver préparé sur ce sujet évite d'être pris au dépourvu.",
+      "incorrect": "Il vaut mieux se préparer sérieusement plutôt qu'improviser ou éviter totalement le sujet."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Négociation",
+      "Préparation"
+    ],
+    "rubric": "Attendu : préparation en amont (fourchettes de marché), réponse argumentée plutôt qu'évitée ou improvisée.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "recruteur",
+    "question": "Pourquoi demander \"Quels sont les principaux défis techniques de l'équipe en ce moment ?\" est une bonne question ?",
+    "options": [
+      "Elle montre un intérêt réel pour le contenu du poste, pas seulement pour être embauché",
+      "Elle est déplacée et ne doit jamais être posée",
+      "Elle n'a aucun intérêt pour le recruteur"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — ce type de question révèle une vraie curiosité technique, très appréciée.",
+      "incorrect": "C'est au contraire une excellente question qui montre ta motivation réelle pour le poste."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Curiosité professionnelle"
+    ],
+    "rubric": "Attendu : compréhension que cette question montre un intérêt réel pour le contenu du poste.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "comportemental",
+    "question": "Comment expliques-tu un sujet technique complexe à quelqu'un de non-technique ?",
+    "options": [
+      "J'utilise des analogies simples et j'évite le jargon inutile",
+      "J'utilise volontairement le maximum de termes techniques pour paraître compétent",
+      "Je dis que ce n'est pas possible d'expliquer ça simplement"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — la pédagogie et la communication claire sont des compétences très recherchées.",
+      "incorrect": "Le jargon inutile ferme la communication plutôt que de la faciliter."
+    },
+    "roles": [
+      "general"
+    ],
+    "competencies": [
+      "Pédagogie",
+      "Communication"
+    ],
+    "rubric": "Attendu : usage d'analogies simples, absence de jargon inutile.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "backend",
+      "fullstack"
+    ],
+    "question": "Pourquoi est-il important qu'un endpoint de paiement (POST) soit idempotent ?",
+    "options": [
+      "Ça évite qu'un retry réseau (le client renvoie la même requête) ne déclenche un double paiement",
+      "Ça améliore uniquement la vitesse de réponse du serveur",
+      "L'idempotence n'a aucun rapport avec la fiabilité d'un système"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — c'est une question fréquente pour évaluer la compréhension de la fiabilité des systèmes distribués.",
+      "incorrect": "L'idempotence garantit qu'un même appel répété (souvent à cause d'un problème réseau) ne produit pas d'effet en double."
+    },
+    "competencies": [
+      "Fiabilité des systèmes",
+      "Conception d'API"
+    ],
+    "rubric": "Attendu : mention des retries réseau, du risque de double traitement, et d'une solution (clé d'idempotence).",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "backend",
+      "fullstack"
+    ],
+    "question": "Qu'est-ce que le problème du \"N+1 requêtes\" en base de données ?",
+    "options": [
+      "Charger une liste d'éléments puis faire une requête séparée pour chacun, au lieu d'une seule requête groupée",
+      "Un bug qui crée automatiquement des doublons dans la base",
+      "Une erreur de syntaxe SQL qui empêche la requête de s'exécuter"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — un classique des entretiens backend, souvent lié à l'usage d'un ORM sans précaution.",
+      "incorrect": "Le problème N+1 vient d'une requête par élément d'une liste, au lieu d'une jointure ou d'un chargement groupé."
+    },
+    "competencies": [
+      "Performance base de données",
+      "Maîtrise des ORM"
+    ],
+    "rubric": "Attendu : explication du mécanisme (1 requête liste + N requêtes détail) et d'une solution (eager loading, jointure).",
+    "difficulty": "difficile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "backend",
+      "fullstack"
+    ],
+    "question": "Quand privilégier un cache applicatif (Redis) plutôt qu'un cache HTTP/CDN ?",
+    "options": [
+      "Quand la donnée est spécifique à un utilisateur, calculée côté serveur, ou change fréquemment",
+      "Toujours — le cache HTTP/CDN est une technologie obsolète",
+      "Jamais — un cache applicatif est systématiquement moins bon qu'un CDN"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — les deux caches répondent à des besoins différents et se complètent souvent.",
+      "incorrect": "Le CDN excelle sur du contenu statique/public ; Redis sur des données dynamiques ou personnalisées côté serveur."
+    },
+    "competencies": [
+      "Architecture",
+      "Scalabilité"
+    ],
+    "rubric": "Attendu : distinction entre donnée statique/publique (CDN) et donnée dynamique/utilisateur (cache applicatif).",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "frontend",
+      "fullstack"
+    ],
+    "question": "Pourquoi manipuler le DOM en boucle peut-il ralentir une page web ?",
+    "options": [
+      "Chaque manipulation peut déclencher un recalcul de mise en page (reflow), coûteux s'il est répété",
+      "Le DOM est toujours instantané, ce n'est jamais un problème de performance",
+      "Seul le CSS peut ralentir une page, jamais le JavaScript"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — grouper les lectures/écritures DOM (ou laisser React s'en charger) évite ce coût.",
+      "incorrect": "Chaque modification du DOM peut forcer le navigateur à recalculer la mise en page — un coût réel à connaître."
+    },
+    "competencies": [
+      "Performance web",
+      "Fondamentaux navigateur"
+    ],
+    "rubric": "Attendu : mention du reflow/repaint et d'une bonne pratique (batching, virtual DOM) pour l'éviter.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "frontend",
+      "fullstack"
+    ],
+    "question": "Pourquoi utiliser un state manager (Redux, Zustand) plutôt que le seul state local de chaque composant ?",
+    "options": [
+      "Pour partager un état entre composants éloignés sans le faire remonter/descendre manuellement (prop drilling)",
+      "Parce que le state local de React ne fonctionne pas correctement",
+      "Uniquement pour améliorer l'apparence visuelle de l'application"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — un state manager résout le prop drilling pour un état partagé par de nombreux composants.",
+      "incorrect": "Le state local reste très bien pour un état localisé ; le state manager cible le partage d'état global."
+    },
+    "competencies": [
+      "Architecture frontend",
+      "Gestion d'état"
+    ],
+    "rubric": "Attendu : mention du prop drilling et du cas d'usage (état partagé par des composants non liés directement).",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "frontend",
+      "fullstack"
+    ],
+    "question": "Pourquoi préférer des balises HTML sémantiques (<button>, <nav>) plutôt que des <div> partout ?",
+    "options": [
+      "Elles apportent un sens accessible aux lecteurs d'écran et un comportement natif (focus, clavier)",
+      "Elles sont uniquement plus jolies visuellement par défaut",
+      "Ça n'a aucun impact réel, tout se vaut techniquement"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — l'accessibilité est un vrai critère d'évaluation en entretien frontend sérieux.",
+      "incorrect": "Le HTML sémantique donne du sens à la structure, essentiel pour l'accessibilité et le SEO."
+    },
+    "competencies": [
+      "Accessibilité",
+      "Bonnes pratiques HTML"
+    ],
+    "rubric": "Attendu : mention de l'accessibilité (lecteurs d'écran, navigation clavier) au-delà du visuel.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "devops"
+    ],
+    "question": "Un déploiement automatique casse la production. Quelle pratique aurait pu limiter l'impact ?",
+    "options": [
+      "Un déploiement progressif (canary/blue-green) avec rollback automatique en cas d'erreur détectée",
+      "Déployer directement sur 100% des serveurs à chaque fois, sans étape intermédiaire",
+      "Ne jamais automatiser aucun déploiement, tout faire manuellement"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — limiter le rayon d'impact (blast radius) est un réflexe clé en SRE/DevOps.",
+      "incorrect": "L'objectif n'est pas de renoncer à l'automatisation, mais de la sécuriser (déploiement progressif, rollback)."
+    },
+    "competencies": [
+      "Fiabilité",
+      "Pratiques de déploiement"
+    ],
+    "rubric": "Attendu : mention d'un déploiement progressif et d'un mécanisme de rollback automatique.",
+    "difficulty": "difficile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "devops"
+    ],
+    "question": "Quelle est la différence entre logs, metrics et traces en observabilité ?",
+    "options": [
+      "Logs = événements détaillés, metrics = mesures agrégées dans le temps, traces = suivi d'une requête à travers les services",
+      "Ce sont trois noms différents pour exactement la même chose",
+      "Seuls les logs sont réellement utiles en production, le reste est accessoire"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — les trois piliers de l'observabilité, souvent testés en entretien SRE.",
+      "incorrect": "Chaque pilier répond à un besoin différent : détail (logs), tendance (metrics), parcours (traces)."
+    },
+    "competencies": [
+      "Observabilité",
+      "Fiabilité des systèmes"
+    ],
+    "rubric": "Attendu : les trois piliers correctement distingués, avec un exemple d'usage pour chacun.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "devops"
+    ],
+    "question": "Pourquoi utiliser Terraform plutôt que de configurer l'infrastructure manuellement dans la console cloud ?",
+    "options": [
+      "L'infrastructure devient versionnée, reproductible et relisable (review) comme du code",
+      "Terraform est obligatoire pour pouvoir utiliser un fournisseur cloud",
+      "Ça n'apporte aucun avantage réel par rapport à la configuration manuelle"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — l'infrastructure as code apporte traçabilité et reproductibilité, deux valeurs clés en ops.",
+      "incorrect": "L'intérêt principal est la reproductibilité et la traçabilité, pas une obligation technique."
+    },
+    "competencies": [
+      "Infrastructure as Code",
+      "Culture DevOps"
+    ],
+    "rubric": "Attendu : mention de la reproductibilité, du versioning et de la review d'infrastructure comme du code applicatif.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "data"
+    ],
+    "question": "Que signifie le \"T\" (Transform) dans un pipeline ETL ?",
+    "options": [
+      "Nettoyer, agréger ou reformater les données avant de les charger dans leur destination finale",
+      "Transférer simplement les données d'un endroit à un autre sans les modifier",
+      "Une étape de test automatique uniquement, sans lien avec la donnée elle-même"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — la transformation est souvent l'étape la plus complexe et la plus critique d'un pipeline.",
+      "incorrect": "Le \"T\" désigne la transformation de la donnée (nettoyage, agrégation), pas un simple transfert."
+    },
+    "competencies": [
+      "Pipelines de données",
+      "Qualité de données"
+    ],
+    "rubric": "Attendu : exemples concrets de transformation (nettoyage, agrégation, reformatage).",
+    "difficulty": "facile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "data"
+    ],
+    "question": "Quand préférer dénormaliser un schéma de données (dupliquer volontairement certaines données) ?",
+    "options": [
+      "Quand les lectures sont beaucoup plus fréquentes que les écritures, pour éviter des jointures coûteuses",
+      "Toujours — la normalisation est une pratique obsolète en 2026",
+      "Uniquement dans le but d'économiser de l'espace disque"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — un compromis lecture/écriture classique en modélisation de données à grande échelle.",
+      "incorrect": "La dénormalisation optimise la lecture au prix d'une duplication, l'inverse de l'économie d'espace."
+    },
+    "competencies": [
+      "Modélisation de données",
+      "Performance"
+    ],
+    "rubric": "Attendu : compromis lecture/écriture correctement identifié, avec un cas d'usage concret.",
+    "difficulty": "difficile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "data"
+    ],
+    "question": "Pourquoi valider la qualité des données à l'entrée d'un pipeline plutôt qu'à la fin ?",
+    "options": [
+      "Détecter un problème tôt évite de propager des données corrompues à travers toutes les étapes suivantes",
+      "L'ordre de validation n'a en réalité aucune importance",
+      "Valider uniquement à la fin est toujours plus efficace et plus simple"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — un principe proche du \"fail fast\" appliqué à la qualité de données.",
+      "incorrect": "Valider tôt (\"fail fast\") limite la propagation d'erreurs et le coût de leur correction."
+    },
+    "competencies": [
+      "Qualité de données",
+      "Fiabilité des pipelines"
+    ],
+    "rubric": "Attendu : logique de détection précoce (\"fail fast\") et coût croissant d'un problème non détecté tôt.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "mobile"
+    ],
+    "question": "Pourquoi une app mobile doit-elle gérer proprement son cycle de vie (arrière-plan/premier plan) ?",
+    "options": [
+      "Pour libérer des ressources et sauvegarder l'état avant que l'OS ne tue l'app en arrière-plan",
+      "Le cycle de vie n'a aucun impact perceptible pour l'utilisateur final",
+      "Uniquement pour améliorer l'apparence visuelle de l'application"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — l'OS peut tuer une app en arrière-plan à tout moment pour libérer de la mémoire.",
+      "incorrect": "Le cycle de vie impacte directement la fiabilité perçue (perte de données, redémarrage inattendu)."
+    },
+    "competencies": [
+      "Cycle de vie mobile",
+      "Fiabilité UX"
+    ],
+    "rubric": "Attendu : mention de la gestion mémoire par l'OS et de la sauvegarde d'état avant mise en arrière-plan.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "mobile"
+    ],
+    "question": "Que signifie concevoir une app mobile \"offline-first\" ?",
+    "options": [
+      "L'app reste utilisable sans connexion et synchronise les données dès que le réseau revient",
+      "L'app ne fonctionne jamais sans une connexion internet active",
+      "L'app stocke uniquement des données en mémoire vive, jamais sur disque"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — un vrai enjeu produit pour des utilisateurs avec une connexion instable.",
+      "incorrect": "\"Offline-first\" signifie l'inverse : rester utilisable même sans réseau, puis se synchroniser."
+    },
+    "competencies": [
+      "Conception offline",
+      "Expérience utilisateur mobile"
+    ],
+    "rubric": "Attendu : mention du stockage local et d'une stratégie de synchronisation au retour du réseau.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "mobile"
+    ],
+    "question": "Pourquoi éviter un polling réseau très fréquent (ex: chaque seconde) dans une app mobile ?",
+    "options": [
+      "Ça consomme rapidement la batterie et la data de l'utilisateur ; un push ou WebSocket est souvent préférable",
+      "Le polling fréquent n'a aucun coût réel pour l'appareil",
+      "C'est au contraire la meilleure pratique recommandée par tous les OS mobiles"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — batterie et consommation data sont des contraintes propres au mobile, à toujours garder en tête.",
+      "incorrect": "Le polling fréquent a un coût réel (batterie, data) ; les notifications push sont souvent plus adaptées."
+    },
+    "competencies": [
+      "Performance mobile",
+      "Autonomie batterie"
+    ],
+    "rubric": "Attendu : mention du coût batterie/data et d'une alternative (push, WebSocket).",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "backend",
+      "fullstack"
+    ],
+    "question": "Que signifie la scalabilité horizontale d'un service backend ?",
+    "options": [
+      "Ajouter plus d'instances du service plutôt que d'augmenter la puissance d'une seule machine",
+      "Rendre le code plus court",
+      "Réduire le nombre d'utilisateurs autorisés"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — la scalabilité horizontale est la stratégie privilégiée pour absorber une forte charge.",
+      "incorrect": "Scalabilité horizontale = plus de machines, verticale = plus puissantes. C'est une distinction clé en architecture."
+    },
+    "competencies": [
+      "Scalabilité",
+      "Architecture backend"
+    ],
+    "rubric": "Attendu : distinction avec la scalabilité verticale, mention de la répartition de charge entre plusieurs instances.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "backend",
+      "fullstack"
+    ],
+    "question": "Pourquoi versionner une API (ex: /api/v2/...) plutôt que de modifier directement les endpoints existants ?",
+    "options": [
+      "Pour ne pas casser les clients existants qui dépendent encore de l'ancienne version",
+      "Le versionnement n'a aucun intérêt pratique",
+      "C'est une obligation légale dans tous les pays"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — la rétrocompatibilité est essentielle dès que d'autres équipes ou apps dépendent de ton API.",
+      "incorrect": "Le versionnement protège les clients existants pendant que l'API évolue."
+    },
+    "competencies": [
+      "Conception d'API",
+      "Rétrocompatibilité"
+    ],
+    "rubric": "Attendu : mention de la rétrocompatibilité et de la migration progressive des clients.",
+    "difficulty": "facile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "frontend",
+      "fullstack"
+    ],
+    "question": "Pourquoi le lazy loading (chargement différé) des composants améliore-t-il les performances d'une app frontend ?",
+    "options": [
+      "Le code n'est téléchargé que lorsque l'utilisateur en a réellement besoin, réduisant le poids initial",
+      "Il supprime totalement le besoin de JavaScript",
+      "Il n'a aucun impact réel sur le temps de chargement"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — c'est le principe même du code-splitting appliqué à l'expérience utilisateur.",
+      "incorrect": "Le lazy loading réduit le JS chargé au démarrage, en le différant jusqu'au besoin réel."
+    },
+    "competencies": [
+      "Performance web",
+      "Optimisation du bundle"
+    ],
+    "rubric": "Attendu : lien entre découpage du code (code-splitting) et réduction du temps de chargement initial.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "frontend",
+      "fullstack"
+    ],
+    "question": "Qu'est-ce que le \"CLS\" (Cumulative Layout Shift), une métrique Core Web Vitals ?",
+    "options": [
+      "Une mesure de l'instabilité visuelle d'une page (des éléments qui se déplacent pendant le chargement)",
+      "Le temps total de chargement de la page",
+      "Le nombre de requêtes réseau envoyées"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — un CLS élevé traduit une expérience frustrante (clics sur le mauvais élément par exemple).",
+      "incorrect": "Le CLS mesure le déplacement visuel inattendu des éléments, pas le temps de chargement."
+    },
+    "competencies": [
+      "Performance web",
+      "Core Web Vitals"
+    ],
+    "rubric": "Attendu : lien avec l'expérience utilisateur et une cause typique (images sans dimensions réservées).",
+    "difficulty": "difficile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "devops"
+    ],
+    "question": "Qu'est-ce que l'\"Infrastructure as Code\" apporte concrètement qu'une documentation manuelle n'apporte pas ?",
+    "options": [
+      "L'infrastructure décrite est exécutable et vérifiable automatiquement, une documentation peut devenir obsolète sans qu'on le remarque",
+      "Rien, les deux approches sont strictement équivalentes",
+      "IaC empêche techniquement toute panne serveur"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — le code d'infrastructure EST la réalité exécutée, contrairement à une doc qui peut diverger silencieusement.",
+      "incorrect": "L'avantage clé est que le code d'infra reste toujours synchronisé avec la réalité, contrairement à une documentation."
+    },
+    "competencies": [
+      "Infrastructure as Code",
+      "Fiabilité"
+    ],
+    "rubric": "Attendu : la documentation peut diverger silencieusement de la réalité, alors que le code d'infra est la source de vérité exécutable.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "devops"
+    ],
+    "question": "Pourquoi le \"blue-green deployment\" permet-il un rollback quasi instantané en cas de problème ?",
+    "options": [
+      "L'ancienne version (blue) reste active en parallèle, il suffit de rediriger le trafic vers elle si la nouvelle (green) pose problème",
+      "Il n'y a jamais besoin de rollback avec cette méthode",
+      "Les deux versions fusionnent automatiquement leur code"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — les deux versions coexistent, le rollback devient un simple changement de routage.",
+      "incorrect": "Le rollback rapide vient du fait que l'ancienne version reste disponible, prête à reprendre le trafic."
+    },
+    "competencies": [
+      "Déploiement",
+      "Fiabilité"
+    ],
+    "rubric": "Attendu : compréhension que les deux versions coexistent brièvement, permettant un simple changement de routage pour revenir en arrière.",
+    "difficulty": "difficile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "data"
+    ],
+    "question": "Quelle est la différence entre un data warehouse et un data lake ?",
+    "options": [
+      "Le warehouse stocke des données structurées et déjà transformées, le data lake stocke des données brutes de tous types",
+      "Ce sont deux noms différents pour exactement le même concept",
+      "Un data lake ne peut contenir que des images"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — les deux répondent à des besoins différents et coexistent souvent dans une même architecture data.",
+      "incorrect": "Le warehouse est structuré et prêt à l'analyse, le data lake garde les données brutes, sous tout format."
+    },
+    "competencies": [
+      "Modélisation de données",
+      "Architecture data"
+    ],
+    "rubric": "Attendu : distinction structuré/transformé (warehouse) vs brut/tous formats (lake), avec un exemple de cas d'usage pour chacun.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "data"
+    ],
+    "question": "Pourquoi le partitionnement (partitioning) d'une grande table de données améliore-t-il les performances de lecture ?",
+    "options": [
+      "Les requêtes peuvent ne scanner qu'une partie pertinente des données au lieu de la table entière",
+      "Le partitionnement supprime automatiquement les doublons",
+      "Il n'a aucun effet sur les performances, seulement sur le stockage"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — c'est le principe du \"partition pruning\", très recherché en entretien data engineering.",
+      "incorrect": "Le partitionnement permet d'ignorer les partitions non concernées par une requête, réduisant le volume scanné."
+    },
+    "competencies": [
+      "Performance base de données",
+      "Modélisation de données"
+    ],
+    "rubric": "Attendu : mention du \"partition pruning\" — la requête ignore les partitions non concernées, réduisant le volume de données scanné.",
+    "difficulty": "difficile"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "mobile"
+    ],
+    "question": "Pourquoi le choix entre développement natif et cross-platform (React Native, Flutter) est-il un vrai compromis ?",
+    "options": [
+      "Le natif offre les meilleures performances et l'accès complet aux API de l'OS, le cross-platform accélère le développement pour plusieurs plateformes à la fois",
+      "Il n'y a aucune différence réelle entre les deux approches",
+      "Le cross-platform est toujours strictement supérieur au natif"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — ce compromis performance/vitesse de développement revient très souvent en entretien mobile.",
+      "incorrect": "Le natif gagne en performance et accès système, le cross-platform gagne en vitesse de développement multi-plateforme."
+    },
+    "competencies": [
+      "Architecture mobile",
+      "Choix technologique"
+    ],
+    "rubric": "Attendu : compromis clair entre performance/accès natif et vitesse de développement multi-plateforme.",
+    "difficulty": "moyen"
+  },
+  {
+    "type": "technique",
+    "roles": [
+      "mobile"
+    ],
+    "question": "Pourquoi une app mobile doit-elle gérer explicitement les différentes tailles et résolutions d'écran ?",
+    "options": [
+      "Pour garantir une interface lisible et fonctionnelle sur une grande diversité d'appareils, du petit smartphone à la tablette",
+      "Toutes les tailles d'écran affichent automatiquement le même rendu",
+      "Ce n'est utile que pour les jeux vidéo, jamais pour les apps classiques"
+    ],
+    "correctIndex": 0,
+    "feedback": {
+      "correct": "Exact — la fragmentation des appareils est une réalité incontournable du développement mobile.",
+      "incorrect": "Sans gestion explicite, l'interface peut devenir illisible ou cassée sur certains appareils."
+    },
+    "competencies": [
+      "Design responsive mobile",
+      "Expérience utilisateur"
+    ],
+    "rubric": "Attendu : mention de la fragmentation des appareils (tailles, densités de pixels) et de son impact sur le design.",
+    "difficulty": "facile"
+  }
+]

@@ -1,0 +1,283 @@
+[
+  {
+    "id": "entretien-comportemental-star",
+    "title": "L'entretien comportemental et la méthode STAR",
+    "category": "Carrière Internationale",
+    "badge": { "id": "badge-star-method", "name": "Conteur STAR", "emoji": "🎤" },
+    "griotIntro": [
+      "À Mbour, les pêcheurs racontent toujours leurs sorties en mer de la même façon : le contexte, la difficulté rencontrée, ce qu'ils ont fait, et ce qui en est sorti.",
+      "Cette structure, sans le savoir, c'est déjà la méthode STAR — le format attendu dans presque tous les entretiens comportementaux à l'international.",
+      "Aux États-Unis, en Europe et de plus en plus dans le Golfe, une bonne réponse technique ne suffit pas : on évalue aussi comment tu racontes ton expérience.",
+      "'Tell me about a time you disagreed with a teammate' n'a rien d'anodin — c'est une question précise qui attend une réponse structurée, pas une anecdote vague."
+    ],
+    "explanation": {
+      "text": "STAR signifie Situation, Task, Action, Result. Situation pose le contexte en une ou deux phrases. Task précise ton rôle et l'objectif. Action détaille CE QUE TU as fait (pas l'équipe — l'interviewer veut évaluer TA contribution). Result conclut avec un résultat mesurable si possible, et ce que tu en as appris. Le piège le plus fréquent : rester vague sur l'Action et parler uniquement de l'équipe ('nous avons décidé...') au lieu de sa propre contribution.",
+      "code": "// Exemple de réponse structurée (question : \"Tell me about a conflict with a teammate\")\n\nSituation:\n  \"Sur un projet de refonte API, un collègue backend voulait\n   déployer un breaking change sans versionner l'endpoint.\"\n\nTask:\n  \"En tant que responsable de la stabilité de l'API pour nos\n   3 clients internes, je devais éviter une coupure de service.\"\n\nAction:\n  \"J'ai organisé un point de 15 minutes pour montrer l'impact\n   concret sur les clients existants, proposé un versionnement\n   /v2 en alternative, et écrit la migration en pair programming\n   avec lui pour ne pas juste bloquer sans solution.\"\n\nResult:\n  \"Le déploiement est passé sans incident, et on a documenté\n   cette règle de versionnement dans notre guide d'équipe —\n   réutilisée depuis sur 4 autres projets.\"",
+      "annotations": [
+        { "line": 4, "note": "La Situation reste courte : deux phrases maximum. Le but n'est pas de raconter toute l'histoire du projet, juste de poser le contexte minimal pour comprendre l'enjeu." },
+        { "line": 8, "note": "Task précise explicitement le rôle et la responsabilité — cela évite à l'interviewer de devoir deviner pourquoi la situation te concernait." },
+        { "line": 12, "note": "L'Action est la partie la plus longue et la plus importante : elle doit parler à la première personne ('j'ai proposé', 'j'ai écrit') et non 'nous avons', sinon l'interviewer ne peut pas évaluer ta contribution individuelle." },
+        { "line": 18, "note": "Un bon Result va au-delà du résultat immédiat : mentionner ce qui en a été retenu ou réutilisé montre un impact durable, pas ponctuel." }
+      ]
+    },
+    "useCases": [
+      "Entretiens comportementaux ('behavioral interviews') dans les grandes entreprises tech américaines",
+      "Sections 'soft skills' des entretiens en France et en Europe",
+      "Entretiens de type 'culture fit' dans les entreprises du Golfe recrutant des profils internationaux"
+    ],
+    "relatedTools": [
+      { "name": "Carnet d'anecdotes STAR", "description": "Préparer à l'avance 5-6 histoires professionnelles couvrant conflit, échec, leadership, ambiguïté, deadline serrée — la plupart des questions comportementales en sont des variations." },
+      { "name": "Amazon Leadership Principles", "description": "Référence largement utilisée (même hors Amazon) pour anticiper le type de qualités évaluées dans un entretien comportemental anglophone." }
+    ],
+    "practice": {
+      "question": "Quelle est l'erreur la plus fréquente dans la partie 'Action' d'une réponse STAR ?",
+      "options": [
+        "Parler uniquement au 'nous' sans préciser sa contribution individuelle",
+        "Donner trop de détails techniques précis",
+        "Terminer par un résultat chiffré"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : l'interviewer veut évaluer TA contribution — rester au 'nous' l'empêche de juger ton rôle réel dans la situation.",
+        "incorrect": "Le piège classique est de rester vague sur sa propre contribution en parlant uniquement de l'équipe ('nous avons décidé') — l'interviewer ne peut alors pas évaluer ton apport individuel."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que signifie l'acronyme STAR ?",
+        "options": [
+          "Situation, Task, Action, Result",
+          "Story, Team, Analysis, Review",
+          "Skills, Time, Achievement, Reflection"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi la partie Action doit-elle être formulée à la première personne ?",
+        "options": [
+          "Parce que l'interviewer évalue la contribution individuelle du candidat, pas celle de l'équipe",
+          "Parce que c'est une règle de grammaire anglaise obligatoire",
+          "Parce que la partie Situation doit rester au 'nous'"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Un candidat répond à 'parle-moi d'un échec' avec une anecdote sans jamais dire ce qu'il en a appris. Que lui manque-t-il ?",
+        "options": [
+          "Une conclusion (Result) qui montre l'apprentissage ou l'impact durable de l'expérience",
+          "Rien, la question ne demande pas de conclusion",
+          "Un deuxième exemple d'échec"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi préparer 5-6 anecdotes à l'avance plutôt qu'une seule ?",
+        "options": [
+          "Parce qu'une anecdote bien choisie peut souvent répondre à plusieurs types de questions comportementales différentes",
+          "Parce que chaque entretien pose exactement 6 questions comportementales",
+          "Parce que les recruteurs vérifient que les anecdotes ne se répètent jamais d'un candidat à l'autre"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Dans un entretien comportemental anglophone, pourquoi une réponse structurée est-elle mieux perçue qu'une réponse spontanée et désorganisée, même si le fond est similaire ?",
+        "options": [
+          "Parce qu'une structure claire est aussi jugée comme un indicateur de communication professionnelle, compétence explicitement évaluée",
+          "Parce que la structure importe plus que le contenu de l'anecdote elle-même",
+          "Parce que les interviewers anglophones ne comprennent pas les réponses non structurées"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "La méthode STAR est enseignée explicitement dans les guides de préparation aux entretiens des grandes entreprises américaines — beaucoup de candidats s'entraînent à la réciter avant même de connaître les questions techniques posées.",
+    "ambiguite": {
+      "question": "Faut-il inventer ou enjoliver une anecdote pour qu'elle corresponde parfaitement à la méthode STAR ?",
+      "reponse": "Non — les interviewers expérimentés posent des questions de relance précises ('et concrètement, qu'as-tu dit dans cette réunion ?') qui démasquent rapidement une histoire enjolivée ou inventée. Mieux vaut choisir une anecdote réelle, même modeste, et la structurer honnêtement selon STAR plutôt que d'en fabriquer une impressionnante mais fragile aux questions de suivi."
+    }
+  },
+  {
+    "id": "anglais-technique-entretien",
+    "title": "Anglais technique pour l'entretien",
+    "category": "Carrière Internationale",
+    "badge": { "id": "badge-technical-english", "name": "Bilingue du code", "emoji": "🗣️" },
+    "griotIntro": [
+      "Parler de son code dans une langue étrangère, en direct, sous pression : c'est un exercice à part entière, différent de l'anglais scolaire.",
+      "Beaucoup de candidats sénégalais maîtrisent très bien l'anglais technique écrit (documentation, code) mais bloquent à l'oral, en visioconférence, face à un accent inconnu.",
+      "Ce sujet ne remplace pas des cours d'anglais — il cible le vocabulaire précis et les tournures qui reviennent sans cesse dans un entretien technique."
+    ],
+    "explanation": {
+      "text": "Trois familles de vocabulaire reviennent systématiquement : décrire une architecture ('this service is responsible for...', 'it communicates with X via a REST API'), expliquer un bug ou un compromis ('the trade-off here is...', 'this introduces a race condition'), et parler de son expérience ('I led/owned/contributed to...'). S'entraîner à formuler ces phrases à voix haute, pas seulement à les lire, est ce qui fait la différence sous stress.",
+      "code": "// Vocabulaire à maîtriser à l'oral, par situation\n\n// Décrire une architecture\n\"This component is responsible for handling authentication.\"\n\"It talks to the database through an ORM.\"\n\"We decoupled these two services to scale them independently.\"\n\n// Expliquer un compromis technique\n\"The trade-off here is between consistency and latency.\"\n\"This approach is more scalable, but harder to maintain.\"\n\"We chose eventual consistency to favor read performance.\"\n\n// Parler de son rôle (pas seulement 'I worked on')\n\"I owned the migration from monolith to microservices.\"\n\"I led a team of three engineers on this feature.\"\n\"I was the point of contact between the backend and mobile teams.\"",
+      "annotations": [
+        { "line": 4, "note": "'Responsible for' est une tournure extrêmement fréquente pour décrire le rôle d'un composant — bien plus naturelle à l'oral que des traductions littérales du français." },
+        { "line": 9, "note": "'Trade-off' est LE mot-clé des entretiens techniques anglophones : savoir l'utiliser naturellement signale immédiatement une bonne compréhension des enjeux d'architecture." },
+        { "line": 14, "note": "'I owned' et 'I led' sont nettement plus valorisés que 'I worked on' dans la culture anglo-saxonne de l'entretien — ils signalent une prise de responsabilité, pas juste une participation." }
+      ]
+    },
+    "useCases": [
+      "Entretiens techniques en visioconférence avec des recruteurs anglophones (USA, Royaume-Uni, entreprises du Golfe)",
+      "Présentation d'un projet personnel ou professionnel en anglais lors d'un entretien",
+      "Rédaction d'un CV et d'un profil LinkedIn ciblant des recruteurs internationaux"
+    ],
+    "relatedTools": [
+      { "name": "Enregistrement audio de soi-même", "description": "S'enregistrer en train de décrire un projet en anglais, puis se réécouter, révèle rapidement les hésitations et tournures à retravailler." },
+      { "name": "Glossaire de l'application", "description": "La section lexique de Teranga Code référence aussi les équivalents anglais des termes techniques les plus utilisés." }
+    ],
+    "practice": {
+      "question": "Pourquoi préférer 'I owned the migration' à 'I worked on the migration' pour décrire son rôle dans un projet ?",
+      "options": [
+        "'Owned' signale une prise de responsabilité et de leadership, davantage valorisée dans la culture d'entretien anglo-saxonne",
+        "'Worked on' est grammaticalement incorrect",
+        "Les deux expressions sont strictement interchangeables sans aucune nuance"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : le choix du verbe change la perception du niveau de responsabilité — 'owned' ou 'led' signalent bien plus qu'une simple participation.",
+        "incorrect": "Les deux expressions sont grammaticalement correctes mais ne signalent pas le même niveau de responsabilité : 'owned'/'led' sont nettement mieux perçus en entretien anglophone."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quel mot revient le plus souvent pour discuter d'un compromis d'architecture en anglais technique ?",
+        "options": [
+          "Trade-off",
+          "Feature",
+          "Deadline"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Quelle formulation décrit le mieux le rôle d'un composant dans une architecture, à l'oral ?",
+        "options": [
+          "\"This component is responsible for...\"",
+          "\"This component makes...\"",
+          "\"This component has...\""
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi s'entraîner à parler à voix haute est-il plus utile que de simplement lire du vocabulaire technique ?",
+        "options": [
+          "Parce que le stress de l'oral en direct est différent de la compréhension écrite, et seul l'entraînement oral prépare à cette pression",
+          "Parce que lire du vocabulaire technique en anglais n'a aucune utilité pour un entretien",
+          "Parce que les interviewers évaluent uniquement la prononciation, jamais le contenu"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un candidat dit 'we decided to use eventual consistency' sans jamais s'inclure personnellement dans le récit. Quel est le risque ?",
+        "options": [
+          "L'interviewer ne peut pas évaluer la contribution individuelle réelle du candidat à cette décision",
+          "Aucun risque, 'we' est toujours préférable à 'I' en anglais technique",
+          "Le terme 'eventual consistency' est incorrect dans ce contexte"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Beaucoup d'entreprises du Golfe (Dubaï, Riyad, Doha) mènent leurs entretiens techniques exclusivement en anglais même pour des candidats francophones — la maîtrise de l'anglais technique oral y est souvent un critère éliminatoire avant même l'évaluation technique.",
+    "ambiguite": {
+      "question": "Faut-il viser un anglais parfait, sans accent ni hésitation, pour réussir ces entretiens ?",
+      "reponse": "Non — la grande majorité des recruteurs internationaux, notamment dans la tech, évaluent la clarté de la communication technique, pas l'accent. Un anglais avec accent mais des phrases structurées et un vocabulaire technique précis passe largement mieux qu'un anglais hésitant sur le fond, même sans accent."
+    }
+  },
+  {
+    "id": "process-recrutement-regions",
+    "title": "Processus de recrutement : France, Moyen-Orient, USA",
+    "category": "Carrière Internationale",
+    "badge": { "id": "badge-hiring-process", "name": "Voyageur des process", "emoji": "🧭" },
+    "griotIntro": [
+      "Chaque région a ses propres codes de recrutement — se préparer pour les USA comme pour la France est une erreur qui coûte cher.",
+      "À Mbour, les commerçants qui exportent vers plusieurs pays savent adapter leurs négociations selon l'acheteur en face d'eux.",
+      "C'est la même logique ici : connaître le format attendu avant l'entretien évite d'être surpris par les règles du jeu."
+    ],
+    "explanation": {
+      "text": "USA : le format le plus standardisé, souvent une 'onsite loop' de 4 à 6 entretiens le même jour (algorithmique type LeetCode, system design à partir du niveau confirmé, comportemental type STAR, parfois un entretien 'bar raiser' décisif). France : process plus variable, souvent 2 à 3 tours (technique, puis rencontre équipe/culture fit, parfois test technique à la maison), l'anglais n'est pas toujours requis sauf entreprises internationales. Moyen-Orient (Dubaï, Riyad, Doha) : process souvent plus rapide, forte importance de l'anglais oral, packages incluant souvent logement/relocation, entretiens parfois menés par des recruteurs eux-mêmes internationaux.",
+      "code": "// Repères concrets par région (à valider au cas par cas, chaque entreprise varie)\n\nUSA:\n  format: \"Onsite loop en 1 jour, 4-6 entretiens\"\n  contenu: [\"algo (LeetCode medium/hard)\", \"system design\", \"behavioral (STAR)\"]\n  duree_process: \"2-6 semaines\"\n  particularite: \"'Bar raiser' : un interviewer externe à l'équipe peut avoir un droit de veto\"\n\nFrance:\n  format: \"2-3 tours, parfois étalés sur plusieurs semaines\"\n  contenu: [\"technique (souvent moins algo pur)\", \"culture fit\", \"parfois test à domicile\"]\n  duree_process: \"3-8 semaines\"\n  particularite: \"L'anglais n'est pas systématique, sauf entreprises à portée internationale\"\n\nMoyen_Orient:\n  format: \"Process souvent plus rapide, entretiens groupés\"\n  contenu: [\"technique\", \"anglais oral quasi systématique\", \"discussion package/relocation\"]\n  duree_process: \"1-4 semaines\"\n  particularite: \"Packages incluant souvent logement, transport, primes de relocation\"",
+      "annotations": [
+        { "line": 5, "note": "L'onsite loop américaine regroupe tout en une seule journée intense — s'y préparer physiquement et mentalement (répartition de l'énergie sur 4-6 entretiens) compte autant que la préparation technique." },
+        { "line": 8, "note": "Le 'bar raiser' est une spécificité américaine (popularisée par Amazon) : même si les autres entretiens se passent bien, un avis négatif de cet interviewer indépendant peut bloquer l'offre." },
+        { "line": 12, "note": "En France, l'absence fréquente d'entretien en anglais ne veut pas dire que l'algorithmique est absente — le format est simplement moins standardisé qu'aux USA, donc plus difficile à anticiper précisément." },
+        { "line": 18, "note": "Négocier un package dans le Golfe implique souvent des éléments hors salaire (logement, billets d'avion annuels, école des enfants) qu'il faut savoir chiffrer et comparer, pas seulement le salaire net." }
+      ]
+    },
+    "useCases": [
+      "Choisir combien de temps consacrer à la préparation algorithmique selon la région ciblée",
+      "Anticiper une négociation de package incluant relocation (Golfe) plutôt que salaire pur",
+      "Adapter sa présentation personnelle (CV, pitch oral) au format d'entretien attendu par région"
+    ],
+    "relatedTools": [
+      { "name": "LeetCode", "description": "Plateforme d'entraînement algorithmique quasi incontournable pour viser un poste aux USA." },
+      { "name": "Glassdoor", "description": "Permet de consulter les retours d'anciens candidats sur le déroulé précis du process d'une entreprise donnée." },
+      { "name": "LinkedIn", "description": "Canal principal de sourcing pour les recruteurs du Golfe, qui contactent souvent directement les profils recherchés." }
+    ],
+    "practice": {
+      "question": "Un candidat prépare un entretien pour une entreprise aux USA en ne révisant que du system design, sans jamais s'entraîner sur des exercices algorithmiques type LeetCode. Quel est le risque ?",
+      "options": [
+        "L'onsite loop américaine inclut quasi systématiquement une étape algorithmique, en plus du system design",
+        "Aucun risque, le system design remplace toujours l'algorithmique aux USA",
+        "L'algorithmique n'est jamais évaluée aux USA, contrairement à la France"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : le format américain standard combine généralement algorithmique ET system design, rarement l'un sans l'autre pour un poste confirmé.",
+        "incorrect": "Le format américain standard (onsite loop) combine quasi systématiquement algorithmique et system design — négliger l'un des deux est risqué."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Qu'est-ce qu'un 'bar raiser' dans le process de recrutement américain ?",
+        "options": [
+          "Un interviewer indépendant de l'équipe qui recrute, dont l'avis négatif peut bloquer l'offre même si les autres entretiens sont positifs",
+          "Le nom donné au dernier tour de négociation salariale",
+          "Un test technique à réaliser à domicile avant l'entretien"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quelle particularité revient souvent dans les processus de recrutement du Moyen-Orient ?",
+        "options": [
+          "Des packages incluant logement, transport ou primes de relocation en plus du salaire",
+          "Un process systématiquement plus long qu'aux USA",
+          "L'absence totale d'entretien technique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi le process de recrutement en France est-il décrit comme 'plus variable' que le process américain ?",
+        "options": [
+          "Parce qu'il n'existe pas un format aussi standardisé qu'aux USA d'une entreprise à l'autre",
+          "Parce que la France n'a aucun entretien technique",
+          "Parce que le process français dure toujours moins d'une semaine"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un candidat reçoit une offre dans le Golfe avec un salaire net légèrement inférieur à une offre française, mais incluant logement et billets d'avion annuels. Que faut-il faire avant de comparer les deux offres ?",
+        "options": [
+          "Chiffrer la valeur réelle des avantages non-salariaux pour comparer le package total, pas seulement le salaire net",
+          "Rejeter automatiquement l'offre avec le salaire net le plus bas",
+          "Ignorer les avantages non-salariaux, ils n'ont jamais de valeur réelle"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "De nombreux ingénieurs sénégalais partant vers le Golfe passent par des recruteurs spécialisés qui gèrent l'intégralité de la relocation — un phénomène bien moins présent pour les recrutements en France ou aux USA, où le candidat gère généralement seul les démarches administratives.",
+    "ambiguite": {
+      "question": "Le process le plus rapide (souvent le Moyen-Orient) est-il forcément le moins exigeant techniquement ?",
+      "reponse": "Non — un process court ne veut pas dire un niveau d'exigence technique réduit, seulement moins d'étapes intermédiaires. Beaucoup d'entreprises internationales installées dans le Golfe recrutent avec les mêmes standards techniques que leurs sièges américains ou européens, simplement avec un cycle de décision plus rapide."
+    }
+  }
+]

@@ -1,0 +1,721 @@
+[
+  {
+    "id": "system-design-fondamentaux",
+    "title": "Aborder un entretien de System Design",
+    "category": "System Design",
+    "badge": { "id": "badge-system-design-fond", "name": "Architecte de l'échelle", "emoji": "🏗️" },
+    "griotIntro": [
+      "À Kédougou, les orpailleurs ne creusent jamais au hasard : ils étudient le terrain, estiment la veine, puis choisissent leurs outils.",
+      "Un entretien de System Design suit la même logique. On ne code pas tout de suite — on cadre le problème d'abord.",
+      "C'est le format dominant pour les postes seniors aux États-Unis, et de plus en plus fréquent en France et dans le Golfe.",
+      "Le candidat qui se jette sur une solution sans poser de questions perd des points, même si sa solution est brillante."
+    ],
+    "explanation": {
+      "text": "Un entretien de system design se déroule en 4 phases : (1) clarifier les exigences fonctionnelles et non-fonctionnelles, (2) estimer les ordres de grandeur (utilisateurs, requêtes/seconde, volume de données), (3) proposer une architecture haut niveau (boîtes et flèches), (4) approfondir un ou deux composants avec l'interviewer et discuter les compromis. Le but n'est jamais 'la' bonne réponse — c'est de raisonner à voix haute sur les compromis.",
+      "code": "// Grille mentale à suivre pendant l'entretien\n1. Exigences\n   - Fonctionnel : que doit faire le système ?\n   - Non-fonctionnel : combien d'utilisateurs ? quelle latence ? quelle dispo ?\n\n2. Estimation (\"back-of-the-envelope\")\n   - 100M utilisateurs, 10% actifs/jour = 10M DAU\n   - Si chacun fait 5 requêtes/jour → 50M req/jour ≈ 580 req/s en moyenne\n\n3. Architecture haut niveau\n   - Client → Load Balancer → API → Cache → Base de données\n\n4. Deep dive + compromis\n   - Où sharder la base ? Quelle stratégie de cache ? Cohérence forte ou éventuelle ?",
+      "annotations": [
+        { "line": 1, "note": "Cette grille n'est pas un algorithme rigide : c'est un ordre de priorité pour ne rien oublier sous pression." },
+        { "line": 4, "note": "Les non-fonctionnels (latence, disponibilité, cohérence) orientent presque tous les choix techniques qui suivent — les clarifier tôt évite de refaire l'architecture au milieu de l'entretien." },
+        { "line": 7, "note": "L'estimation n'a pas besoin d'être exacte : elle doit être cohérente et justifiée. L'interviewer juge le raisonnement, pas le résultat au chiffre près." },
+        { "line": 11, "note": "Une architecture haut niveau tient sur un tableau blanc : quelques boîtes, quelques flèches. Le détail vient après, pas avant." }
+      ]
+    },
+    "useCases": [
+      "Entretiens techniques seniors/staff dans les grandes entreprises tech (USA, de plus en plus en Europe)",
+      "Revue d'architecture avant de lancer un nouveau service en production",
+      "Discussion technique avec un CTO ou un architecte lors d'un poste de lead"
+    ],
+    "relatedTools": [
+      { "name": "Excalidraw / tableau blanc virtuel", "description": "Outil de dessin utilisé en entretien à distance pour schématiser l'architecture en temps réel." },
+      { "name": "Grokking the System Design Interview", "description": "Ressource de référence anglophone pour s'entraîner sur des cas classiques." },
+      { "name": "Notes d'estimation", "description": "Un carnet d'ordres de grandeur mémorisés (débit réseau, latence disque vs RAM, taille moyenne d'un enregistrement) accélère l'estimation en entretien." }
+    ],
+    "practice": {
+      "question": "Un interviewer te demande de concevoir un raccourcisseur d'URL. Quelle est la meilleure première réaction ?",
+      "options": [
+        "Poser des questions sur l'échelle attendue et les contraintes avant de proposer une architecture",
+        "Dessiner immédiatement un schéma avec base de données, cache et API",
+        "Écrire le code de la fonction de hachage en premier"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : clarifier le problème et son échelle avant de concevoir évite de construire une solution pour le mauvais problème.",
+        "incorrect": "Se précipiter sur une architecture ou du code avant de cadrer les exigences est l'erreur la plus commune — et la plus pénalisée — en entretien de system design."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quel est l'objectif principal de la phase d'estimation (\"back-of-the-envelope\") ?",
+        "options": [
+          "Obtenir des ordres de grandeur pour guider les choix d'architecture",
+          "Calculer le coût exact en dollars de l'infrastructure",
+          "Remplacer entièrement le besoin de clarifier les exigences"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi est-il risqué de proposer une solution complète dès la première minute ?",
+        "options": [
+          "Parce qu'on risque de concevoir pour le mauvais problème, faute d'avoir clarifié les besoins",
+          "Parce que les interviewers pénalisent toujours la rapidité",
+          "Parce que le code doit toujours être écrit avant l'architecture"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Dans quel ordre se déroule typiquement un entretien de system design ?",
+        "options": [
+          "Exigences → estimation → architecture haut niveau → deep dive",
+          "Deep dive → estimation → exigences → architecture",
+          "Architecture → code → exigences → tests"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un candidat propose une architecture avec une seule base de données sans jamais mentionner la charge attendue. Quel est le problème ?",
+        "options": [
+          "Sans estimation de charge, impossible de justifier si une seule base suffit ou s'il faut sharder/répliquer",
+          "Il n'y a aucun problème, une seule base est toujours suffisante",
+          "Le problème est qu'il n'a pas utilisé de microservices"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Que valorise le plus un interviewer senior pendant un entretien de system design ?",
+        "options": [
+          "Le raisonnement explicite sur les compromis, même si la solution finale est imparfaite",
+          "Une seule solution parfaite énoncée sans justification",
+          "La vitesse à laquelle le candidat remplit le tableau blanc"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Dans les grandes entreprises américaines (Google, Meta, Amazon...), le system design interview compte souvent autant que l'algorithmique pour les postes à partir de 3-4 ans d'expérience — et devient déterminant à partir du niveau senior.",
+    "ambiguite": {
+      "question": "Faut-il connaître la 'bonne' architecture par cœur avant l'entretien ?",
+      "reponse": "Non — et c'est un piège courant. Réciter une architecture apprise par cœur sans l'adapter aux contraintes données par l'interviewer (échelle différente, contrainte de coût, contrainte de cohérence) est immédiatement repéré. Ce qui compte est la méthode de raisonnement, transférable à n'importe quel problème."
+    }
+  },
+  {
+    "id": "etude-cas-raccourcisseur-url",
+    "title": "Étude de cas : concevoir un raccourcisseur d'URL",
+    "category": "System Design",
+    "badge": { "id": "badge-url-shortener", "name": "Bâtisseur de liens", "emoji": "🔗" },
+    "griotIntro": [
+      "Un problème simple à énoncer, redoutable à bien traiter : c'est le cas d'école préféré des recruteurs.",
+      "Derrière 'raccourcir une URL', se cachent des choix sur le hachage, la base de données, et la lecture à très grande échelle.",
+      "Ce sujet permet de juger un candidat sur un périmètre volontairement restreint mais avec de vraies contraintes de scalabilité."
+    ],
+    "explanation": {
+      "text": "Le service reçoit une URL longue et retourne une URL courte unique. Deux opérations dominent : l'écriture (créer un lien court) est rare, la lecture (rediriger vers l'URL longue) est massive — un ratio lecture/écriture souvent de 100:1 ou plus. Ce déséquilibre oriente tout le design vers l'optimisation de la lecture : cache agressif, base optimisée pour les lectures par clé.",
+      "code": "// Génération du code court\nfunction generateShortCode(longUrl, counter) {\n  // Option A : hash de l'URL (MD5/SHA) tronqué -> collisions possibles\n  // Option B : compteur global encodé en base62 -> unique, mais SPOF potentiel\n  // Option C : plage d'IDs pré-allouée par serveur -> pas de SPOF, unique\n  return encodeBase62(counter)\n}\n\n// Lecture : le chemin le plus emprunté\napp.get('/:code', async (req, res) => {\n  const longUrl = await cache.get(req.params.code)      // 1. cache d'abord\n  if (longUrl) return res.redirect(longUrl)\n\n  const fromDb = await db.findByCode(req.params.code)     // 2. sinon, base\n  await cache.set(req.params.code, fromDb.longUrl)        // 3. on remplit le cache\n  res.redirect(fromDb.longUrl)\n})",
+      "annotations": [
+        { "line": 2, "note": "Le choix de génération de code est LA décision structurante du design : elle détermine s'il peut y avoir des collisions et s'il existe un point unique de défaillance." },
+        { "line": 5, "note": "Pré-allouer des plages d'ID par serveur évite qu'un compteur global centralisé devienne un goulot d'étranglement à grande échelle." },
+        { "line": 10, "note": "Vérifier le cache avant la base est la décision la plus rentable de tout le design, puisque les lectures dominent massivement le trafic." },
+        { "line": 13, "note": "Remplir le cache après un miss (pattern cache-aside) garde le service simple sans synchronisation complexe entre cache et base." }
+      ]
+    },
+    "useCases": [
+      "Services de raccourcissement d'URL (bit.ly, t.co)",
+      "Génération de codes d'invitation ou de codes promo uniques à grande échelle",
+      "Systèmes de tracking de clics avec redirection à très fort volume"
+    ],
+    "relatedTools": [
+      { "name": "Redis", "description": "Cache en mémoire quasi systématiquement utilisé pour absorber le trafic de lecture massif de ce type de service." },
+      { "name": "Base62", "description": "Encodage utilisant 62 caractères (a-z, A-Z, 0-9) pour produire des codes courts et lisibles à partir d'un entier." },
+      { "name": "CDN", "description": "Peut mettre en cache les redirections les plus populaires encore plus près de l'utilisateur final." }
+    ],
+    "practice": {
+      "question": "Pourquoi le ratio lecture/écriture est-il la donnée la plus importante à estimer pour ce design ?",
+      "options": [
+        "Parce qu'il détermine où concentrer l'effort d'optimisation (cache, réplication) — ici massivement sur la lecture",
+        "Parce qu'il détermine uniquement le prix du service",
+        "Parce qu'il n'a aucun impact sur le choix de la base de données"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : un système lecture-dominante n'est pas optimisé de la même façon qu'un système écriture-dominante — le cache et la réplication de lecture priment ici.",
+        "incorrect": "Ce ratio conditionne directement les choix d'architecture : ici, comme les lectures dominent largement, tout l'effort va vers le cache et la réplication en lecture."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi utiliser un compteur encodé en base62 plutôt qu'un hash MD5 tronqué pour générer le code court ?",
+        "options": [
+          "Pour garantir l'unicité sans gérer de collisions, contrairement à un hash tronqué",
+          "Parce que base62 est plus rapide à calculer que MD5",
+          "Parce que MD5 ne peut pas être tronqué"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Quel est le principal risque d'un compteur global centralisé pour générer les codes ?",
+        "options": [
+          "Il devient un point unique de défaillance et un goulot d'étranglement à grande échelle",
+          "Il ne peut générer que des nombres pairs",
+          "Il empêche toute mise en cache des redirections"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Dans le flux de lecture proposé, que se passe-t-il en cas de cache miss ?",
+        "options": [
+          "On lit la base de données puis on remplit le cache avant de rediriger",
+          "On retourne directement une erreur 404",
+          "On régénère un nouveau code court pour cette URL"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Le service devient très populaire et le trafic de lecture est multiplié par 50. Quelle action a le plus d'impact ?",
+        "options": [
+          "Ajouter des répliques de lecture et renforcer le cache",
+          "Changer l'algorithme de génération de code",
+          "Réduire la longueur des URLs longues stockées"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Le raccourcisseur d'URL est le 'Hello World' du system design interview — quasiment tous les candidats y sont confrontés au moins une fois, souvent dès le premier entretien technique senior.",
+    "ambiguite": {
+      "question": "Faut-il absolument éviter les collisions de codes courts ?",
+      "reponse": "Pas à tout prix : une approche par hash tronqué peut fonctionner si on ajoute une vérification d'unicité en base et une re-génération en cas de collision. Le vrai compromis à énoncer en entretien est : simplicité d'implémentation (hash) contre garantie d'unicité immédiate (compteur), pas une réponse binaire 'bien/mal'."
+    }
+  },
+  {
+    "id": "etude-cas-fil-actualite",
+    "title": "Étude de cas : concevoir un fil d'actualité",
+    "category": "System Design",
+    "badge": { "id": "badge-news-feed", "name": "Curateur du flux", "emoji": "📰" },
+    "griotIntro": [
+      "Un fil d'actualité doit sembler instantané pour chaque utilisateur, même quand des millions de publications circulent en même temps.",
+      "C'est un classique redouté car il oblige à choisir entre deux philosophies opposées de diffusion de contenu.",
+      "Le bon candidat sait nommer ce compromis, pas seulement dessiner des boîtes."
+    ],
+    "explanation": {
+      "text": "Deux stratégies dominent : le 'fan-out on write' (à chaque nouvelle publication, on pousse immédiatement le contenu dans le fil pré-calculé de tous les abonnés) et le 'fan-out on read' (le fil est assemblé à la volée quand l'utilisateur ouvre l'app, en agrégeant les publications récentes des comptes suivis). Le premier est rapide à lire mais coûteux à écrire pour les comptes à très nombreux abonnés ; le second est simple à écrire mais plus lent à lire.",
+      "code": "// Fan-out on write : coûteux pour les comptes à millions de followers\nfunction onNewPost(post) {\n  const followers = getFollowers(post.authorId)  // peut être énorme\n  for (const followerId of followers) {\n    pushToFeedCache(followerId, post)             // écriture multipliée par N\n  }\n}\n\n// Fan-out on read : simple à écrire, plus lent à lire\nfunction getFeed(userId) {\n  const following = getFollowing(userId)\n  const recentPosts = getRecentPostsFrom(following) // agrégation à la volée\n  return sortByTime(recentPosts)\n}\n\n// Approche hybride courante en production\nfunction onNewPost(post) {\n  if (getFollowerCount(post.authorId) < CELEBRITY_THRESHOLD) {\n    fanOutOnWrite(post)      // comptes normaux : push immédiat\n  }\n  // comptes \"célébrités\" : fan-out on read au moment de la lecture\n}",
+      "annotations": [
+        { "line": 2, "note": "Pour un compte suivi par des millions de personnes, pousser une publication à chaque abonné à chaque post peut représenter des millions d'écritures pour un seul événement." },
+        { "line": 9, "note": "L'agrégation à la lecture évite ce problème d'écriture massive, mais chaque ouverture de l'app devient plus coûteuse en calcul." },
+        { "line": 16, "note": "L'approche hybride (utilisée par la plupart des grands réseaux sociaux) applique fan-out on write pour les comptes normaux et fan-out on read pour les comptes à très forte audience — le meilleur des deux mondes selon le profil de chaque compte." }
+      ]
+    },
+    "useCases": [
+      "Réseaux sociaux (fil d'actualité, timeline)",
+      "Fils de notifications à fort volume",
+      "Agrégateurs de contenu personnalisés (recommandations)"
+    ],
+    "relatedTools": [
+      { "name": "Kafka", "description": "File de messages souvent utilisée pour propager les événements de publication vers les workers de fan-out de façon asynchrone." },
+      { "name": "Redis (listes triées)", "description": "Stocke le fil pré-calculé de chaque utilisateur pour une lecture en temps quasi constant." },
+      { "name": "Cassandra", "description": "Base orientée colonnes adaptée à l'écriture massive et distribuée requise par le fan-out on write." }
+    ],
+    "practice": {
+      "question": "Pourquoi une approche hybride est-elle préférée en production pour les comptes à très forte audience ?",
+      "options": [
+        "Pour éviter que la publication d'un compte à des millions de followers ne déclenche des millions d'écritures immédiates",
+        "Parce que fan-out on write est toujours plus simple à implémenter",
+        "Parce que les comptes à forte audience ne publient jamais de contenu"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : basculer les comptes 'célébrités' vers fan-out on read évite le pic d'écritures qui saturerait le système au moment de leur publication.",
+        "incorrect": "Le problème ciblé est le volume d'écriture démesuré généré par les comptes à très nombreux abonnés — l'hybride existe précisément pour l'éviter."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que fait le fan-out on write à chaque nouvelle publication ?",
+        "options": [
+          "Il pousse immédiatement le contenu dans le fil pré-calculé de chaque abonné",
+          "Il attend que l'utilisateur ouvre l'app pour tout calculer",
+          "Il supprime les anciennes publications du fil"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Quel est l'inconvénient principal du fan-out on read ?",
+        "options": [
+          "La lecture devient plus coûteuse car le fil est assemblé à la volée à chaque ouverture",
+          "Il est impossible à implémenter techniquement",
+          "Il empêche toute personnalisation du fil"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi les comptes à très nombreux abonnés posent-ils un problème particulier au fan-out on write ?",
+        "options": [
+          "Une seule publication déclenche un nombre d'écritures proportionnel au nombre d'abonnés, potentiellement énorme",
+          "Ils ne peuvent techniquement pas publier de contenu",
+          "Leur contenu est automatiquement mis en cache indéfiniment"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un candidat propose fan-out on write pour absolument tous les comptes, sans exception. Quel est le risque à grande échelle ?",
+        "options": [
+          "Un pic d'écritures ingérable dès qu'un compte à très forte audience publie",
+          "Aucun risque, cette approche est toujours optimale",
+          "Le fil ne pourra jamais être trié par ordre chronologique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Twitter/X a publiquement documenté être passé par plusieurs générations d'architecture de fil d'actualité — c'est l'un des cas d'étude system design les plus référencés et discutés dans l'industrie.",
+    "ambiguite": {
+      "question": "Le fan-out on write est-il toujours la 'mauvaise' approche à éviter ?",
+      "reponse": "Non — pour la grande majorité des comptes (peu d'abonnés), fan-out on write est parfaitement adapté et donne une lecture instantanée. Le vrai signal à donner en entretien est de savoir identifier le cas limite (comptes à très forte audience) et proposer une adaptation ciblée, pas de rejeter la stratégie en bloc."
+    }
+  },
+  {
+    "id": "compromis-echelle",
+    "title": "Compromis d'architecture à grande échelle",
+    "category": "System Design",
+    "badge": { "id": "badge-tradeoffs-scale", "name": "Maître des compromis", "emoji": "⚖️" },
+    "griotIntro": [
+      "Il n'existe pas d'architecture parfaite — seulement des architectures adaptées à des contraintes précises.",
+      "Un bon ingénieur ne dit jamais 'c'est la meilleure solution' sans ajouter 'sous ces conditions-là'.",
+      "Cette capacité à nommer explicitement les compromis est ce qui distingue un candidat junior d'un candidat senior en entretien."
+    ],
+    "explanation": {
+      "text": "Trois compromis reviennent systématiquement en system design : (1) scaling vertical (serveur plus puissant, simple mais limité) contre scaling horizontal (plus de serveurs, complexe mais quasi illimité) ; (2) cohérence forte (tous les nœuds voient toujours la même donnée, mais latence plus élevée) contre cohérence éventuelle (réponse plus rapide, risque de lire une donnée légèrement obsolète) ; (3) sharding par une clé (répartir les données entre plusieurs bases) qui accélère les lectures mais complique les requêtes qui traversent plusieurs shards.",
+      "code": "// Sharding : répartir les utilisateurs entre plusieurs bases\nfunction getShardForUser(userId, shardCount) {\n  return hash(userId) % shardCount   // même utilisateur -> toujours le même shard\n}\n\n// Conséquence : une requête simple reste rapide\nconst shard = getShardForUser(userId, 8)\ndb[shard].findUser(userId)             // 1 seule base interrogée\n\n// Mais une requête cross-utilisateurs devient coûteuse\nfunction getTopUsersGlobally() {\n  const results = []\n  for (const shard of allShards) {\n    results.push(...shard.query('ORDER BY score DESC LIMIT 10'))\n  }\n  return mergeAndSort(results)          // agrégation manuelle entre shards\n}",
+      "annotations": [
+        { "line": 3, "note": "Le hachage garantit qu'un même utilisateur atterrit toujours sur le même shard — condition indispensable pour retrouver ses données rapidement." },
+        { "line": 7, "note": "Une requête portant sur un seul utilisateur reste rapide : on sait exactement quel shard interroger, sans coordination entre bases." },
+        { "line": 11, "note": "Dès qu'une requête doit agréger des données réparties sur plusieurs shards, il faut interroger chacun puis fusionner côté application — le sharding a un coût sur ce type de requête." }
+      ]
+    },
+    "useCases": [
+      "Choix d'architecture pour un service en forte croissance d'utilisateurs",
+      "Décision de sharding d'une base de données existante",
+      "Arbitrage cohérence/latence pour un système multi-région"
+    ],
+    "relatedTools": [
+      { "name": "Vitess / Citus", "description": "Outils qui automatisent le sharding d'une base relationnelle (MySQL/PostgreSQL) à grande échelle." },
+      { "name": "DynamoDB", "description": "Base gérée conçue pour le scaling horizontal automatique avec cohérence configurable." },
+      { "name": "Consistent hashing", "description": "Technique de répartition qui minimise le nombre de clés à redéplacer quand on ajoute ou retire un shard." }
+    ],
+    "practice": {
+      "question": "Pourquoi le sharding complique-t-il les requêtes qui agrègent des données de plusieurs utilisateurs ?",
+      "options": [
+        "Parce que les données sont réparties sur plusieurs bases distinctes qu'il faut interroger puis fusionner manuellement",
+        "Parce que le sharding supprime la possibilité de faire des requêtes SQL",
+        "Parce que le sharding n'affecte que la vitesse d'écriture, jamais de lecture"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : ce qu'on gagne en rapidité pour les requêtes ciblées sur une entité, on le perd en simplicité pour les requêtes qui traversent plusieurs shards.",
+        "incorrect": "Le sharding répartit les données entre plusieurs bases physiquement distinctes — une requête globale doit donc interroger chaque shard puis fusionner les résultats côté application."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle est la principale limite du scaling vertical ?",
+        "options": [
+          "Il existe une limite physique à la puissance d'une seule machine",
+          "Il est toujours plus lent que le scaling horizontal",
+          "Il ne fonctionne qu'avec des bases NoSQL"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Que garantit une clé de hachage stable pour le sharding (comme hash(userId) % shardCount) ?",
+        "options": [
+          "Qu'un même utilisateur est toujours dirigé vers le même shard",
+          "Que toutes les requêtes seront traitées en moins d'une milliseconde",
+          "Que les shards ont toujours exactement le même nombre d'utilisateurs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Une entreprise choisit la cohérence éventuelle pour son système de likes sur les réseaux sociaux. Quel compromis fait-elle ?",
+        "options": [
+          "Accepter qu'un compteur de likes soit parfois légèrement à jour en échange d'une latence plus faible",
+          "Renoncer totalement à la possibilité de compter les likes",
+          "Garantir que tous les utilisateurs voient toujours le même nombre à la milliseconde près"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi ajouter un shard à un système déjà en production (re-sharding) est-il une opération délicate ?",
+        "options": [
+          "Cela nécessite de redéplacer une partie des données existantes vers le nouveau shard sans interrompre le service",
+          "Cela n'a aucun impact, un shard s'ajoute instantanément",
+          "Cela supprime automatiquement toutes les données existantes"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Le 'consistent hashing' a été popularisé par les papiers d'architecture d'Amazon Dynamo et Google — c'est aujourd'hui un sujet quasi systématique dès qu'un entretien de system design aborde le sharding.",
+    "ambiguite": {
+      "question": "Le scaling horizontal est-il toujours supérieur au scaling vertical ?",
+      "reponse": "Non. Le scaling vertical reste souvent le bon premier choix : plus simple, sans complexité de distribution, suffisant pour beaucoup de systèmes qui ne dépasseront jamais une certaine échelle. Le scaling horizontal se justifie quand la charge dépasse ce qu'une seule machine peut absorber, ou pour la tolérance aux pannes — pas par principe."
+    }
+  },
+  {
+    "id": "evolution-architecture-echelle",
+    "title": "De zéro à des millions d'utilisateurs",
+    "category": "System Design",
+    "badge": { "id": "badge-scale-evolution", "name": "Bâtisseur d'échelle", "emoji": "📈" },
+    "griotIntro": [
+      "Aucune grande architecture n'est née grande. Toutes ont commencé comme un simple campement — un serveur, une base, un point d'accès.",
+      "À Kédougou, un village minier grandit rarement d'un coup : d'abord quelques cases, puis un puits partagé, puis une route, puis un marché.",
+      "L'architecture d'un système suit exactement cette même logique de croissance progressive — chaque brique répond à un goulot d'étranglement précis atteint par la précédente.",
+      "C'est la trame narrative classique des cours de system design (popularisée notamment par ByteByteGo) : reconstruire pas à pas comment on passe de 100 à 100 millions d'utilisateurs."
+    ],
+    "explanation": {
+      "text": "L'évolution suit toujours le même schéma : on identifie le goulot d'étranglement actuel, on ajoute UNE brique pour le résoudre, ce qui déplace le goulot ailleurs, et on recommence. Serveur unique → séparation web/base → load balancer (scaling horizontal du web) → réplication de base (scaling des lectures) → cache (réduire la charge sur la base) → CDN (réduire la latence des fichiers statiques) → web tier sans état (scaling horizontal illimité) → file de messages (découpler le travail asynchrone) → supervision (visibilité à grande échelle) → sharding (scaling des écritures en base, la dernière limite à repousser).",
+      "code": "// Ordre de résolution des goulots d'étranglement, dans l'ordre où ils apparaissent\n\n1. Un seul serveur       -> SPOF + contention CPU/RAM entre web et DB\n   => séparer web et base sur deux machines\n\n2. Trop de trafic web    -> un seul serveur web sature\n   => load balancer + plusieurs serveurs web (stateless si possible)\n\n3. Chiffrement + pannes  -> chaque serveur gère son propre TLS, une panne passe inaperçue\n   => TLS terminé au load balancer + health checks automatiques\n\n4. Trop de lectures DB   -> la base primaire sature en lecture\n   => répliques en lecture (1 primaire pour écrire, N répliques pour lire)\n\n5. Requêtes lentes       -> avant tout cache, vérifier si un simple index suffit\n   => indexation des colonnes filtrées/triées fréquemment\n\n6. Lectures répétées     -> même indexées et répliquées, certaines requêtes reviennent sans cesse\n   => cache (Redis) devant la base\n\n7. Fichiers statiques    -> latence élevée pour les utilisateurs loin du serveur d'origine\n   => CDN pour servir images/CSS/JS au plus près\n\n8. Latence géographique  -> même avec un CDN, le trafic dynamique traverse tout le globe\n   => GeoDNS : router chaque utilisateur vers le data center le plus proche\n\n9. Sessions en mémoire   -> un serveur web garde en mémoire QUI est connecté\n   => session store partagé (Redis) => web tier réellement sans état\n\n10. Tâches lourdes        -> l'utilisateur attend une tâche qui pourrait être différée\n   => file de messages + workers en arrière-plan\n\n11. Trop d'écritures DB   -> même répliquée et indexée, une seule base primaire limite les écritures\n   => sharding : répartir les données sur plusieurs bases primaires",
+      "annotations": [
+        { "line": 4, "note": "Ce premier goulot est presque toujours le même dans n'importe quel système qui démarre : la ressource partagée entre le calcul et le stockage devient vite un conflit." },
+        { "line": 8, "note": "À partir d'ici, une décision structurante s'impose : rendre le serveur web sans état dès que possible évite d'avoir à refaire ce choix plus tard sous la contrainte." },
+        { "line": 11, "note": "Terminer TLS au load balancer simplifie la gestion des certificats (un seul endroit à renouveler) et allège chaque serveur web du coût de chiffrement. Les health checks automatisent ce qu'un humain ferait manuellement : surveiller que chaque serveur répond encore." },
+        { "line": 15, "note": "L'indexation est sous-estimée en entretien : c'est souvent l'optimisation avec le meilleur rapport gain/complexité, à essayer avant d'ajouter une brique d'infrastructure entière comme un cache." },
+        { "line": 18, "note": "Le ratio lecture/écriture d'un système détermine si la réplication seule suffit, ou s'il faudra plus tard aller jusqu'au sharding." },
+        { "line": 24, "note": "GeoDNS répond à un problème que le CDN seul ne couvre pas : le CDN accélère les fichiers statiques, mais une requête API dynamique doit quand même atteindre un serveur d'application — GeoDNS rapproche ce serveur de l'utilisateur." },
+        { "line": 33, "note": "Le sharding est généralement la dernière étape, pas la première réponse à un problème de performance — c'est l'option la plus complexe à opérer (rééquilibrage, requêtes cross-shard) et la moins réversible." }
+      ]
+    },
+    "useCases": [
+      "Cadrer une architecture pour un service qui doit anticiper une forte croissance d'utilisateurs",
+      "Justifier en entretien technique pourquoi on ajoute une brique d'infrastructure à un moment précis, et pas avant",
+      "Diagnostiquer où se situe le goulot d'étranglement actuel d'un système existant"
+    ],
+    "relatedTools": [
+      { "name": "Redis", "description": "Utilisé aussi bien comme cache que comme session store partagé — une des briques les plus polyvalentes de cette évolution." },
+      { "name": "Nginx / HAProxy", "description": "Load balancers logiciels courants pour répartir le trafic entre plusieurs serveurs web." },
+      { "name": "RabbitMQ / Kafka", "description": "Files de messages utilisées pour découpler le traitement asynchrone du chemin de requête principal." }
+    ],
+    "practice": {
+      "question": "Un système avec un seul serveur web et une base séparée commence à saturer en TRAFIC WEB (pas en base). Quelle est la prochaine brique à ajouter ?",
+      "options": [
+        "Un load balancer avec plusieurs serveurs web",
+        "Directement du sharding de base de données",
+        "Un CDN pour tout le trafic"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : le goulot actuel est le trafic web, donc la réponse cible ce goulot précis — un load balancer et du scaling horizontal du web tier, pas la base qui n'est pas encore le problème.",
+        "incorrect": "La règle d'or de cette évolution est de résoudre le goulot ACTUEL, pas d'anticiper un problème qui n'existe pas encore. Ici le trafic web sature, donc la réponse est un load balancer + plusieurs serveurs web."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Après avoir séparé le serveur web et la base de données sur deux machines, lequel des deux redevient un point unique de défaillance en premier si le trafic augmente ?",
+        "options": [
+          "Le serveur web (un seul serveur ne peut absorber qu'un trafic limité)",
+          "Aucun des deux, le problème est définitivement résolu",
+          "La base de données, systématiquement avant le serveur web"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi la réplication de base de données cible-t-elle en priorité les LECTURES plutôt que les écritures ?",
+        "options": [
+          "Parce que la grande majorité des systèmes ont un trafic très majoritairement en lecture, donc répliquer les lectures soulage l'essentiel de la charge",
+          "Parce qu'il est techniquement impossible de répliquer des écritures",
+          "Parce que les écritures ne sollicitent jamais la base de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi rendre le web tier 'sans état' (stateless) est-il une condition pour un scaling horizontal réellement illimité ?",
+        "options": [
+          "Parce que si chaque serveur garde les sessions en mémoire locale, un utilisateur reste 'collé' à un serveur précis, ce qui limite la répartition de charge",
+          "Parce qu'un serveur stateless consomme automatiquement moins de CPU",
+          "Parce que le stateless empêche toute utilisation de load balancer"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un utilisateur situé à Dakar accède à un site dont tous les serveurs sont à Paris. Quelle brique de cette évolution répond spécifiquement à sa latence sur les fichiers statiques (images, CSS) ?",
+        "options": [
+          "Un CDN",
+          "Une file de messages",
+          "Le sharding de la base de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi une file de messages est-elle ajoutée typiquement APRÈS le cache et le CDN, et non dès le début ?",
+        "options": [
+          "Parce qu'elle répond à un problème différent (tâches lourdes bloquant la réponse), qui n'apparaît souvent qu'une fois le système déjà sous forte charge",
+          "Parce qu'une file de messages remplace toujours le besoin d'un cache",
+          "Parce que les files de messages ne fonctionnent qu'avec des bases shardées"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pourquoi le sharding est-il généralement présenté comme la DERNIÈRE étape de cette évolution, et non une solution précoce ?",
+        "options": [
+          "Parce que c'est l'option la plus complexe à opérer et la moins réversible — on ne shard qu'une fois les options plus simples (réplication, cache) épuisées",
+          "Parce que le sharding est toujours plus simple à mettre en place que la réplication",
+          "Parce que le sharding résout systématiquement tous les problèmes de latence réseau"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Une startup avec 500 utilisateurs actifs par jour te demande s'il faut déjà mettre en place un CDN, un cache Redis et du sharding. Que réponds-tu ?",
+        "options": [
+          "Non — à cette échelle, un serveur bien dimensionné (voire deux pour la disponibilité) suffit largement ; ajouter ces briques trop tôt coûte en complexité sans bénéfice réel",
+          "Oui, il faut toujours implémenter toutes les briques dès le premier jour par précaution",
+          "Non, ces briques ne sont jamais nécessaires quelle que soit l'échelle atteinte plus tard"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pourquoi l'indexation de la base de données est-elle généralement essayée AVANT d'ajouter un cache ?",
+        "options": [
+          "Parce qu'un bon index peut résoudre le problème de lenteur directement en base, pour un coût d'implémentation bien plus faible qu'une brique d'infrastructure entière",
+          "Parce qu'un cache ne fonctionne jamais sans index préalable",
+          "Parce que l'indexation remplace complètement le besoin de réplication"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Le CDN accélère déjà les fichiers statiques pour un utilisateur distant. Pourquoi ajouter du GeoDNS en plus ?",
+        "options": [
+          "Parce que le CDN ne couvre que le contenu statique — une requête API dynamique doit quand même atteindre un serveur d'application, que GeoDNS rapproche géographiquement",
+          "Parce que le GeoDNS remplace entièrement le besoin d'un CDN",
+          "Parce que le CDN et le GeoDNS résolvent exactement le même problème en double"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Cette progression (serveur unique → séparation → load balancer → TLS/health checks → réplication → indexation → cache → CDN → GeoDNS → stateless → queue → monitoring → sharding) est la trame narrative du chapitre d'ouverture de nombreux cours et livres de référence en system design, dont le très populaire 'System Design Interview' d'Alex Xu (ByteByteGo) — elle sert de fil conducteur à la quasi-totalité des entretiens de ce type.",
+    "ambiguite": {
+      "question": "Faut-il mémoriser cette liste de briques dans cet ordre exact pour un entretien ?",
+      "reponse": "Non — l'ordre exact varie selon le système réel (un système très lecture-intensive priorisera le cache avant le load balancer, par exemple). Ce qui compte est le PRINCIPE : identifier le goulot d'étranglement actuel avant de choisir la brique à ajouter, et savoir justifier pourquoi cette brique précise résout ce problème précis — réciter la liste sans ce raisonnement est immédiatement repéré en entretien."
+    }
+  },
+  {
+    "id": "rate-limiter",
+    "title": "Concevoir un rate limiter",
+    "category": "System Design",
+    "badge": { "id": "badge-rate-limiter", "name": "Gardien du débit", "emoji": "🚦" },
+    "griotIntro": [
+      "Un puits partagé à Kédougou n'est jamais laissé en libre accès illimité : un tour, un seau à la fois, pour que tout le village en profite.",
+      "Un rate limiter applique la même sagesse à une API : limiter le nombre de requêtes qu'un client peut faire dans une fenêtre de temps, pour protéger le service de tous les autres clients.",
+      "C'est l'un des sujets de system design les plus fréquemment posés en entretien, car il est concret, borné, et révèle vite si le candidat maîtrise les compromis mémoire/précision."
+    ],
+    "explanation": {
+      "text": "Quatre algorithmes reviennent systématiquement. Token bucket : un seau de jetons se vide à chaque requête et se remplit à débit constant — simple et permet des pics courts (burst). Leaky bucket : les requêtes entrent dans une file et sortent à débit constant, lissant tout pic. Fixed window counter : un compteur remis à zéro chaque fenêtre fixe (ex: chaque minute) — simple mais laisse passer un double débit à la frontière entre deux fenêtres. Sliding window log : conserve un horodatage par requête pour un compte exact sur une fenêtre glissante — précis mais coûteux en mémoire à grande échelle.",
+      "code": "// Token bucket : implémentation simplifiée\nclass TokenBucket {\n  constructor(capacity, refillRatePerSec) {\n    this.capacity = capacity\n    this.tokens = capacity\n    this.refillRate = refillRatePerSec\n    this.lastRefill = Date.now()\n  }\n\n  allow() {\n    this.refill()\n    if (this.tokens >= 1) {\n      this.tokens -= 1\n      return true          // requête acceptée\n    }\n    return false            // 429 Too Many Requests\n  }\n\n  refill() {\n    const now = Date.now()\n    const elapsedSec = (now - this.lastRefill) / 1000\n    this.tokens = Math.min(this.capacity, this.tokens + elapsedSec * this.refillRate)\n    this.lastRefill = now\n  }\n}",
+      "annotations": [
+        { "line": 3, "note": "Le seau démarre plein : cela permet d'absorber un pic initial (burst) sans pénaliser un client qui n'a encore rien consommé." },
+        { "line": 10, "note": "Le refill est recalculé à chaque appel plutôt que par une tâche planifiée séparée — évite d'avoir un processus d'arrière-plan à maintenir, au prix d'un léger calcul à chaque requête." },
+        { "line": 14, "note": "Le rejet renvoie explicitement un signal (ici un booléen, en pratique souvent un code HTTP 429) — le client appelant sait qu'il doit réessayer plus tard, idéalement avec un header 'Retry-After'." },
+        { "line": 19, "note": "Le remplissage est proportionnel au temps écoulé, pas à un tick fixe : cela reste correct même si `allow()` n'est pas appelé pendant un moment." }
+      ]
+    },
+    "useCases": [
+      "Protéger une API publique contre les abus ou le scraping massif",
+      "Limiter le nombre de tentatives de connexion pour freiner le brute-force (déjà appliqué sur /auth/login dans cette application)",
+      "Garantir un partage équitable des ressources entre plusieurs clients d'un même service payant (quotas par plan tarifaire)"
+    ],
+    "relatedTools": [
+      { "name": "Redis (avec TTL)", "description": "Stocke les compteurs ou les seaux de jetons de façon partagée entre plusieurs instances du service — indispensable dès que le rate limiter tourne sur plus d'un serveur." },
+      { "name": "express-rate-limit", "description": "Middleware Node.js prêt à l'emploi implémentant plusieurs de ces algorithmes." },
+      { "name": "API Gateway (Kong, AWS API Gateway)", "description": "Applique souvent le rate limiting en amont des services, avant même que la requête n'atteigne le code applicatif." }
+    ],
+    "practice": {
+      "question": "Pourquoi le token bucket permet-il un 'burst' (pic de requêtes ponctuel) alors que le leaky bucket l'interdit ?",
+      "options": [
+        "Parce que le seau de jetons peut être plein au départ et se vider d'un coup, alors que le leaky bucket force un débit de sortie strictement constant",
+        "Parce que le token bucket ne limite jamais réellement le débit",
+        "Parce que le leaky bucket autorise un nombre illimité de requêtes simultanées"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : le token bucket autorise de consommer plusieurs jetons accumulés d'un coup, alors que le leaky bucket fait strictement sortir les requêtes à débit fixe, quel que soit leur rythme d'arrivée.",
+        "incorrect": "La différence clé est que le token bucket peut avoir des jetons accumulés (donc un pic instantané possible), tandis que le leaky bucket impose un débit de sortie constant qui lisse tout pic."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quel est le principal défaut du fixed window counter ?",
+        "options": [
+          "Il peut laisser passer jusqu'à deux fois la limite autorisée si les requêtes se concentrent à la frontière entre deux fenêtres",
+          "Il consomme toujours plus de mémoire que le sliding window log",
+          "Il est impossible à implémenter sans base de données"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi le sliding window log est-il précis mais coûteux à grande échelle ?",
+        "options": [
+          "Parce qu'il conserve un horodatage par requête, ce qui consomme de la mémoire proportionnelle au nombre de requêtes dans la fenêtre",
+          "Parce qu'il ne peut fonctionner qu'avec un seul client à la fois",
+          "Parce qu'il ne peut pas être utilisé avec Redis"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un rate limiter tourne indépendamment sur chaque serveur d'un pool de 5 serveurs derrière un load balancer, sans état partagé. Quel est le problème ?",
+        "options": [
+          "Un client peut contourner la limite en étant simplement réparti sur plusieurs serveurs, chacun appliquant sa propre limite indépendante",
+          "Il n'y a aucun problème, chaque serveur doit avoir sa propre limite indépendante",
+          "Le rate limiting ne peut fonctionner que sur un seul serveur par principe"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Que doit typiquement renvoyer un rate limiter à un client dont la requête est rejetée, en plus du code 429 ?",
+        "options": [
+          "Un indice sur le délai avant de pouvoir réessayer (ex: header Retry-After)",
+          "Un mot de passe temporaire pour contourner la limite",
+          "La liste complète des autres clients ayant atteint leur limite"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi le rate limiting est-il souvent appliqué à la fois côté API Gateway ET côté application (ex: sur /auth/login) plutôt qu'à un seul endroit ?",
+        "options": [
+          "Parce que chaque couche protège contre un risque différent : la gateway limite la charge globale, la route sensible limite un abus métier précis (brute-force)",
+          "Parce que c'est une redondance inutile qu'il faudrait toujours éviter",
+          "Parce que l'API Gateway ne peut techniquement pas faire de rate limiting"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Le rate limiter est l'un des chapitres les plus emblématiques du livre 'System Design Interview' d'Alex Xu (ByteByteGo) — souvent le tout premier cas pratique donné aux candidats juniors/intermédiaires car son périmètre reste maîtrisable en 45 minutes.",
+    "ambiguite": {
+      "question": "Un rate limiter doit-il toujours rejeter strictement une requête en trop, sans exception ?",
+      "reponse": "Pas nécessairement — certains systèmes préfèrent la 'dégradation progressive' (ralentir la réponse, mettre en file d'attente) plutôt qu'un rejet sec, notamment pour des clients internes de confiance. Le choix rejet strict vs file d'attente dépend du contexte métier, pas d'une règle universelle — un bon candidat en entretien pose la question plutôt que de supposer."
+    }
+  },
+  {
+    "id": "consistent-hashing",
+    "title": "Le hachage cohérent (consistent hashing)",
+    "category": "System Design",
+    "badge": { "id": "badge-consistent-hashing", "name": "Maître de l'anneau", "emoji": "💍" },
+    "griotIntro": [
+      "Imagine un marché circulaire à Kédougou, où chaque étal a une position fixe sur le cercle, et chaque client se dirige vers le premier étal rencontré en avançant.",
+      "Ajouter un nouvel étal ne déplace que les quelques clients les plus proches de lui — tous les autres continuent d'aller au même endroit qu'avant.",
+      "C'est exactement le principe du hachage cohérent : répartir des données sur des serveurs sans devoir tout réorganiser à chaque ajout ou retrait d'un serveur."
+    ],
+    "explanation": {
+      "text": "Avec un hachage classique (clé % nombre de serveurs), ajouter ou retirer UN SEUL serveur change le résultat du modulo pour presque toutes les clés — quasiment toutes les données doivent être redéplacées. Le hachage cohérent place à la fois les serveurs ET les clés sur un anneau (0 à 2^32-1, simplifié ici à 0-11). Chaque clé est assignée au premier serveur rencontré en avançant sur l'anneau. Ajouter ou retirer un serveur ne redéplace alors que les clés situées entre ce serveur et le précédent sur l'anneau — une fraction, pas la totalité.",
+      "code": "// Assignation d'une clé à un serveur sur l'anneau\nfunction getServerForKey(key, servers) {\n  const keyPos = hash(key) % RING_SIZE\n  const sorted = [...servers].sort((a, b) => a.pos - b.pos)\n\n  // premier serveur dont la position est >= à celle de la clé\n  const target = sorted.find((s) => s.pos >= keyPos)\n\n  return target || sorted[0]   // retour au début de l'anneau si aucun trouvé\n}\n\n// Nœuds virtuels : chaque serveur physique occupe PLUSIEURS positions\nfunction addServerWithVirtualNodes(server, virtualCount, ring) {\n  for (let i = 0; i < virtualCount; i++) {\n    ring.push({ id: server.id, pos: hash(server.id + '-' + i) % RING_SIZE })\n  }\n}",
+      "annotations": [
+        { "line": 5, "note": "Le tri des serveurs par position est nécessaire à chaque recherche, sauf si l'anneau est maintenu trié en continu (ex: arbre équilibré) pour des performances optimales à grande échelle." },
+        { "line": 8, "note": "Le retour au début de l'anneau gère le cas où la clé est positionnée après le dernier serveur — l'anneau est circulaire, pas une simple ligne." },
+        { "line": 12, "note": "Sans nœuds virtuels, un serveur peut hériter d'une portion disproportionnée de l'anneau selon sa position par chance. Multiplier chaque serveur en plusieurs points virtuels répartit la charge beaucoup plus uniformément." }
+      ]
+    },
+    "useCases": [
+      "Répartition de clés entre serveurs de cache distribués (Memcached, Redis Cluster)",
+      "Sharding de bases de données NoSQL à grande échelle (Cassandra, DynamoDB)",
+      "Répartition de charge entre CDN edge servers"
+    ],
+    "relatedTools": [
+      { "name": "Cassandra", "description": "Utilise le hachage cohérent nativement pour répartir les partitions de données entre les nœuds du cluster." },
+      { "name": "Memcached (clients avec ketama)", "description": "Des bibliothèques clientes comme ketama implémentent le hachage cohérent pour choisir le serveur de cache cible." },
+      { "name": "Nœuds virtuels (virtual nodes)", "description": "Technique complémentaire quasi systématique pour éviter une répartition inégale entre serveurs physiques." }
+    ],
+    "practice": {
+      "question": "Avec un hachage classique (clé % N serveurs), que se passe-t-il quand on ajoute un serveur (N devient N+1) ?",
+      "options": [
+        "Le résultat du modulo change pour la quasi-totalité des clés, ce qui force à quasiment tout redéplacer",
+        "Rien ne change, les clés restent sur le même serveur",
+        "Seules les nouvelles clés sont affectées, jamais les clés existantes"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : le modulo dépend directement de N, donc le changer redistribue presque toutes les clés — c'est précisément ce que le hachage cohérent évite.",
+        "incorrect": "Avec un modulo classique, changer N change le résultat pour presque toutes les clés existantes — c'est le problème fondamental que le hachage cohérent résout."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Sur l'anneau du hachage cohérent, à quel serveur une clé est-elle assignée ?",
+        "options": [
+          "Au premier serveur rencontré en avançant sur l'anneau depuis la position de la clé",
+          "Toujours au serveur ayant la position la plus basse de tout l'anneau",
+          "Au serveur choisi aléatoirement parmi tous les serveurs disponibles"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Quand on ajoute un serveur sur l'anneau, quelles clés sont redéplacées ?",
+        "options": [
+          "Seulement les clés situées entre ce nouveau serveur et le serveur précédent sur l'anneau",
+          "Toutes les clés de l'anneau, sans exception",
+          "Aucune clé n'est jamais redéplacée avec le hachage cohérent"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi utilise-t-on des 'nœuds virtuels' (plusieurs positions par serveur physique) plutôt qu'une seule position par serveur ?",
+        "options": [
+          "Pour répartir la charge plus uniformément, en évitant qu'un serveur hérite d'une portion disproportionnée de l'anneau par chance",
+          "Pour réduire le nombre total de serveurs nécessaires",
+          "Parce qu'un serveur ne peut techniquement occuper qu'une seule position sans nœuds virtuels"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un système utilisant un hachage classique (modulo) subit une indisponibilité totale du cache à chaque ajout de serveur, le temps de tout redéplacer. Quel changement d'architecture répond directement à ce problème ?",
+        "options": [
+          "Remplacer le hachage modulo par un hachage cohérent",
+          "Ajouter davantage de serveurs pour compenser",
+          "Supprimer complètement le cache pour éviter le problème"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Le hachage cohérent élimine-t-il complètement le besoin de redéplacer des données lors d'un changement de serveurs ?",
+        "options": [
+          "Non — il minimise la fraction de clés redéplacées, mais une portion (celle entre le serveur modifié et son voisin) doit toujours être redéplacée",
+          "Oui, aucune clé n'est jamais redéplacée quelle que soit la modification",
+          "Non, il redéplace en réalité systématiquement plus de clés qu'un hachage modulo classique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Le hachage cohérent a été formalisé académiquement en 1997 (Karger et al.) puis popularisé en production par le papier Amazon Dynamo (2007) — il est aujourd'hui considéré comme un sujet quasi incontournable dès qu'un entretien de system design aborde le sharding ou le cache distribué.",
+    "ambiguite": {
+      "question": "Le hachage cohérent garantit-il une répartition parfaitement égale des clés entre serveurs ?",
+      "reponse": "Non, pas sans nœuds virtuels — avec peu de serveurs et une seule position chacun, la répartition peut être très inégale selon où ils tombent sur l'anneau par hasard. Les nœuds virtuels (chaque serveur physique occupant des dizaines ou centaines de positions) sont ce qui rapproche la répartition réelle d'un équilibre statistique, pas le principe de base seul."
+    }
+  }
+]

@@ -1,0 +1,142 @@
+[
+  {
+    "id": "framework-vs-bibliotheque",
+    "category": "Ambiguïté",
+    "term": "Framework vs Bibliothèque (Library)",
+    "explanation": "Une bibliothèque, c'est toi qui l'appelles quand tu en as besoin (ex: une fonction de formatage de date). Un framework, c'est l'inverse : c'est lui qui appelle ton code, selon une structure qu'il impose (\"inversion de contrôle\"). Avec React ou NestJS, tu écris du code qui s'insère dans un cycle de vie défini par le framework — tu ne contrôles pas l'ordre d'exécution global.",
+    "example": "lodash est une bibliothèque (tu l'appelles). Next.js est un framework (il définit la structure de ton app et appelle tes fichiers `page.js` au bon moment)."
+  },
+  {
+    "id": "frontend-vs-backend",
+    "category": "Ambiguïté",
+    "term": "Frontend vs Backend",
+    "explanation": "Le frontend est la partie qui s'exécute dans le navigateur de l'utilisateur (interface, interactions visuelles). Le backend s'exécute sur un serveur (logique métier, base de données, sécurité). Le \"fullstack\" désigne quelqu'un capable de travailler sur les deux.",
+    "example": "Dans Teranga Code : React tourne dans ton navigateur (frontend), Express/Prisma tourne sur le serveur (backend)."
+  },
+  {
+    "id": "compile-vs-interprete",
+    "category": "Ambiguïté",
+    "term": "Langage compilé vs interprété",
+    "explanation": "Un langage compilé (C, Go, Rust) est traduit en code machine avant l'exécution — erreurs détectées à la compilation, exécution rapide. Un langage interprété (Python, JavaScript classique) est lu et exécuté ligne par ligne au moment de l'exécution par un interpréteur. En pratique, la frontière est floue : le JavaScript moderne est souvent \"JIT-compilé\" (compilé juste-à-temps) par le moteur du navigateur pour de meilleures performances.",
+    "example": "Node.js utilise V8, qui compile le JavaScript à la volée (JIT) plutôt que de l'interpréter ligne par ligne à chaque fois."
+  },
+  {
+    "id": "sync-vs-async",
+    "category": "Ambiguïté",
+    "term": "Synchrone vs Asynchrone",
+    "explanation": "Une opération synchrone bloque l'exécution jusqu'à sa fin — le programme attend. Une opération asynchrone (ex: une requête réseau) laisse le programme continuer et prévient plus tard via une Promise/callback quand le résultat est prêt. JavaScript est mono-thread mais gère l'asynchrone via sa boucle d'événements (event loop).",
+    "example": "`fetch()` est asynchrone : le code après continue de s'exécuter sans attendre la réponse du serveur, sauf si tu utilises `await`."
+  },
+  {
+    "id": "http-vs-https",
+    "category": "Ambiguïté",
+    "term": "HTTP vs HTTPS",
+    "explanation": "HTTPS est HTTP chiffré via TLS/SSL : les données échangées entre le client et le serveur sont protégées contre l'interception. En 2026, HTTPS est la norme partout, y compris pour de simples sites vitrines — les navigateurs signalent désormais les sites en HTTP simple comme \"non sécurisés\".",
+    "example": "Un formulaire de connexion en HTTP simple expose le mot de passe en clair sur le réseau — toujours utiliser HTTPS en production."
+  },
+  {
+    "id": "cookie-session-token",
+    "category": "Ambiguïté",
+    "term": "Cookie vs Session vs Token (JWT)",
+    "explanation": "Un cookie est un petit fichier stocké côté navigateur, envoyé automatiquement à chaque requête vers le même domaine. Une session est un état conservé côté serveur, généralement référencé par un cookie contenant juste un identifiant. Un token (comme un JWT) contient lui-même les informations nécessaires et ne requiert pas de stockage côté serveur — c'est l'approche \"stateless\" utilisée par ce projet.",
+    "example": "Teranga Code utilise un JWT stocké côté client (pas de session serveur) : le token contient l'identité de l'utilisateur, vérifiable sans base de données à chaque requête."
+  },
+  {
+    "id": "git-vs-github",
+    "category": "Ambiguïté",
+    "term": "Git vs GitHub/GitLab",
+    "explanation": "Git est l'outil de gestion de version en ligne de commande, installé sur ta machine. GitHub, GitLab, Bitbucket sont des plateformes qui hébergent des dépôts Git en ligne et ajoutent des fonctionnalités (pull requests, CI/CD, gestion d'équipe). On peut utiliser Git sans jamais toucher à GitHub.",
+    "example": "Tu peux versionner un projet uniquement en local avec Git, sans jamais le pousser sur GitHub."
+  },
+  {
+    "id": "tests-unitaires-integration-e2e",
+    "category": "Ambiguïté",
+    "term": "Test unitaire vs intégration vs E2E",
+    "explanation": "Le test unitaire isole une seule fonction/composant (rapide, nombreux). Le test d'intégration vérifie que plusieurs éléments fonctionnent bien ensemble (ex: route API + base de données). Le test end-to-end (E2E) simule un vrai parcours utilisateur de bout en bout, souvent le plus lent mais le plus proche de la réalité. La \"pyramide des tests\" recommande beaucoup de tests unitaires, moins d'intégration, encore moins d'E2E.",
+    "example": "Tester `filterQuizByDifficulty()` seule = unitaire. Tester `POST /auth/register` avec une vraie base = intégration. Simuler un joueur qui s'inscrit et joue un quiz dans un navigateur = E2E."
+  },
+  {
+    "id": "iaas-paas-saas",
+    "category": "Ambiguïté",
+    "term": "IaaS vs PaaS vs SaaS",
+    "explanation": "IaaS (Infrastructure as a Service) : tu loues des serveurs bruts et gères tout toi-même (ex: une VM OVH). PaaS (Platform as a Service) : la plateforme gère le serveur, tu déploies juste ton code (ex: Vercel, Heroku). SaaS (Software as a Service) : tu utilises directement une application déjà prête (ex: Gmail, Notion).",
+    "example": "Déployer ce projet sur un serveur OVH loué = IaaS. Le déployer sur Vercel = PaaS. Utiliser Gmail pour ses emails = SaaS."
+  },
+  {
+    "id": "agile-scrum-kanban",
+    "category": "Culture IT",
+    "term": "Agile vs Scrum vs Kanban",
+    "explanation": "Agile est une philosophie de travail (itérations courtes, adaptation continue, décrite dans le \"Manifeste Agile\" de 2001). Scrum est un cadre concret pour appliquer l'agilité : sprints de 2-4 semaines, rôles définis (Product Owner, Scrum Master), cérémonies (daily standup, rétrospective). Kanban est une autre approche, plus fluide, basée sur un tableau de tâches (À faire / En cours / Terminé) sans sprints fixes.",
+    "example": "Une équipe peut être \"agile\" en pratiquant Scrum avec des sprints de 2 semaines, ou en utilisant un tableau Kanban sans sprints du tout."
+  },
+  {
+    "id": "rest-vs-graphql",
+    "category": "Ambiguïté",
+    "term": "REST vs GraphQL",
+    "explanation": "REST expose plusieurs endpoints fixes, chacun retournant une structure de données prédéfinie. GraphQL expose un seul endpoint où le client précise exactement les champs qu'il veut récupérer, évitant le sur-fetching (trop de données) ou le sous-fetching (requêtes multiples). GraphQL ajoute de la flexibilité mais aussi de la complexité côté serveur.",
+    "example": "Avec REST, `GET /users/42` renvoie tout l'objet utilisateur. Avec GraphQL, le client peut demander uniquement `{ pseudo, xp }` sans le reste."
+  },
+  {
+    "id": "processus-vs-thread",
+    "category": "Ambiguïté",
+    "term": "Processus vs Thread (fil d'exécution)",
+    "explanation": "Un processus est une instance de programme isolée avec sa propre mémoire. Un thread est une unité d'exécution à l'intérieur d'un processus, partageant sa mémoire avec les autres threads du même processus — plus léger à créer, mais plus risqué (accès concurrent aux mêmes données). Node.js est mono-thread pour l'exécution JS, mais délègue les opérations I/O lourdes à un pool de threads en interne (libuv).",
+    "example": "Ouvrir deux onglets Chrome = deux processus. À l'intérieur d'un serveur multi-thread (ex: Java), plusieurs threads peuvent traiter des requêtes en parallèle."
+  },
+  {
+    "id": "typage-statique-dynamique",
+    "category": "Ambiguïté",
+    "term": "Typage statique vs dynamique",
+    "explanation": "Le typage statique (TypeScript, Java, Go) vérifie les types à la compilation — les erreurs de type sont détectées avant l'exécution. Le typage dynamique (JavaScript, Python) vérifie les types à l'exécution — plus flexible pour prototyper vite, mais certaines erreurs de type ne se révèlent qu'en production.",
+    "example": "En JavaScript, `\"5\" + 3` donne `\"53\"` silencieusement. En TypeScript, cette confusion de type peut être détectée avant même d'exécuter le code."
+  },
+  {
+    "id": "mvp-poc",
+    "category": "Culture IT",
+    "term": "MVP vs POC",
+    "explanation": "Un POC (Proof of Concept) vérifie qu'une idée technique est faisable, sans souci de qualité ni d'utilisateurs réels — souvent jetable. Un MVP (Minimum Viable Product) est une version minimale mais réellement utilisable du produit, mise entre les mains de vrais utilisateurs pour valider l'idée sur le marché.",
+    "example": "Tester si l'API OpenStreetMap peut afficher une carte du Sénégal = POC. La première version jouable de Teranga Code avec un seul pattern = MVP."
+  },
+  {
+    "id": "dette-technique",
+    "category": "Culture IT",
+    "term": "Dette technique",
+    "explanation": "La dette technique désigne les raccourcis pris pour livrer plus vite, qui coûteront plus cher à corriger plus tard (comme un emprunt avec intérêts). Ce n'est pas toujours une erreur : parfois, accepter une dette technique consciente pour tenir un délai est un choix stratégique valable, tant qu'elle est documentée et remboursée à temps.",
+    "example": "Coder en dur une valeur au lieu de la rendre configurable pour livrer une démo à temps — tant que c'est noté pour être corrigé ensuite."
+  },
+  {
+    "id": "open-source-licences",
+    "category": "Culture IT",
+    "term": "Open source & licences (MIT, GPL, Apache)",
+    "explanation": "\"Open source\" signifie que le code source est public, mais la licence détermine ce qu'on a le droit d'en faire. MIT/Apache sont permissives (utilisation commerciale libre, peu de contraintes). GPL est \"copyleft\" : tout logiciel qui réutilise du code GPL doit lui-même être publié sous licence GPL — ça oblige à la transparence en aval.",
+    "example": "Un projet sous licence MIT peut être intégré dans un logiciel commercial fermé ; un projet sous GPL non."
+  },
+  {
+    "id": "hackathon-pair-programming",
+    "category": "Culture IT",
+    "term": "Hackathon & pair programming",
+    "explanation": "Un hackathon est un événement court (souvent 24-48h) où des développeurs créent un prototype from scratch, individuellement ou en équipe — excellent pour progresser vite et se faire remarquer. Le pair programming consiste à coder à deux sur le même poste (un qui écrit, un qui relit en direct) : ça répand la connaissance dans l'équipe et réduit les bugs, au prix d'une vitesse individuelle plus faible.",
+    "example": "Participer à un hackathon local au Sénégal est une excellente façon de rencontrer d'autres développeurs et de se confronter à des deadlines réelles."
+  },
+  {
+    "id": "code-review-culture",
+    "category": "Culture IT",
+    "term": "Culture de la code review",
+    "explanation": "Dans une équipe pro, presque aucun code ne part en production sans avoir été relu par au moins une autre personne (pull request). L'objectif n'est pas de \"juger\" mais de partager la connaissance, détecter les bugs tôt et maintenir un style cohérent. Savoir recevoir une critique sur son code sans le prendre personnellement est une compétence attendue, autant que savoir en faire une de façon constructive.",
+    "example": "\"LGTM\" (Looks Good To Me) est l'expression classique utilisée pour approuver une pull request après relecture."
+  },
+  {
+    "id": "standup-sprint",
+    "category": "Culture IT",
+    "term": "Daily standup & sprint",
+    "explanation": "Le \"daily standup\" est une réunion courte quotidienne (10-15 min, souvent debout) où chacun dit ce qu'il a fait hier, ce qu'il fait aujourd'hui, et s'il est bloqué. Un \"sprint\" est une période de travail fixe (souvent 2 semaines) avec un objectif défini au début et une revue à la fin — le rythme de base de la méthode Scrum.",
+    "example": "En entretien, on te demandera souvent si tu as déjà travaillé \"en sprint\" — même un projet scolaire avec des jalons réguliers peut compter comme une première expérience."
+  },
+  {
+    "id": "monolithe-vs-microservices-culture",
+    "category": "Culture IT",
+    "term": "\"Ça marche sur ma machine\"",
+    "explanation": "Phrase culte du monde du développement, symbole du problème que Docker a été créé pour résoudre : un code qui fonctionne en local mais plante en production à cause de différences d'environnement (version de langage, dépendances système, configuration). La conteneurisation vise justement à éliminer cette excuse en embarquant tout l'environnement avec le code.",
+    "example": "C'est précisément le problème que Docker résout dans ce projet : le même conteneur tourne pareil sur ta machine, en CI, et en production."
+  }
+]
