@@ -1,12 +1,8 @@
 import { localApi } from './localClient'
+import { isDesktopApp } from '../lib/platform'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000'
 const TOKEN_KEY = 'terangaCodeToken'
-
-// Application desktop (Tauri) : aucun serveur n'est disponible, tout tourne
-// en local sur l'appareil — comptes, progression, XP, badges compris.
-const isDesktopApp =
-  typeof window !== 'undefined' && ('__TAURI_INTERNALS__' in window || '__TAURI__' in window)
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY)
