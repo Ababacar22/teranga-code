@@ -64,6 +64,22 @@ function ProfileScene() {
               )
             })}
         </div>
+        <details className="profile-scoring-info">
+          <summary>Comment fonctionne le score ?</summary>
+          <ul>
+            <li>Chaque sujet rapporte jusqu'à <strong>100 XP</strong> (5 questions de quiz, ~20 XP chacune).</li>
+            <li>La simulation d'entretien rapporte jusqu'à <strong>190 XP</strong> (19 questions).</li>
+            <li>
+              Un <strong>badge</strong> n'est obtenu qu'avec un score parfait sur le sujet — mais l'XP déjà gagné
+              reste acquis même sans score parfait.
+            </li>
+            <li>
+              Rejouer un sujet déjà maîtrisé (badge obtenu) ne rapporte plus d'XP supplémentaire — impossible de
+              farmer en boucle.
+            </li>
+            <li>Ton niveau = XP total ÷ 100 (arrondi), donc 100 XP par niveau.</li>
+          </ul>
+        </details>
       </div>
 
       <div className="profile-actions">

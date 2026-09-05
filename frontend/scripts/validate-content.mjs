@@ -68,6 +68,27 @@ for (const file of readdirSync(topicsDir).filter((f) => f.endsWith('.json'))) {
   }
 }
 
+// Vérifie que la liste blanche de badges du backend (utilisée pour valider
+// /progress/complete-topic) reste synchronisée avec les sujets réels — un
+// sujet ajouté ici sans y être ajouté empêche silencieusement tout compte
+// réel (non invité) de recevoir XP/badge pour ce sujet.
+const badgesPath = join(__dirname, '../../backend/src/content/badges.js')
+const badgesSource = readFileSync(badgesPath, 'utf-8')
+const validBadgeIds = new Set(
+  [...badgesSource.matchAll(/'(badge-[a-z0-9-]+)'/g)].map((m) => m[1]),
+)
+
+for (const file of readdirSync(topicsDir).filter((f) => f.endsWith('.json'))) {
+  const topics = JSON.parse(readFileSync(join(topicsDir, file), 'utf-8'))
+  for (const topic of topics) {
+    if (topic.badge?.id && !validBadgeIds.has(topic.badge.id)) {
+      totalErrors++
+      console.error(`✗ ${file} — sujet "${topic.id}" : badge "${topic.badge.id}" absent de backend/src/content/badges.js`)
+      console.error(`  → un compte réel ne recevra jamais d'XP/badge pour ce sujet tant que ce n'est pas corrigé.`)
+    }
+  }
+}
+
 if (totalErrors > 0) {
   console.error(`\n${totalErrors} erreur(s) sur ${totalTopics} sujets.`)
   process.exit(1)

@@ -65,10 +65,28 @@ npm run desktop:build   # génère les installateurs Mac/Windows dans src-tauri/
 L'app desktop fonctionne 100 % hors-ligne, avec création de compte locale
 (aucun serveur requis).
 
+## Roadmap
+
+Chantiers en cours ou prévus (voir aussi les [issues
+GitHub](https://github.com/Ababacar22/teranga-code/issues)) :
+
+- [ ] Traduction anglaise complète du contenu pédagogique (55 sujets)
+- [ ] Nouvelles régions internationales au-delà du Sénégal
+- [ ] Défi quotidien, objectif hebdomadaire personnalisé, classement entre amis
+- [x] Application desktop Mac/Windows 100 % hors-ligne
+- [x] Pionnier IT réel sur chaque sujet pédagogique
+- [x] Passage en open source (MIT)
+
+Historique détaillé des changements : [CHANGELOG.md](CHANGELOG.md).
+
 ## Contribuer
 
 Les contributions sont bienvenues — voir [CONTRIBUTING.md](CONTRIBUTING.md)
 (français et anglais).
+
+## Confidentialité
+
+Quelles données sont stockées, où, et pourquoi : voir [PRIVACY.md](PRIVACY.md).
 
 ## Licence
 
