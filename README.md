@@ -5,19 +5,21 @@ lancée par **Khalifa Ababacar DIALLO**.
 
 ## But de la plateforme
 
-Beaucoup d'étudiants et jeunes ingénieurs sénégalais arrivent en entretien
-technique avec de bonnes bases mais peu d'entraînement au format réel de
-l'exercice — que ce soit pour un poste au Sénégal, en France, aux
-États-Unis ou dans le Golfe. Teranga Code transforme cette préparation en
-un jeu sérieux : chaque ville du Sénégal correspond à une rubrique
-technique (algorithmie, architecture, system design, outils, qualité et
-sécurité, entretien comportemental...) à débloquer en progressant, avec du
-contenu annoté, des démonstrations visuelles interactives, des quiz notés
-par niveau de difficulté et une simulation d'entretien complète.
+Beaucoup d'étudiants et jeunes ingénieurs arrivent en entretien technique
+avec de bonnes bases mais peu d'entraînement au format réel de l'exercice
+— que ce soit pour un poste en France, aux États-Unis, dans le Golfe ou
+ailleurs. Teranga Code transforme cette préparation en un jeu sérieux,
+ouvert à tous quel que soit le pays visé : chaque ville du Sénégal (thème
+du jeu) correspond à une rubrique technique (algorithmie, architecture,
+system design, outils, qualité et sécurité, entretien comportemental...)
+à débloquer en progressant, avec du contenu annoté, des démonstrations
+visuelles interactives, des quiz notés par niveau de difficulté et une
+simulation d'entretien complète.
 
-L'objectif : rendre cette préparation accessible, gratuite et motivante —
-et, en la rendant open source, permettre à la communauté d'enrichir le
-contenu pédagogique pour d'autres apprenants.
+L'objectif : rendre cette préparation accessible, gratuite et motivante
+pour tout le monde — et, en la rendant open source, permettre à la
+communauté d'enrichir le contenu pédagogique pour d'autres apprenants,
+où qu'ils soient.
 
 ## Stack
 

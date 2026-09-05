@@ -107,7 +107,7 @@
     "badge": { "id": "badge-technical-english", "name": "Bilingue du code", "emoji": "🗣️" },
     "griotIntro": [
       "Parler de son code dans une langue étrangère, en direct, sous pression : c'est un exercice à part entière, différent de l'anglais scolaire.",
-      "Beaucoup de candidats sénégalais maîtrisent très bien l'anglais technique écrit (documentation, code) mais bloquent à l'oral, en visioconférence, face à un accent inconnu.",
+      "Beaucoup de candidats francophones maîtrisent très bien l'anglais technique écrit (documentation, code) mais bloquent à l'oral, en visioconférence, face à un accent inconnu.",
       "Ce sujet ne remplace pas des cours d'anglais — il cible le vocabulaire précis et les tournures qui reviennent sans cesse dans un entretien technique."
     ],
     "explanation": {
@@ -274,7 +274,7 @@
         "difficulty": "difficile"
       }
     ],
-    "culture": "De nombreux ingénieurs sénégalais partant vers le Golfe passent par des recruteurs spécialisés qui gèrent l'intégralité de la relocation — un phénomène bien moins présent pour les recrutements en France ou aux USA, où le candidat gère généralement seul les démarches administratives.",
+    "culture": "De nombreux ingénieurs partant vers le Golfe passent par des recruteurs spécialisés qui gèrent l'intégralité de la relocation — un phénomène bien moins présent pour les recrutements en France ou aux USA, où le candidat gère généralement seul les démarches administratives.",
     "ambiguite": {
       "question": "Le process le plus rapide (souvent le Moyen-Orient) est-il forcément le moins exigeant techniquement ?",
       "reponse": "Non — un process court ne veut pas dire un niveau d'exigence technique réduit, seulement moins d'étapes intermédiaires. Beaucoup d'entreprises internationales installées dans le Golfe recrutent avec les mêmes standards techniques que leurs sièges américains ou européens, simplement avec un cycle de décision plus rapide."

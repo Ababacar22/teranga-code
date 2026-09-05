@@ -153,7 +153,7 @@ function LandingScene() {
         <h2>Pourquoi ce projet</h2>
         <p>
           Teranga Code est né d'un besoin simple : se préparer sérieusement aux entretiens d'ingénieur logiciel,
-          sans que ce soit ennuyeux — pour aider d'autres jeunes développeurs sénégalais à apprendre en s'amusant.
+          sans que ce soit ennuyeux — pour aider tout développeur, où qu'il soit, à apprendre en s'amusant.
         </p>
       </section>
 

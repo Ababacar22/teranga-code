@@ -8,7 +8,7 @@
 
 Merci de vouloir contribuer à **Teranga Code** — une initiative de
 [gainde-it.com](https://gainde-it.com), lancée par **Khalifa Ababacar
-DIALLO**, pour aider les apprenants sénégalais (et au-delà) à se préparer
+DIALLO**, pour aider tout apprenant, où qu'il soit, à se préparer
 sérieusement aux entretiens techniques d'ingénieur logiciel.
 
 ### Comment contribuer
@@ -92,8 +92,8 @@ rester bienveillant, y compris dans les revues de code.
 
 Thank you for considering a contribution to **Teranga Code** — an
 initiative by [gainde-it.com](https://gainde-it.com), launched by
-**Khalifa Ababacar DIALLO**, to help Senegalese learners (and beyond)
-seriously prepare for software engineering technical interviews.
+**Khalifa Ababacar DIALLO**, to help any learner, anywhere, seriously
+prepare for software engineering technical interviews.
 
 ### How to contribute
 
