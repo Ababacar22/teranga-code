@@ -58,7 +58,7 @@ const remoteApi = {
   createChallenge: (payload) => request('/challenges', { method: 'POST', body: payload, auth: true }),
   getChallenges: () => request('/challenges', { auth: true }),
   completeChallenge: (id, score) => request(`/challenges/${id}/complete`, { method: 'POST', body: { score }, auth: true }),
-  getAdminUsers: () => request('/admin/users', { auth: true }),
+  getAdminUsers: (page = 1, pageSize = 50) => request(`/admin/users?page=${page}&pageSize=${pageSize}`, { auth: true }),
   resetAdminUser: (id) => request(`/admin/users/${id}/reset`, { method: 'POST', auth: true }),
   deleteAdminUser: (id) => request(`/admin/users/${id}`, { method: 'DELETE', auth: true }),
 }

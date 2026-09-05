@@ -7,20 +7,15 @@ import progressRoutes from './progress/progress.routes.js'
 import leaderboardRoutes from './leaderboard/leaderboard.routes.js'
 import challengesRoutes from './challenges/challenges.routes.js'
 import adminRoutes from './admin/admin.routes.js'
+import { isValidJwtSecret } from './config/jwtSecret.js'
 
-const KNOWN_BAD_SECRETS = ['dev_secret_change_me_in_production', 'changeme', 'secret']
-
-function assertJwtSecret() {
-  const secret = process.env.JWT_SECRET
-  if (!secret || secret.length < 32 || KNOWN_BAD_SECRETS.includes(secret)) {
-    console.error(
-      'JWT_SECRET manquant, trop court (< 32 caractères) ou égal à une valeur par défaut connue. ' +
-        "Génère-en un avec `openssl rand -hex 32` et place-le dans backend/.env.",
-    )
-    process.exit(1)
-  }
+if (!isValidJwtSecret(process.env.JWT_SECRET)) {
+  console.error(
+    'JWT_SECRET manquant, trop court (< 32 caractères) ou égal à une valeur par défaut connue. ' +
+      "Génère-en un avec `openssl rand -hex 32` et place-le dans backend/.env.",
+  )
+  process.exit(1)
 }
-assertJwtSecret()
 
 const app = express()
 

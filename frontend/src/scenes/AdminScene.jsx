@@ -9,12 +9,19 @@ function AdminScene() {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [busyId, setBusyId] = useState(null)
+  const [page, setPage] = useState(1)
 
-  function refresh() {
-    api.getAdminUsers().then(setData).catch((err) => setError(err.message))
+  function refresh(targetPage = page) {
+    api
+      .getAdminUsers(targetPage)
+      .then((res) => {
+        setData(res)
+        setPage(targetPage)
+      })
+      .catch((err) => setError(err.message))
   }
 
-  useEffect(refresh, [])
+  useEffect(() => refresh(1), [])
 
   if (user?.role !== 'admin') return <Navigate to="/" replace />
 
@@ -124,6 +131,30 @@ function AdminScene() {
               </tbody>
             </table>
           </div>
+
+          {data.pagination && data.pagination.totalPages > 1 && (
+            <div className="admin-pagination">
+              <button
+                type="button"
+                className="btn btn--small btn--secondary"
+                disabled={page <= 1}
+                onClick={() => refresh(page - 1)}
+              >
+                ← Précédent
+              </button>
+              <span>
+                Page {data.pagination.page}/{data.pagination.totalPages} ({data.pagination.total} comptes)
+              </span>
+              <button
+                type="button"
+                className="btn btn--small btn--secondary"
+                disabled={page >= data.pagination.totalPages}
+                onClick={() => refresh(page + 1)}
+              >
+                Suivant →
+              </button>
+            </div>
+          )}
         </>
       )}
 

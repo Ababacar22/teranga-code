@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { requireAuth } from '../auth/auth.middleware.js'
 import { getPrisma } from '../db/prisma.js'
+import { computeScoreSubmission } from './challengeScoring.js'
 
 const router = Router()
 
@@ -56,18 +57,13 @@ router.post('/:id/complete', requireAuth, async (req, res) => {
   const prisma = getPrisma()
   const challenge = await prisma.challenge.findUnique({ where: { id: req.params.id } })
   if (!challenge) return res.status(404).json({ error: 'Défi introuvable.' })
-  if (challenge.fromUserId !== req.userId && challenge.toUserId !== req.userId) {
-    return res.status(403).json({ error: "Ce défi ne t'appartient pas." })
-  }
 
-  const data = challenge.fromUserId === req.userId ? { fromScore: score } : { toScore: score }
-  const bothDone =
-    (challenge.fromUserId === req.userId ? true : challenge.fromScore !== null) &&
-    (challenge.toUserId === req.userId ? true : challenge.toScore !== null)
+  const result = computeScoreSubmission({ challenge, userId: req.userId, score })
+  if (result.error) return res.status(result.error.status).json({ error: result.error.message })
 
   const updated = await prisma.challenge.update({
     where: { id: req.params.id },
-    data: { ...data, status: bothDone ? 'completed' : 'pending' },
+    data: { ...result.data, status: result.status },
     include: { fromUser: true, toUser: true },
   })
   res.json(publicChallenge(updated))

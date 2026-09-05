@@ -20,17 +20,32 @@ function summarize(user) {
   }
 }
 
+const MAX_PAGE_SIZE = 100
+
 router.get('/users', requireAuth, requireAdmin, async (req, res) => {
   const prisma = getPrisma()
-  const users = await prisma.user.findMany({ orderBy: { createdAt: 'desc' } })
+  const page = Math.max(1, Number(req.query.page) || 1)
+  const pageSize = Math.min(MAX_PAGE_SIZE, Math.max(1, Number(req.query.pageSize) || 50))
   const today = new Date().toISOString().slice(0, 10)
+
+  const [users, total, activeToday, xpAgg] = await Promise.all([
+    prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    prisma.user.count(),
+    prisma.user.count({ where: { lastActiveDate: today } }),
+    prisma.user.aggregate({ _sum: { xp: true } }),
+  ])
 
   res.json({
     users: users.map(summarize),
+    pagination: { page, pageSize, total, totalPages: Math.max(1, Math.ceil(total / pageSize)) },
     stats: {
-      total: users.length,
-      totalXp: users.reduce((sum, u) => sum + u.xp, 0),
-      activeToday: users.filter((u) => u.lastActiveDate === today).length,
+      total,
+      totalXp: xpAgg._sum.xp ?? 0,
+      activeToday,
     },
   })
 })

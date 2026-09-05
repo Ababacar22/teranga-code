@@ -1288,6 +1288,15 @@ button.code-line:hover {
   overflow-x: auto;
 }
 
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+  font-size: 13px;
+}
+
 .admin-table {
   width: 100%;
   border-collapse: collapse;
