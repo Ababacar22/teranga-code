@@ -24,6 +24,9 @@ sérieusement aux entretiens techniques d'ingénieur logiciel.
 
 ### Mise en route
 
+Prérequis et installation automatique (Mac/Windows) : voir
+[SETUP.md](SETUP.md).
+
 ```bash
 git clone https://github.com/Ababacar22/teranga-code.git
 cd teranga-code
@@ -104,6 +107,8 @@ seriously prepare for software engineering technical interviews.
   request.
 
 ### Getting started
+
+Prerequisites and automated setup (Mac/Windows): see [SETUP.md](SETUP.md).
 
 ```bash
 git clone https://github.com/Ababacar22/teranga-code.git

@@ -30,6 +30,9 @@ contenu pédagogique pour d'autres apprenants.
 
 ## Développement local
 
+Prérequis et script d'installation automatique (Mac/Windows) : voir
+[SETUP.md](SETUP.md).
+
 ```bash
 cp .env.example .env   # renseigne un JWT_SECRET (openssl rand -hex 32)
 docker compose up --build
