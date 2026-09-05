@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { requireAuth } from '../auth/auth.middleware.js'
 import { getPrisma } from '../db/prisma.js'
 import { VALID_BADGE_IDS, maxXpForBadge } from '../content/badges.js'
+import { currentWeeklyXp, applyWeeklyXp, computeWeeklyTarget } from './weeklyGoal.js'
 
 const router = Router()
 const ABSOLUTE_MAX_XP = 200
@@ -18,6 +19,8 @@ function publicProgress(user) {
     goal: user.goal,
     focusAreas: user.focusAreas,
     role: user.role,
+    weeklyXp: currentWeeklyXp(user),
+    weeklyTarget: computeWeeklyTarget(user.level, user.goal),
   }
 }
 
@@ -45,11 +48,15 @@ router.post('/xp', requireAuth, async (req, res) => {
   }
 
   const prisma = getPrisma()
-  const user = await prisma.user.update({
+  const user = await prisma.user.findUnique({ where: { id: req.userId } })
+  if (!user) return res.status(404).json({ error: 'Utilisateur introuvable.' })
+
+  const week = applyWeeklyXp(user, amount)
+  const updated = await prisma.user.update({
     where: { id: req.userId },
-    data: { xp: { increment: amount } },
+    data: { xp: { increment: amount }, weekStart: week.weekStart, weeklyXp: week.weeklyXp },
   })
-  res.json(publicProgress(user))
+  res.json(publicProgress(updated))
 })
 
 router.post('/badge', requireAuth, async (req, res) => {
@@ -93,9 +100,10 @@ router.post('/complete-topic', requireAuth, async (req, res) => {
   }
 
   const badges = perfect ? [...user.badges, badgeId] : user.badges
+  const week = applyWeeklyXp(user, amount)
   const updated = await prisma.user.update({
     where: { id: req.userId },
-    data: { xp: { increment: amount }, badges },
+    data: { xp: { increment: amount }, badges, weekStart: week.weekStart, weeklyXp: week.weeklyXp },
   })
   res.json(publicProgress(updated))
 })

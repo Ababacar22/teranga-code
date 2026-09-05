@@ -88,6 +88,7 @@ router.delete('/users/:id', requireAuth, requireAdmin, async (req, res) => {
   }
 
   await prisma.challenge.deleteMany({ where: { OR: [{ fromUserId: target.id }, { toUserId: target.id }] } })
+  await prisma.friendship.deleteMany({ where: { OR: [{ requesterId: target.id }, { addresseeId: target.id }] } })
   await prisma.user.delete({ where: { id: target.id } })
   res.json({ ok: true })
 })

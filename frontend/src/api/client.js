@@ -52,7 +52,7 @@ const remoteApi = {
     request('/progress/complete-topic', { method: 'POST', body: { badgeId, xp, perfect }, auth: true }),
   markOnboarded: () => request('/progress/onboarded', { method: 'POST', auth: true }),
   setMissed: (key, missed) => request('/progress/missed', { method: 'POST', body: { key, missed }, auth: true }),
-  getLeaderboard: () => request('/leaderboard', { auth: true }),
+  getLeaderboard: (scope = 'global') => request(`/leaderboard${scope === 'friends' ? '?scope=friends' : ''}`, { auth: true }),
   ping: () => request('/progress/ping', { method: 'POST', auth: true }),
   setWizard: (payload) => request('/progress/wizard', { method: 'POST', body: payload, auth: true }),
   createChallenge: (payload) => request('/challenges', { method: 'POST', body: payload, auth: true }),
@@ -61,6 +61,10 @@ const remoteApi = {
   getAdminUsers: (page = 1, pageSize = 50) => request(`/admin/users?page=${page}&pageSize=${pageSize}`, { auth: true }),
   resetAdminUser: (id) => request(`/admin/users/${id}/reset`, { method: 'POST', auth: true }),
   deleteAdminUser: (id) => request(`/admin/users/${id}`, { method: 'DELETE', auth: true }),
+  getFriends: () => request('/friends', { auth: true }),
+  sendFriendRequest: (pseudo) => request('/friends', { method: 'POST', body: { pseudo }, auth: true }),
+  acceptFriendRequest: (id) => request(`/friends/${id}/accept`, { method: 'POST', auth: true }),
+  removeFriend: (id) => request(`/friends/${id}`, { method: 'DELETE', auth: true }),
 }
 
 export const api = isDesktopApp ? localApi : remoteApi

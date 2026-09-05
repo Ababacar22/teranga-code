@@ -1,3 +1,5 @@
+import { currentWeeklyXp, applyWeeklyXp, computeWeeklyTarget } from '../lib/weeklyGoal'
+
 const USERS_KEY = 'terangaLocalUsers'
 const SESSION_KEY = 'terangaLocalSession'
 
@@ -46,6 +48,8 @@ function toPublicUser(user) {
     goal: user.goal,
     focusAreas: user.focusAreas,
     role: user.role,
+    weeklyXp: currentWeeklyXp(user),
+    weeklyTarget: computeWeeklyTarget(user.level, user.goal),
   }
 }
 
@@ -98,6 +102,8 @@ export const localApi = {
       streakCurrent: 0,
       streakLongest: 0,
       lastActiveDate: null,
+      weekStart: null,
+      weeklyXp: 0,
       level: null,
       goal: null,
       focusAreas: [],
@@ -127,6 +133,9 @@ export const localApi = {
   async addXp(amount) {
     const { users, user } = currentUser()
     user.xp += amount
+    const week = applyWeeklyXp(user, amount)
+    user.weekStart = week.weekStart
+    user.weeklyXp = week.weeklyXp
     saveCurrent(users, user)
     return toPublicUser(user)
   },
@@ -141,7 +150,11 @@ export const localApi = {
   async completeTopic(badgeId, xp, perfect) {
     const { users, user } = currentUser()
     if (user.badges.includes(badgeId)) return toPublicUser(user)
-    user.xp += Number(xp) || 0
+    const amount = Number(xp) || 0
+    user.xp += amount
+    const week = applyWeeklyXp(user, amount)
+    user.weekStart = week.weekStart
+    user.weeklyXp = week.weeklyXp
     if (perfect) user.badges = [...user.badges, badgeId]
     saveCurrent(users, user)
     return toPublicUser(user)
@@ -214,5 +227,21 @@ export const localApi = {
 
   async deleteAdminUser() {
     throw new Error("Le panel d'administration nécessite un serveur en ligne — indisponible en mode local.")
+  },
+
+  async getFriends() {
+    return []
+  },
+
+  async sendFriendRequest() {
+    throw new Error('Les amis nécessitent plusieurs comptes en ligne — indisponible en mode local.')
+  },
+
+  async acceptFriendRequest() {
+    throw new Error('Les amis nécessitent plusieurs comptes en ligne — indisponible en mode local.')
+  },
+
+  async removeFriend() {
+    throw new Error('Les amis nécessitent plusieurs comptes en ligne — indisponible en mode local.')
   },
 }

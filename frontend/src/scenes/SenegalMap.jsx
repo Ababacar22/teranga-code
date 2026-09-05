@@ -7,6 +7,7 @@ import SenegalLeafletMap from '../components/SenegalLeafletMap'
 import OnboardingFlow from '../components/OnboardingFlow'
 import TodayCard from '../components/TodayCard'
 import DailyChallengeCard from '../components/DailyChallengeCard'
+import WeeklyGoalCard from '../components/WeeklyGoalCard'
 import { useProgress } from '../features/progression/useProgress'
 import { useAuth } from '../features/auth/AuthContext'
 import { getRecommendedNext } from '../lib/learningPath'
@@ -65,6 +66,8 @@ function SenegalMap() {
     streakLongest,
     goal,
     focusAreas,
+    weeklyXp,
+    weeklyTarget,
     isGuest,
     offline,
     completeOnboarding,
@@ -168,6 +171,7 @@ function SenegalMap() {
       </header>
 
       <DailyChallengeCard />
+      <WeeklyGoalCard weeklyXp={weeklyXp} weeklyTarget={weeklyTarget} />
       <TodayCard goal={goal} recommended={recommended} streakCurrent={streakCurrent} missedCount={missedQuestions.length} />
 
       <SenegalLeafletMap

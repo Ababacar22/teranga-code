@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { api, NetworkError } from '../../api/client'
 import { useAuth } from '../auth/AuthContext'
 import { pushToQueue } from '../../lib/offlineQueue'
+import { currentWeeklyXp, applyWeeklyXp, computeWeeklyTarget } from '../../lib/weeklyGoal'
 
 function guardedCall(user, type, payload, run) {
   if (user?.isGuest) return Promise.resolve() // pas de compte serveur à synchroniser : la progression reste locale
@@ -24,10 +25,15 @@ export function useProgress() {
   const focusAreas = user?.focusAreas ?? []
   const wizardDone = Boolean(user?.level)
   const isGuest = Boolean(user?.isGuest)
+  const weeklyXp = user ? currentWeeklyXp(user) : 0
+  const weeklyTarget = computeWeeklyTarget(level, goal)
 
   const addXp = useCallback(
     (amount) => {
-      setUser((prev) => ({ ...prev, xp: (prev?.xp ?? 0) + amount }))
+      setUser((prev) => {
+        const week = applyWeeklyXp(prev ?? {}, amount)
+        return { ...prev, xp: (prev?.xp ?? 0) + amount, ...week }
+      })
       guardedCall(user, 'addXp', { amount }, () => api.addXp(amount))
     },
     [setUser, user],
@@ -87,10 +93,12 @@ export function useProgress() {
     (badgeId, xp, perfect) => {
       setUser((prev) => {
         if (prev?.badges?.includes(badgeId)) return prev
+        const week = applyWeeklyXp(prev ?? {}, xp)
         return {
           ...prev,
           xp: (prev?.xp ?? 0) + xp,
           badges: perfect ? [...(prev?.badges ?? []), badgeId] : (prev?.badges ?? []),
+          ...week,
         }
       })
       return guardedCall(user, 'completeTopic', { badgeId, xp, perfect }, () =>
@@ -124,6 +132,8 @@ export function useProgress() {
     level,
     goal,
     focusAreas,
+    weeklyXp,
+    weeklyTarget,
     wizardDone,
     isGuest,
     offline,

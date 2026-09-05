@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "test": "node --test src/config/jwtSecret.test.js src/challenges/challengeScoring.test.js"
+    "test": "node --test src/config/jwtSecret.test.js src/challenges/challengeScoring.test.js src/progress/weeklyGoal.test.js src/friends/friendLogic.test.js"
   },
   "keywords": [],
   "author": "",

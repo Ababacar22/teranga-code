@@ -7,6 +7,7 @@ import progressRoutes from './progress/progress.routes.js'
 import leaderboardRoutes from './leaderboard/leaderboard.routes.js'
 import challengesRoutes from './challenges/challenges.routes.js'
 import adminRoutes from './admin/admin.routes.js'
+import friendsRoutes from './friends/friends.routes.js'
 import { isValidJwtSecret } from './config/jwtSecret.js'
 
 if (!isValidJwtSecret(process.env.JWT_SECRET)) {
@@ -43,6 +44,7 @@ app.use('/progress', progressRoutes)
 app.use('/leaderboard', leaderboardRoutes)
 app.use('/challenges', challengesRoutes)
 app.use('/admin', adminRoutes)
+app.use('/friends', friendsRoutes)
 
 app.use((err, req, res, next) => {
   console.error(err)
