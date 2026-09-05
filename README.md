@@ -1,13 +1,23 @@
 # Teranga Code — jeu interactif d'entraînement aux entretiens dev
 
-Jeu web éducatif, ambiance sénégalaise, pour s'entraîner sérieusement aux
-entretiens techniques d'ingénieur logiciel (algorithmie, architecture,
-system design, outils, culture dev, entretiens comportementaux...) en
-s'amusant — sous la forme d'un voyage à travers les villes du Sénégal,
-chacune associée à une rubrique technique à débloquer.
+**Teranga Code** est une initiative de [gainde-it.com](https://gainde-it.com),
+lancée par **Khalifa Ababacar DIALLO**.
 
-Open source, pour aider d'autres apprenants sénégalais (et au-delà) à
-progresser en jouant.
+## But de la plateforme
+
+Beaucoup d'étudiants et jeunes ingénieurs sénégalais arrivent en entretien
+technique avec de bonnes bases mais peu d'entraînement au format réel de
+l'exercice — que ce soit pour un poste au Sénégal, en France, aux
+États-Unis ou dans le Golfe. Teranga Code transforme cette préparation en
+un jeu sérieux : chaque ville du Sénégal correspond à une rubrique
+technique (algorithmie, architecture, system design, outils, qualité et
+sécurité, entretien comportemental...) à débloquer en progressant, avec du
+contenu annoté, des démonstrations visuelles interactives, des quiz notés
+par niveau de difficulté et une simulation d'entretien complète.
+
+L'objectif : rendre cette préparation accessible, gratuite et motivante —
+et, en la rendant open source, permettre à la communauté d'enrichir le
+contenu pédagogique pour d'autres apprenants.
 
 ## Stack
 
@@ -49,6 +59,11 @@ npm run desktop:build   # génère les installateurs Mac/Windows dans src-tauri/
 
 L'app desktop fonctionne 100 % hors-ligne, avec création de compte locale
 (aucun serveur requis).
+
+## Contribuer
+
+Les contributions sont bienvenues — voir [CONTRIBUTING.md](CONTRIBUTING.md)
+(français et anglais).
 
 ## Licence
 
