@@ -187,6 +187,14 @@
       }
     ],
     "culture": "REST n'est pas la seule culture d'API : GraphQL (Facebook) et gRPC (Google) ont chacun leurs communautés convaincues que leur approche est supérieure. REST reste dominant par simplicité et universalité, mais le débat \"REST vs GraphQL\" revient très souvent en entretien architecture.",
+    "pionnier": {
+      "nom": "Roy Fielding",
+      "portrait": "Informaticien américain, co-auteur de la spécification HTTP/1.1 et coïnventeur du serveur Apache HTTP.",
+      "contribution": "Il a défini l'architecture REST (Representational State Transfer) dans le chapitre 5 de sa thèse de doctorat en 2000, à l'université de Californie à Irvine.",
+      "problematique": "Le web avait besoin d'un style d'architecture clair pour construire des systèmes distribués qui restent scalables, simples et évolutifs, alors que le nombre d'applications communiquant via HTTP explosait.",
+      "solution": "Il a formalisé un ensemble de contraintes (client-serveur, absence d'état côté serveur, interface uniforme, système en couches) décrivant comment le web fonctionnait déjà avec HTTP, plutôt que d'inventer un nouveau protocole.",
+      "resultat": "REST est devenu le style d'architecture dominant pour les API web, adopté aujourd'hui par la quasi-totalité des services en ligne, bien avant l'essor plus récent de GraphQL ou gRPC."
+    },
     "ambiguite": {
       "question": "Une API \"RESTful\" respecte-t-elle toujours strictement REST ?",
       "reponse": "Rarement à 100% : REST défini par Roy Fielding impose des contraintes strictes (HATEOAS notamment, quasi jamais implémenté). En pratique, la plupart des \"API REST\" du marché ne respectent qu'une partie des contraintes."
@@ -348,6 +356,14 @@
       }
     ],
     "culture": "La \"guerre SQL vs NoSQL\" des années 2010 (portée par le boom de MongoDB) s'est largement calmée : la culture actuelle privilégie le pragmatisme — utiliser PostgreSQL par défaut, et NoSQL seulement pour des besoins précis de scalabilité ou de flexibilité de schéma.",
+    "pionnier": {
+      "nom": "Edgar F. Codd",
+      "portrait": "Mathématicien et informaticien britannique, chercheur chez IBM à partir des années 1960.",
+      "contribution": "Il a publié en 1970 l'article fondateur du modèle relationnel (\"A Relational Model of Data for Large Shared Data Banks\"), à l'origine des bases de données SQL.",
+      "problematique": "Les bases de données de l'époque organisaient les données selon leur implémentation physique de stockage, ce qui rendait les applications fragiles au moindre changement de structure interne.",
+      "solution": "Il a proposé de représenter les données sous forme de tables (relations) manipulables par une algèbre relationnelle, indépendamment de la façon dont elles sont physiquement stockées.",
+      "resultat": "Ce modèle a donné naissance au langage SQL et aux systèmes de gestion de bases de données relationnelles (SGBDR) comme Oracle, PostgreSQL ou MySQL, qui restent la norme dominante des données structurées près de 55 ans plus tard."
+    },
     "ambiguite": {
       "question": "PostgreSQL est-il purement une base SQL ?",
       "reponse": "Pas seulement : PostgreSQL supporte nativement des colonnes JSON/JSONB, ce qui lui permet d'imiter certains usages NoSQL tout en gardant les garanties ACID. La frontière SQL/NoSQL est plus floue qu'il y a dix ans."
@@ -511,6 +527,14 @@
       }
     ],
     "culture": "Les microservices ont connu un effet de mode fort dans les années 2015-2020 ; la culture actuelle est plus nuancée, avec un mouvement de retour vers des \"monolithes modulaires\" chez certaines entreprises (dont des cas médiatisés comme Amazon Prime Video).",
+    "pionnier": {
+      "nom": "Adrian Cockcroft",
+      "portrait": "Ingénieur logiciel, ancien Cloud Architect en chef de Netflix entre 2007 et 2013.",
+      "contribution": "Il a dirigé la migration de Netflix depuis un monolithe hébergé dans ses propres centres de données vers une architecture en microservices déployée sur AWS, et a beaucoup communiqué publiquement sur cette expérience.",
+      "problematique": "Netflix devait absorber une croissance massive et rapide de son service de streaming vidéo, alors que son architecture monolithique rendait les déploiements lents et fragiles : une panne dans une partie du système pouvait faire tomber tout le site.",
+      "solution": "Découper l'application en services indépendants, chacun responsable d'un domaine métier précis (facturation, recommandations, lecture vidéo...), déployables et scalables séparément, avec une forte culture de résilience (dont l'outil Chaos Monkey).",
+      "resultat": "Cette migration, achevée vers 2012, a fortement contribué à populariser l'architecture microservices dans l'industrie et a permis à Netflix de soutenir sa croissance mondiale sans repenser son architecture à chaque palier."
+    },
     "ambiguite": {
       "question": "Avoir plusieurs services = avoir des microservices ?",
       "reponse": "Pas nécessairement : découper une application en plusieurs services n'en fait des microservices que s'ils sont vraiment indépendants (déploiement, base de données, équipe). Des services qui partagent la même base de données sont plutôt un monolithe distribué."
@@ -674,6 +698,14 @@
       }
     ],
     "culture": "\"There are only two hard things in Computer Science: cache invalidation and naming things\" est une citation culte (Phil Karlton) que tout développeur backend croise tôt ou tard.",
+    "pionnier": {
+      "nom": "Brad Fitzpatrick",
+      "portrait": "Développeur américain, créateur du site communautaire LiveJournal à la fin des années 1990.",
+      "contribution": "Il a créé memcached en 2003 pour accélérer LiveJournal, un système de cache clé-valeur en mémoire devenu depuis un standard de l'industrie et à l'origine directe d'outils comme Redis.",
+      "problematique": "LiveJournal, un des plus gros sites communautaires de l'époque, voyait sa base de données saturée par des millions de requêtes de lecture répétées, ce qui ralentissait fortement le site sous forte charge.",
+      "solution": "Stocker en mémoire vive, sur un cluster de serveurs dédiés, les résultats de requêtes coûteuses déjà calculées, pour les servir instantanément lors des demandes suivantes plutôt que de retourner à la base de données à chaque fois.",
+      "resultat": "Memcached a ensuite été adopté par des géants du web comme Facebook, Wikipedia ou YouTube pour absorber un trafic massif ; Facebook a documenté publiquement en 2013 (dans le papier \"Scaling Memcache at Facebook\") comment il exploitait des milliers de serveurs memcached pour répondre à des milliards de requêtes par seconde."
+    },
     "ambiguite": {
       "question": "Un cache expire-t-il toujours au bon moment ?",
       "reponse": "Non, c'est le piège classique : un TTL trop long sert des données périmées, un TTL trop court annule les bénéfices du cache. Il n'y a pas de bonne réponse universelle, seulement un compromis à ajuster selon la fréquence de changement réelle des données."

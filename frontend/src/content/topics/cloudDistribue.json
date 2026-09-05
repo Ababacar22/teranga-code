@@ -115,6 +115,14 @@
       }
     ],
     "culture": "Le principe du load balancing est bien plus ancien qu'internet — les standards téléphoniques et les systèmes de distribution d'énergie répartissaient déjà la charge entre plusieurs lignes ou centrales bien avant le web. C'est un des rares concepts d'ingénierie logicielle directement hérité d'autres industries.",
+    "pionnier": {
+      "nom": "Philip Emeagwali",
+      "portrait": "Informaticien né au Nigeria, autodidacte en grande partie, il a mené des recherches sur le calcul parallèle massif aux États-Unis dans les années 1980.",
+      "contribution": "En 1989, il a remporté le prestigieux prix Gordon Bell pour avoir utilisé 65 536 processeurs interconnectés fonctionnant en parallèle afin de simuler l'écoulement du pétrole dans un gisement — un des premiers usages pratiques et primés du calcul massivement parallèle.",
+      "problematique": "Les simulations pétrolières de cette ampleur nécessitaient une puissance de calcul qu'aucun superordinateur monolithique de l'époque ne pouvait fournir à un coût raisonnable.",
+      "solution": "Répartir le calcul sur des dizaines de milliers de processeurs travaillant simultanément, chacun traitant une portion du problème — le même principe qui sous-tend aujourd'hui la répartition de charge sur des clusters de serveurs.",
+      "resultat": "Sa simulation s'est exécutée plus vite que sur les superordinateurs Cray de l'époque, une démonstration marquante que la puissance collective de nombreuses machines simples peut dépasser celle d'une seule machine très puissante."
+    },
     "ambiguite": {
       "question": "Ajouter plus de serveurs derrière un load balancer résout-il toujours un problème de performance ?",
       "reponse": "Pas forcément : si le goulot d'étranglement est ailleurs (une base de données unique partagée par tous les serveurs, par exemple), ajouter des serveurs applicatifs ne fait que déplacer la charge vers ce même point unique, sans le résoudre."
@@ -251,6 +259,14 @@
       }
     ],
     "culture": "Kafka, créé chez LinkedIn puis rendu open source, tire son nom de l'écrivain Franz Kafka — son créateur a expliqué avoir choisi ce nom simplement parce que c'était \"un système d'écriture optimisé\", en clin d'œil à l'écrivain, sans lien direct avec son œuvre.",
+    "pionnier": {
+      "nom": "John O'Hara",
+      "portrait": "Ingénieur chez JPMorgan Chase, à l'origine de l'initiative ayant lancé le développement d'AMQP (Advanced Message Queuing Protocol) en 2003.",
+      "contribution": "O'Hara a initié et porté le projet visant à créer un protocole de messagerie asynchrone ouvert et standardisé, plutôt que de dépendre de systèmes propriétaires fermés propres à chaque fournisseur.",
+      "problematique": "Les grandes banques et entreprises utilisaient des systèmes de messagerie asynchrone propriétaires et incompatibles entre eux, ce qui compliquait l'intégration entre systèmes financiers de fournisseurs différents et créait une forte dépendance à un seul éditeur.",
+      "solution": "Concevoir un protocole de messagerie ouvert et interopérable (AMQP), utilisable par n'importe quel système ou fournisseur, pour que producteurs et consommateurs de messages puissent communiquer sans être enfermés dans une technologie unique.",
+      "resultat": "AMQP est devenu un standard ouvert (normalisé par l'OASIS puis l'ISO/IEC), à la base de systèmes de messagerie largement utilisés aujourd'hui comme RabbitMQ, qui implémente ce protocole."
+    },
     "ambiguite": {
       "question": "Une file de messages garantit-elle que les messages sont traités dans l'ordre exact où ils ont été envoyés ?",
       "reponse": "Ça dépend du système et de sa configuration : certains garantissent un ordre strict par \"partition\" ou par file, mais avec plusieurs consommateurs en parallèle, l'ordre global de traitement n'est souvent PAS garanti — un point de conception à vérifier selon le besoin réel."
@@ -387,6 +403,14 @@
       }
     ],
     "culture": "Le théorème CAP, formulé par Eric Brewer en 2000, a été tellement cité (et parfois mal compris) dans l'industrie que Brewer lui-même a publié une clarification en 2012 (\"CAP Twelve Years Later\") pour corriger des simplifications abusives — un cas assez rare où l'auteur original doit recadrer l'usage populaire de sa propre théorie.",
+    "pionnier": {
+      "nom": "Eric Brewer",
+      "portrait": "Informaticien américain, professeur à l'université de Berkeley, qui a énoncé la conjecture CAP lors d'un discours donné à la conférence PODC (Principles of Distributed Computing) en 2000.",
+      "contribution": "Brewer a formulé la conjecture selon laquelle un système distribué ne peut garantir simultanément Cohérence, Disponibilité et tolérance au Partitionnement (CAP) en cas de coupure réseau. Seth Gilbert et Nancy Lynch en ont publié une preuve formelle en 2002, transformant la conjecture en théorème reconnu.",
+      "problematique": "Les concepteurs de systèmes distribués à grande échelle (comme ceux qu'utilisait Brewer chez Inktomi) devaient choisir des compromis techniques sans cadre théorique clair pour raisonner sur ce qui était réellement possible ou impossible face à une panne réseau.",
+      "solution": "Formaliser les trois propriétés en jeu (Cohérence, Disponibilité, tolérance au Partitionnement) et démontrer qu'un système ne peut garantir les trois en même temps pendant une partition réseau, forçant un choix explicite entre cohérence et disponibilité.",
+      "resultat": "Le théorème CAP est devenu un cadre de référence incontournable pour concevoir et comparer les bases de données distribuées (les qualifiant de \"CP\" ou \"AP\"), bien que Brewer ait dû préciser en 2012 que le compromis ne s'applique que pendant une partition active, pas en permanence."
+    },
     "ambiguite": {
       "question": "Le théorème CAP signifie-t-il qu'un système doit choisir C OU A en permanence, tout le temps ?",
       "reponse": "Non, souvent mal compris : le compromis ne s'applique QUE pendant une partition réseau active. En fonctionnement normal (sans coupure), un système peut très bien offrir à la fois cohérence et disponibilité — CAP décrit un choix à faire uniquement dans le cas dégradé."
@@ -520,6 +544,14 @@
       }
     ],
     "culture": "Le terme \"serverless\" fait toujours débat dans la communauté : beaucoup d'ingénieurs le trouvent trompeur puisque des serveurs bien réels exécutent le code — certains préfèrent parler de \"Functions as a Service\" (FaaS), plus précis mais moins accrocheur marketing.",
+    "pionnier": {
+      "nom": "Tim Wagner",
+      "portrait": "Ingénieur logiciel ayant dirigé chez Amazon l'équipe produit à l'origine du lancement d'AWS Lambda en 2014, l'un des tout premiers services serverless grand public.",
+      "contribution": "Wagner a piloté la conception et le lancement d'AWS Lambda, le service qui a popularisé le modèle \"Function as a Service\" : exécuter du code à la demande, déclenché par des événements, sans que le développeur ait à gérer ni provisionner de serveur.",
+      "problematique": "Les développeurs devaient provisionner, dimensionner et maintenir des serveurs en continu même pour du code déclenché ponctuellement par des événements, ce qui gaspillait des ressources et ajoutait une charge opérationnelle importante pour des tâches souvent simples.",
+      "solution": "Proposer une plateforme où le code est déployé comme une fonction indépendante, exécutée automatiquement par le fournisseur cloud en réponse à un événement, avec mise à l'échelle et arrêt automatiques, sans serveur à gérer par le développeur.",
+      "resultat": "AWS Lambda, lancé en 2014, a déclenché l'essor du marché serverless, suivi rapidement par des offres concurrentes (Google Cloud Functions, Azure Functions), et a durablement changé la façon dont de nombreuses applications événementielles sont architecturées."
+    },
     "ambiguite": {
       "question": "Le serverless élimine-t-il complètement le besoin de penser à l'infrastructure ?",
       "reponse": "Non : il élimine la gestion des SERVEURS (patchs, scaling manuel, provisionnement), mais des sujets comme les limites de durée d'exécution, le cold start, la configuration des permissions ou le monitoring restent bien la responsabilité du développeur."

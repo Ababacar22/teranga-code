@@ -183,6 +183,14 @@
       }
     ],
     "culture": "\"Rebase vs merge\" est l'un des débats les plus tenaces de la culture dev : certaines équipes imposent un historique linéaire (rebase systématique), d'autres préfèrent préserver l'historique réel des merges. Aucune des deux n'est \"fausse\" — c'est une convention d'équipe à connaître et respecter.",
+    "pionnier": {
+      "nom": "Linus Torvalds",
+      "portrait": "Ingénieur logiciel finlandais-américain, déjà connu pour avoir créé le noyau Linux en 1991, il maintenait en 2005 le développement du noyau Linux avec des milliers de contributeurs dispersés dans le monde.",
+      "contribution": "Il a conçu et développé Git en 2005, un système de contrôle de version distribué devenu la norme de facto pour la gestion du code source dans l'industrie du logiciel.",
+      "problematique": "Le projet Linux utilisait jusqu'alors BitKeeper, un outil propriétaire, dont l'éditeur a retiré l'accès gratuit à la communauté en 2005, laissant les mainteneurs du noyau sans outil de gestion de version adapté à l'échelle et à la structure très distribuée de leurs contributeurs.",
+      "solution": "En l'espace de quelques semaines, il a écrit Git : un système décentralisé où chaque développeur possède une copie complète de l'historique, conçu pour la rapidité et l'intégrité des données (via des sommes de contrôle SHA-1) plutôt que pour un modèle centralisé client-serveur.",
+      "resultat": "Git est aujourd'hui l'outil de gestion de version le plus utilisé au monde, à la base de plateformes comme GitHub et GitLab, et une compétence quasi universellement exigée en développement logiciel."
+    },
     "ambiguite": {
       "question": "git pull et git fetch + git merge, c'est pareil ?",
       "reponse": "Oui : git pull est un raccourci qui fait fetch puis merge (ou rebase selon la config) automatiquement. La différence pratique : fetch seul te laisse le temps d'inspecter les changements avant de les intégrer, pull le fait en une seule étape sans ce contrôle."
@@ -356,6 +364,14 @@
       }
     ],
     "culture": "\"Ça marche sur Docker\" est devenu une blague récurrente chez les devs qui ont vécu l'ère pré-Docker du \"ça marche sur ma machine\" — Docker n'élimine pas tous les bugs d'environnement, mais il en supprime une classe entière liée aux versions de dépendances système.",
+    "pionnier": {
+      "nom": "Solomon Hykes",
+      "portrait": "Entrepreneur franco-américain, fondateur et ancien PDG de dotCloud, une plateforme de PaaS (Platform-as-a-Service) fondée en 2010.",
+      "contribution": "Il a créé Docker, présenté publiquement en 2013, qui a popularisé la conteneurisation comme standard pour empaqueter et déployer des applications logicielles.",
+      "problematique": "Les équipes de dotCloud devaient déployer des applications écrites dans des langages et environnements très variés sur une infrastructure partagée, sans que les dépendances des uns interfèrent avec celles des autres — le problème du \"ça marche sur ma machine\" posé à l'échelle d'une plateforme entière.",
+      "solution": "Il a construit Docker au-dessus de fonctionnalités déjà présentes dans le noyau Linux (cgroups, namespaces) pour offrir une interface simple permettant d'empaqueter une application et ses dépendances dans une image portable, exécutée de façon isolée et reproductible sur n'importe quelle machine.",
+      "resultat": "Docker a déclenché l'adoption massive des conteneurs dans l'industrie, ouvrant la voie à des outils comme Kubernetes, et est devenu une compétence quasi incontournable en développement et déploiement logiciel moderne."
+    },
     "ambiguite": {
       "question": "Une image Docker et un conteneur Docker, c'est la même chose ?",
       "reponse": "Non : l'image est un modèle figé (comme une classe), le conteneur est une instance en cours d'exécution de cette image (comme un objet). On peut lancer plusieurs conteneurs à partir de la même image, exactement comme on instancie plusieurs objets à partir d'une même classe."
@@ -541,6 +557,14 @@
       }
     ],
     "culture": "L'acronyme CI/CD cache une vraie nuance culturelle en entreprise : certaines équipes n'ont que de l'intégration continue (tests auto) sans jamais déployer automatiquement, d'autres poussent jusqu'au déploiement continu total. Le niveau de maturité CI/CD est souvent un bon indicateur de la culture d'ingénierie d'une entreprise.",
+    "pionnier": {
+      "nom": "Martin Fowler",
+      "portrait": "Auteur et consultant britannique en génie logiciel, figure influente du mouvement agile, associé au cabinet ThoughtWorks depuis la fin des années 1990.",
+      "contribution": "Il a largement théorisé et popularisé la pratique de l'intégration continue à travers son article de référence \"Continuous Integration\" (publié en 2000, régulièrement mis à jour depuis), contribuant à en faire une pratique standard du développement logiciel.",
+      "problematique": "Dans de nombreuses équipes de l'époque, le code de plusieurs développeurs n'était intégré ensemble que rarement et tardivement, ce qui provoquait des conflits de fusion complexes et des bugs découverts trop tard, souvent juste avant une livraison.",
+      "solution": "Il a formalisé la pratique consistant à intégrer le code de toute l'équipe très fréquemment (plusieurs fois par jour), chaque intégration étant vérifiée automatiquement par une build et une suite de tests, afin de détecter les problèmes le plus tôt possible.",
+      "resultat": "L'intégration continue est devenue une pratique standard de l'industrie, à la base des pipelines CI/CD modernes (GitHub Actions, GitLab CI, Jenkins...) utilisés par la quasi-totalité des équipes de développement professionnelles aujourd'hui."
+    },
     "ambiguite": {
       "question": "Continuous Deployment et Continuous Delivery, quelle différence exactement ?",
       "reponse": "Les deux préparent automatiquement chaque changement pour la production. La différence : Continuous Delivery s'arrête juste avant la mise en prod (validation humaine finale), Continuous Deployment va jusqu'au bout automatiquement, sans intervention humaine."
@@ -715,6 +739,14 @@
       }
     ],
     "culture": "La ligne de commande Linux reste un vrai marqueur culturel dans la tech : certains développeurs web n'y touchent presque jamais grâce aux interfaces graphiques modernes, d'autres (notamment côté DevOps/SRE) y passent le plus clair de leur temps.",
+    "pionnier": {
+      "nom": "Linus Torvalds",
+      "portrait": "Étudiant en informatique à l'université d'Helsinki (Finlande) en 1991, alors âgé de 21 ans, il utilisait Minix, un système Unix-like conçu à des fins pédagogiques.",
+      "contribution": "Il a créé le noyau Linux, annoncé publiquement le 25 août 1991, qui allait devenir le noyau libre le plus utilisé au monde, à la base d'innombrables distributions et systèmes (Android, la majorité des serveurs web, etc.).",
+      "problematique": "Les systèmes Unix commerciaux de l'époque étaient coûteux et fermés, et Minix, bien que libre pour l'étude, restait limité par sa vocation pédagogique et sa licence, sans possibilité réelle de modification ni de redistribution libre à grande échelle.",
+      "solution": "Il a développé, seul dans un premier temps puis avec l'aide croissante de contributeurs recrutés via Usenet, un noyau Unix-like complet publié sous licence libre (GPL), ouvert aux contributions de quiconque.",
+      "resultat": "Linux est aujourd'hui le noyau derrière la majorité des serveurs web et du cloud, la totalité des systèmes Android, et une part importante de l'infrastructure d'Internet — l'un des plus grands projets collaboratifs open source de l'histoire."
+    },
     "ambiguite": {
       "question": "sudo et root, est-ce la même chose ?",
       "reponse": "root est l'utilisateur administrateur du système, avec tous les droits. sudo (\"superuser do\") est une commande qui permet à un utilisateur normal d'exécuter une action précise avec les droits de root, sans se connecter en tant que root en permanence — une pratique de sécurité plus fine."
@@ -876,6 +908,14 @@
       }
     ],
     "culture": "Le \"dependency hell\" (l'enfer des dépendances) est un vécu culturel partagé par tous les développeurs ayant travaillé sur un vieux projet : des dizaines de dépendances aux versions incompatibles entre elles, impossibles à mettre à jour sans tout casser.",
+    "pionnier": {
+      "nom": "Tom Preston-Werner",
+      "portrait": "Développeur américain, co-fondateur de GitHub (2008).",
+      "contribution": "Il a formalisé et publié la spécification du versionnage sémantique (Semantic Versioning, ou SemVer) sur semver.org à partir de 2009-2011, proposant une convention claire pour numéroter les versions des logiciels.",
+      "problematique": "Avant SemVer, les numéros de version des librairies suivaient des conventions très différentes selon les projets, rendant difficile pour les développeurs de savoir si une mise à jour risquait de casser leur code ou non.",
+      "solution": "Il a proposé le format MAJOR.MINOR.PATCH avec des règles précises : incrémenter MAJOR pour un changement non rétrocompatible, MINOR pour une nouvelle fonctionnalité rétrocompatible, PATCH pour un correctif rétrocompatible.",
+      "resultat": "SemVer est devenu la convention de facto adoptée par la quasi-totalité des gestionnaires de paquets modernes (npm, Cargo, et bien d'autres avec des variantes), et les opérateurs comme `^` et `~` dans package.json reposent directement sur cette spécification."
+    },
     "ambiguite": {
       "question": "Mettre à jour une dépendance mineure (minor) est-ce toujours sans risque ?",
       "reponse": "En théorie oui selon semver (une mise à jour minor doit rester rétrocompatible), en pratique non : des bugs de mauvais versionnage existent. D'où l'usage de package-lock.json pour figer les versions testées plutôt que de faire confiance aveuglément au semver."

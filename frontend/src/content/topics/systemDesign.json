@@ -96,6 +96,14 @@
       }
     ],
     "culture": "Dans les grandes entreprises américaines (Google, Meta, Amazon...), le system design interview compte souvent autant que l'algorithmique pour les postes à partir de 3-4 ans d'expérience — et devient déterminant à partir du niveau senior.",
+    "pionnier": {
+      "nom": "Werner Vogels",
+      "portrait": "CTO d'Amazon depuis 2005, il a supervisé la transformation de l'infrastructure interne d'Amazon en services distribués à très grande échelle.",
+      "contribution": "Il a formalisé et diffusé publiquement, via des conférences (AWS re:Invent) et son blog 'All Things Distributed', les principes de raisonnement sur les compromis d'architecture qui structurent aujourd'hui l'entretien de system design.",
+      "problematique": "Amazon devait faire évoluer un système monolithique vers une architecture capable de supporter une croissance massive et imprévisible du trafic, sans qu'aucune méthode partagée n'existe pour raisonner sur ces choix.",
+      "solution": "Il a promu une approche systématique : cadrer les exigences, estimer l'échelle, puis choisir consciemment des compromis (cohérence, disponibilité, latence) plutôt que d'appliquer une architecture universelle.",
+      "resultat": "Cette méthode de raisonnement, popularisée dans l'industrie, est devenue la grille de référence utilisée dans la quasi-totalité des entretiens de system design aujourd'hui."
+    },
     "ambiguite": {
       "question": "Faut-il connaître la 'bonne' architecture par cœur avant l'entretien ?",
       "reponse": "Non — et c'est un piège courant. Réciter une architecture apprise par cœur sans l'adapter aux contraintes données par l'interviewer (échelle différente, contrainte de coût, contrainte de cohérence) est immédiatement repéré. Ce qui compte est la méthode de raisonnement, transférable à n'importe quel problème."
@@ -187,6 +195,14 @@
       }
     ],
     "culture": "Le raccourcisseur d'URL est le 'Hello World' du system design interview — quasiment tous les candidats y sont confrontés au moins une fois, souvent dès le premier entretien technique senior.",
+    "pionnier": {
+      "nom": "Kevin Gilbertson",
+      "portrait": "Développeur ayant créé TinyURL en 2002, l'un des tout premiers services de raccourcissement d'URL largement adoptés sur le web.",
+      "contribution": "Il a popularisé le concept de service web dédié à la transformation d'une URL longue en une URL courte redirigeant vers l'originale.",
+      "problematique": "Au début des années 2000, les URLs longues généraient des problèmes concrets : elles étaient tronquées dans les emails, cassées sur plusieurs lignes dans les forums, ou dépassaient les limites de caractères de certains formulaires et messageries.",
+      "solution": "TinyURL proposait un service simple : soumettre une URL longue et recevoir en retour une URL courte unique qui redirige automatiquement vers la page originale.",
+      "resultat": "Le service a été adopté massivement et a inspiré la génération suivante de raccourcisseurs (bit.ly, t.co), rendant ce cas d'usage un classique incontournable du system design interview."
+    },
     "ambiguite": {
       "question": "Faut-il absolument éviter les collisions de codes courts ?",
       "reponse": "Pas à tout prix : une approche par hash tronqué peut fonctionner si on ajoute une vérification d'unicité en base et une re-génération en cas de collision. Le vrai compromis à énoncer en entretien est : simplicité d'implémentation (hash) contre garantie d'unicité immédiate (compteur), pas une réponse binaire 'bien/mal'."
@@ -277,6 +293,14 @@
       }
     ],
     "culture": "Twitter/X a publiquement documenté être passé par plusieurs générations d'architecture de fil d'actualité — c'est l'un des cas d'étude system design les plus référencés et discutés dans l'industrie.",
+    "pionnier": {
+      "nom": "Ruchi Sanghvi",
+      "portrait": "Ingénieure et product manager chez Facebook, elle a été la première femme ingénieure de l'entreprise et a dirigé l'équipe produit derrière le lancement du News Feed en 2006.",
+      "contribution": "Elle a piloté la conception et le lancement du News Feed, l'un des tout premiers fils d'actualité agrégés à grande échelle sur un réseau social.",
+      "problematique": "Les utilisateurs de Facebook devaient visiter individuellement chaque profil pour voir les mises à jour de leurs amis, ce qui rendait la découverte de nouveau contenu lente et fragmentée.",
+      "solution": "Le News Feed agrégeait automatiquement en un flux unique les activités récentes du réseau de contacts de chaque utilisateur, posant très tôt le problème de diffusion de contenu à grande échelle que le fan-out on write/on read résout aujourd'hui.",
+      "resultat": "Malgré une controverse initiale sur la vie privée au lancement, le News Feed est devenu le format dominant adopté ensuite par la quasi-totalité des réseaux sociaux."
+    },
     "ambiguite": {
       "question": "Le fan-out on write est-il toujours la 'mauvaise' approche à éviter ?",
       "reponse": "Non — pour la grande majorité des comptes (peu d'abonnés), fan-out on write est parfaitement adapté et donne une lecture instantanée. Le vrai signal à donner en entretien est de savoir identifier le cas limite (comptes à très forte audience) et proposer une adaptation ciblée, pas de rejeter la stratégie en bloc."
@@ -367,6 +391,14 @@
       }
     ],
     "culture": "Le 'consistent hashing' a été popularisé par les papiers d'architecture d'Amazon Dynamo et Google — c'est aujourd'hui un sujet quasi systématique dès qu'un entretien de system design aborde le sharding.",
+    "pionnier": {
+      "nom": "David Karger",
+      "portrait": "Professeur d'informatique au MIT, spécialiste des algorithmes, co-auteur en 1997 du papier fondateur sur le hachage cohérent avec des collègues du MIT (dont Daniel Lewin, Tom Leighton et d'autres).",
+      "contribution": "Il a co-développé le hachage cohérent ('Consistent Hashing and Random Trees'), une technique mathématique de répartition de charge conçue pour résoudre un problème concret de mise à l'échelle du web.",
+      "problematique": "Les caches web répartis avec un hachage classique (modulo) devaient être quasi intégralement redistribués à chaque ajout ou retrait d'un serveur, rendant la mise à l'échelle très coûteuse et instable.",
+      "solution": "Le hachage cohérent place serveurs et clés sur un anneau logique, de sorte qu'ajouter ou retirer un serveur ne redéplace qu'une fraction réduite des données, pas la totalité.",
+      "resultat": "Cette technique a servi de base technique au lancement d'Akamai (réseau de diffusion de contenu) et est aujourd'hui un compromis d'architecture central pour le sharding de bases de données distribuées à grande échelle."
+    },
     "ambiguite": {
       "question": "Le scaling horizontal est-il toujours supérieur au scaling vertical ?",
       "reponse": "Non. Le scaling vertical reste souvent le bon premier choix : plus simple, sans complexité de distribution, suffisant pour beaucoup de systèmes qui ne dépasseront jamais une certaine échelle. Le scaling horizontal se justifie quand la charge dépasse ce qu'une seule machine peut absorber, ou pour la tolérance aux pannes — pas par principe."
@@ -512,6 +544,14 @@
       }
     ],
     "culture": "Cette progression (serveur unique → séparation → load balancer → TLS/health checks → réplication → indexation → cache → CDN → GeoDNS → stateless → queue → monitoring → sharding) est la trame narrative du chapitre d'ouverture de nombreux cours et livres de référence en system design, dont le très populaire 'System Design Interview' d'Alex Xu (ByteByteGo) — elle sert de fil conducteur à la quasi-totalité des entretiens de ce type.",
+    "pionnier": {
+      "nom": "Randy Shoup",
+      "portrait": "Ancien architecte en chef d'eBay puis ingénieur chez Google et Stitch Fix, connu pour ses conférences publiques détaillant l'évolution de l'architecture d'eBay au fil de sa croissance.",
+      "contribution": "Il a documenté et diffusé publiquement, dans de nombreuses conférences techniques, comment une architecture évolue par étapes successives en résolvant un goulot d'étranglement à la fois, plutôt que par une refonte totale planifiée à l'avance.",
+      "problematique": "eBay, comme beaucoup de plateformes ayant démarré modestement, a dû faire évoluer une architecture initiale simple pour absorber une croissance d'utilisateurs et de trafic de plusieurs ordres de grandeur, sans interrompre le service.",
+      "solution": "Il a formalisé l'idée qu'il n'existe pas d'architecture cible unique à viser d'emblée : chaque étape de croissance identifie son propre goulot d'étranglement (base de données, couche applicative, cache) et y répond par une brique ciblée.",
+      "resultat": "Ses retours d'expérience publics sur l'évolution d'eBay sont devenus une référence pédagogique largement citée pour illustrer la progression 'de zéro à des millions d'utilisateurs' enseignée en system design."
+    },
     "ambiguite": {
       "question": "Faut-il mémoriser cette liste de briques dans cet ordre exact pour un entretien ?",
       "reponse": "Non — l'ordre exact varie selon le système réel (un système très lecture-intensive priorisera le cache avant le load balancer, par exemple). Ce qui compte est le PRINCIPE : identifier le goulot d'étranglement actuel avant de choisir la brique à ajouter, et savoir justifier pourquoi cette brique précise résout ce problème précis — réciter la liste sans ce raisonnement est immédiatement repéré en entretien."
@@ -613,6 +653,14 @@
       }
     ],
     "culture": "Le rate limiter est l'un des chapitres les plus emblématiques du livre 'System Design Interview' d'Alex Xu (ByteByteGo) — souvent le tout premier cas pratique donné aux candidats juniors/intermédiaires car son périmètre reste maîtrisable en 45 minutes.",
+    "pionnier": {
+      "nom": "Van Jacobson",
+      "portrait": "Ingénieur réseau américain, ancien chercheur au Lawrence Berkeley National Laboratory, connu pour ses travaux fondateurs sur le contrôle de congestion réseau.",
+      "contribution": "Il a conçu en 1988 les algorithmes de contrôle de congestion de TCP (slow start, congestion avoidance), qui limitent dynamiquement le débit d'émission d'un émetteur pour éviter de saturer le réseau.",
+      "problematique": "À la fin des années 1980, l'Internet primitif subissait des 'effondrements de congestion' (congestion collapse) : trop d'émetteurs envoyaient des données sans limite, saturant les liens réseau au point de faire chuter le débit utile global.",
+      "solution": "Ses algorithmes font que chaque émetteur ajuste son débit en fonction des signaux de congestion observés, plutôt que d'émettre à débit fixe sans tenir compte de l'état du réseau.",
+      "resultat": "Ces principes de contrôle de débit ont sauvé l'Internet naissant d'une saturation généralisée et ont directement inspiré la logique des rate limiters applicatifs modernes : protéger une ressource partagée en régulant le débit de chaque client."
+    },
     "ambiguite": {
       "question": "Un rate limiter doit-il toujours rejeter strictement une requête en trop, sans exception ?",
       "reponse": "Pas nécessairement — certains systèmes préfèrent la 'dégradation progressive' (ralentir la réponse, mettre en file d'attente) plutôt qu'un rejet sec, notamment pour des clients internes de confiance. Le choix rejet strict vs file d'attente dépend du contexte métier, pas d'une règle universelle — un bon candidat en entretien pose la question plutôt que de supposer."
@@ -713,6 +761,14 @@
       }
     ],
     "culture": "Le hachage cohérent a été formalisé académiquement en 1997 (Karger et al.) puis popularisé en production par le papier Amazon Dynamo (2007) — il est aujourd'hui considéré comme un sujet quasi incontournable dès qu'un entretien de system design aborde le sharding ou le cache distribué.",
+    "pionnier": {
+      "nom": "David Karger",
+      "portrait": "Professeur d'informatique au MIT, co-auteur en 1997 du papier 'Consistent Hashing and Random Trees' avec une équipe de chercheurs du MIT dont Daniel Lewin et Tom Leighton, qui ont ensuite cofondé Akamai.",
+      "contribution": "Il a formalisé mathématiquement le hachage cohérent, une méthode de répartition de clés sur un anneau logique qui minimise le nombre de clés à redéplacer lors d'un changement du nombre de serveurs.",
+      "problematique": "Le web du milieu des années 1990 connaissait des pics de charge massifs (le 'flash crowd' ou effet slashdot) sur certains sites, et les systèmes de cache distribué existants redistribuaient presque toutes leurs données à chaque ajout ou panne de serveur, ce qui les rendait fragiles à grande échelle.",
+      "solution": "En plaçant serveurs et clés sur un même anneau de hachage, chaque clé est assignée au serveur le plus proche dans un sens de parcours donné, si bien qu'ajouter ou retirer un serveur ne perturbe que son voisinage immédiat sur l'anneau.",
+      "resultat": "Cette technique a constitué le fondement technique d'Akamai, l'un des tout premiers réseaux de diffusion de contenu (CDN) à grande échelle, et est depuis largement utilisée dans les bases de données distribuées (Cassandra, DynamoDB) et les caches distribués modernes."
+    },
     "ambiguite": {
       "question": "Le hachage cohérent garantit-il une répartition parfaitement égale des clés entre serveurs ?",
       "reponse": "Non, pas sans nœuds virtuels — avec peu de serveurs et une seule position chacun, la répartition peut être très inégale selon où ils tombent sur l'anneau par hasard. Les nœuds virtuels (chaque serveur physique occupant des dizaines ou centaines de positions) sont ce qui rapproche la répartition réelle d'un équilibre statistique, pas le principe de base seul."

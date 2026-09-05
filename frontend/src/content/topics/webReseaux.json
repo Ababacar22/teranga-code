@@ -115,6 +115,14 @@
       }
     ],
     "culture": "\"HTTP est un protocole sans état (stateless)\" est une phrase qu'on répète souvent sans en saisir toute la portée culturelle : c'est ce choix de conception, fait dès les débuts du web, qui a permis au web de passer à l'échelle sur des milliards d'utilisateurs — chaque requête étant indépendante, n'importe quel serveur peut la traiter.",
+    "pionnier": {
+      "nom": "Tim Berners-Lee",
+      "portrait": "Ingénieur britannique travaillant au CERN, il propose en 1989 un système hypertexte pour organiser l'information de l'organisation.",
+      "contribution": "Il a inventé le protocole HTTP, le langage HTML et le concept d'URL, posant ensemble les fondations du World Wide Web entre 1989 et 1991.",
+      "problematique": "Des chercheurs du monde entier utilisaient des systèmes informatiques hétérogènes et incompatibles, rendant difficile le partage rapide de documents et d'informations entre eux.",
+      "solution": "Il a conçu un protocole simple de requête/réponse (HTTP) permettant à n'importe quel client de récupérer des documents identifiés par une adresse unique (URL), indépendamment du système sous-jacent.",
+      "resultat": "Le premier site web est mis en ligne en 1991 ; HTTP est devenu le protocole sur lequel repose la quasi-totalité du trafic web mondial."
+    },
     "ambiguite": {
       "question": "HTTP et HTTPS sont-ils deux protocoles complètement différents ?",
       "reponse": "Non : HTTPS est simplement HTTP transporté au-dessus d'une couche de chiffrement (TLS). Les verbes, en-têtes et codes de statut restent identiques — seule la connexion sous-jacente est chiffrée et authentifiée."
@@ -249,6 +257,14 @@
       }
     ],
     "culture": "Le DNS est souvent qualifié de \"seul point de défaillance invisible\" d'internet : une panne DNS majeure (comme celles ayant touché de grands fournisseurs par le passé) peut rendre des milliers de sites inaccessibles d'un coup, même si les serveurs eux-mêmes fonctionnent parfaitement.",
+    "pionnier": {
+      "nom": "Paul Mockapetris",
+      "portrait": "Informaticien américain travaillant à l'Information Sciences Institute de l'université de Californie du Sud au début des années 1980.",
+      "contribution": "Il a conçu et implémenté le système DNS (Domain Name System) en 1983, publié dans les RFC 882 et 883.",
+      "problematique": "ARPANET grandissait rapidement et tous les noms de machines étaient gérés dans un unique fichier centralisé (HOSTS.TXT), distribué manuellement à chaque machine — une méthode devenue ingérable à mesure que le réseau s'étendait.",
+      "solution": "Il a proposé un système hiérarchique et distribué de résolution de noms, où différents serveurs font autorité sur différentes portions de l'espace de noms, avec délégation et mise en cache.",
+      "resultat": "Le DNS est devenu l'annuaire universel d'internet, capable de gérer aujourd'hui des milliards de noms de domaine sans point de contrôle unique."
+    },
     "ambiguite": {
       "question": "Un nom de domaine et une URL, est-ce la même chose ?",
       "reponse": "Non : le nom de domaine (ex: `teranga-code.sn`) n'est qu'UNE PARTIE de l'URL. L'URL complète inclut aussi le protocole (`https://`), éventuellement un chemin (`/profil`) et des paramètres — le nom de domaine est ce que le DNS résout, pas l'URL entière."
@@ -383,6 +399,14 @@
       }
     ],
     "culture": "L'apparition du petit cadenas dans les navigateurs a profondément changé la culture de sécurité du web grand public : ce simple symbole visuel a rendu HTTPS compréhensible par des millions d'utilisateurs non techniques, poussant progressivement tout le web vers le chiffrement par défaut.",
+    "pionnier": {
+      "nom": "Taher Elgamal",
+      "portrait": "Cryptographe égypto-américain, il rejoint Netscape Communications comme responsable de la sécurité au début des années 1990.",
+      "contribution": "Il a dirigé la conception du protocole SSL (Secure Sockets Layer) chez Netscape, ancêtre direct de TLS, ce qui lui a valu le surnom de \"père du SSL\".",
+      "problematique": "Le web naissant ne proposait aucun moyen fiable de sécuriser les échanges entre un navigateur et un serveur, freinant l'essor du commerce électronique et de toute transaction sensible en ligne.",
+      "solution": "Son équipe a conçu un protocole de chiffrement placé entre la couche transport et les protocoles applicatifs comme HTTP, combinant chiffrement, vérification d'intégrité et authentification par certificats.",
+      "resultat": "SSL a évolué vers TLS, standard aujourd'hui utilisé pour sécuriser la quasi-totalité du trafic web, y compris les transactions bancaires et le commerce en ligne."
+    },
     "ambiguite": {
       "question": "Un site en HTTPS est-il forcément un site sûr et digne de confiance ?",
       "reponse": "Non — un gros malentendu répandu. HTTPS garantit seulement que la CONNEXION est chiffrée et que tu parles au bon serveur ; ça ne dit rien sur si ce serveur est honnête ou malveillant. Un site de phishing peut très bien avoir un certificat HTTPS valide."
@@ -516,6 +540,14 @@
       }
     ],
     "culture": "Les WebSockets ont mis du temps à s'imposer après leur standardisation (2011) : de nombreuses infrastructures réseau et anciens proxys n'étaient pas conçus pour des connexions longue durée, ce qui explique pourquoi le \"repli automatique\" vers du polling (comme le fait Socket.IO) reste une pratique culturelle courante par prudence.",
+    "pionnier": {
+      "nom": "Ian Hickson",
+      "portrait": "Ingénieur employé par Google, éditeur principal de la spécification HTML5 au sein du WHATWG durant les années 2000-2010.",
+      "contribution": "Il a formalisé et fait avancer la spécification du protocole WebSocket au sein de HTML5, en collaboration avec d'autres contributeurs du W3C et de l'IETF (dont Michael Carter), standardisé vers 2011.",
+      "problematique": "Les applications web temps réel (chat, notifications, tableaux de bord) devaient recourir à des techniques coûteuses comme le polling répété ou le long polling, générant un trafic et une latence inutiles pour simuler une communication bidirectionnelle.",
+      "solution": "La spécification WebSocket a défini une API et un protocole permettant d'ouvrir une connexion unique, persistante et bidirectionnelle entre client et serveur, sans le surcoût des en-têtes HTTP répétés.",
+      "resultat": "Les WebSockets sont devenus un standard largement supporté par les navigateurs, à la base d'usages comme le chat en direct, les jeux en ligne et les flux de données financières en temps réel."
+    },
     "ambiguite": {
       "question": "Faut-il toujours préférer les WebSockets au polling HTTP, puisqu'ils sont \"plus modernes\" ?",
       "reponse": "Non — pour une donnée qui change une fois par heure, un simple polling espacé (ou même une requête manuelle) est largement suffisant et bien plus simple à maintenir. Les WebSockets ajoutent une vraie complexité (gestion de la connexion, reconnexion, scalabilité) à réserver aux cas où le temps réel est un besoin réel."

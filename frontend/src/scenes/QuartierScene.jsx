@@ -312,7 +312,7 @@ function QuartierScene() {
             )}
             <UseCaseCards items={topic.useCases} />
             <RelatedTools items={topic.relatedTools} />
-            <CultureNotes culture={topic.culture} ambiguite={topic.ambiguite} />
+            <CultureNotes culture={topic.culture} ambiguite={topic.ambiguite} pionnier={topic.pionnier} />
             <button className="btn btn--primary btn--pulse" onClick={() => setPhase('practice')}>
               On pratique !
             </button>

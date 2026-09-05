@@ -49,6 +49,18 @@
       "type": "string",
       "minLength": 1
     },
+    "pionnier": {
+      "type": "object",
+      "required": ["nom", "contribution", "problematique", "solution", "resultat"],
+      "properties": {
+        "nom": { "type": "string", "minLength": 1 },
+        "portrait": { "type": "string", "minLength": 1 },
+        "contribution": { "type": "string", "minLength": 1 },
+        "problematique": { "type": "string", "minLength": 1 },
+        "solution": { "type": "string", "minLength": 1 },
+        "resultat": { "type": "string", "minLength": 1 }
+      }
+    },
     "ambiguite": {
       "type": "object",
       "required": ["question", "reponse"],

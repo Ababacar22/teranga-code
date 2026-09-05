@@ -128,6 +128,14 @@
       }
     ],
     "culture": "Le débat \"est-ce que React est un framework ou une librairie\" revient régulièrement dans la communauté JS : React lui-même se présente officiellement comme une \"librairie\" (pour l'UI uniquement), mais son écosystème (React Router, hooks, cycle de vie des composants) le fait fonctionner comme un framework en pratique — la frontière est parfois plus une question de marketing que de définition stricte.",
+    "pionnier": {
+      "nom": "Martin Fowler",
+      "portrait": "Ingénieur logiciel et auteur britannique, longtemps Chief Scientist chez ThoughtWorks, connu pour avoir formalisé de nombreux concepts d'architecture logicielle largement adoptés par l'industrie.",
+      "contribution": "Dans un article influent de 2004 (\"Inversion of Control Containers and the Dependency Injection pattern\"), il a clarifié et popularisé le terme \"inversion de contrôle\", devenu depuis le critère de référence pour distinguer un framework d'une librairie.",
+      "problematique": "Les développeurs employaient les termes \"framework\" et \"librairie\" de façon confuse, sans critère clair pour les distinguer au-delà de la taille ou de la complexité du code.",
+      "solution": "Il a proposé de définir la distinction par qui détient le contrôle du flux d'exécution : le code appelant (librairie) ou le code appelé (framework, via l'inversion de contrôle).",
+      "resultat": "Ce critère est aujourd'hui enseigné et cité dans la quasi-totalité des ressources et entretiens techniques traitant de ce sujet, bien au-delà de son article d'origine."
+    },
     "ambiguite": {
       "question": "React est-il un framework ou une librairie ?",
       "reponse": "Officiellement une librairie (il ne gère que l'affichage), mais dans les faits il impose largement sa façon de structurer une application (composants, state, cycle de vie) au point où beaucoup de développeurs le considèrent comme un framework. C'est un bon exemple que cette frontière n'est pas toujours nette."
@@ -260,6 +268,14 @@
       }
     ],
     "culture": "Les \"guerres de frameworks frontend\" sont un classique de la culture dev depuis 2014 (AngularJS puis Angular vs React vs Vue) — des débats parfois très passionnés sur les réseaux, alors qu'en pratique la plupart des ingénieurs seniors considèrent que le choix compte moins que la qualité d'exécution avec l'outil choisi.",
+    "pionnier": {
+      "nom": "Jordan Walke",
+      "portrait": "Ingénieur logiciel chez Facebook, créateur de React, présenté publiquement en 2013 après avoir d'abord été utilisé en interne sur le fil d'actualité de Facebook.",
+      "contribution": "Il a conçu React et son Virtual DOM, une approche qui a durablement influencé la manière dont l'industrie construit des interfaces utilisateur complexes et réactives.",
+      "problematique": "Sur des interfaces complexes avec de nombreuses mises à jour fréquentes, manipuler directement le DOM du navigateur à chaque changement d'état devenait coûteux en performance et difficile à maintenir de façon cohérente.",
+      "solution": "Il a proposé de représenter l'interface sous forme d'un arbre virtuel léger en mémoire (le Virtual DOM), que React compare à l'état précédent pour calculer et n'appliquer au DOM réel que les changements strictement nécessaires.",
+      "resultat": "React est devenu l'une des librairies frontend les plus utilisées au monde, et son modèle (composants, état, Virtual DOM) a inspiré directement ou indirectement une grande partie des frameworks frontend apparus depuis."
+    },
     "ambiguite": {
       "question": "AngularJS et Angular, est-ce le même framework ?",
       "reponse": "Non, malgré le nom très proche : AngularJS (2010) est l'ancienne version, réécrite intégralement en 2016 sous le nom \"Angular\" (parfois appelé Angular 2+), avec une architecture totalement différente (TypeScript, composants). Ce ne sont pas des versions d'un même framework mais deux frameworks distincts qui partagent une lignée."
@@ -393,6 +409,14 @@
       }
     ],
     "culture": "Ryan Dahl, créateur de Node.js, a donné en 2018 une conférence célèbre (\"10 Things I Regret About Node.js\") où il critique ses propres choix de conception initiaux — Deno est directement né de cette autocritique. C'est un exemple assez rare dans la tech d'un créateur revenant publiquement sur son propre travail pour en proposer une meilleure version.",
+    "pionnier": {
+      "nom": "Ryan Dahl",
+      "portrait": "Développeur ayant créé Node.js en 2009, présenté à la conférence JSConf Berlin la même année, puis créateur de Deno, annoncé en 2018 à JSConf EU.",
+      "contribution": "Il a permis d'exécuter du JavaScript côté serveur avec un modèle d'entrées-sorties non-bloquant performant, puis a conçu un second runtime pour corriger des choix qu'il regrettait dans sa première création.",
+      "problematique": "À l'époque, gérer efficacement de nombreuses connexions réseau simultanées côté serveur était difficile avec les langages et modèles dominants, souvent bloquants sur les opérations d'entrée-sortie.",
+      "solution": "Il a construit Node.js sur le moteur V8 de Chrome avec une boucle d'événements et des I/O non-bloquantes, permettant de gérer un grand nombre de connexions avec peu de ressources ; des années plus tard, il a créé Deno pour introduire par défaut un modèle de sécurité par permissions explicites et un support natif de TypeScript.",
+      "resultat": "Node.js est devenu un des runtimes serveur les plus utilisés au monde, à la base d'un immense écosystème (npm) ; Deno a ensuite influencé la réflexion de toute une industrie sur la sécurité par défaut des runtimes JavaScript."
+    },
     "ambiguite": {
       "question": "Bun est-il un simple concurrent de Node.js, ou quelque chose de différent ?",
       "reponse": "Bun est à la fois un runtime JavaScript (comme Node.js) ET un bundler, un gestionnaire de paquets et un exécuteur de tests, réunis en un seul binaire. Node.js, lui, délègue historiquement ces fonctions à des outils séparés (webpack, npm, Jest) — la comparaison n'est donc pas totalement \"pomme contre pomme\"."
@@ -527,6 +551,14 @@
       }
     ],
     "culture": "La bascule massive de la communauté JS vers Vite depuis 2020-2021 illustre un phénomène culturel récurrent dans l'écosystème : un nouvel outil qui corrige les lenteurs perçues d'un outil dominant (ici Webpack, longtemps la norme absolue) peut basculer très vite l'adoption de toute une industrie, parfois en quelques années seulement.",
+    "pionnier": {
+      "nom": "Evan You",
+      "portrait": "Développeur ayant créé Vue.js en 2014, puis Vite, publié en 2020, après avoir travaillé auparavant chez Google sur des projets expérimentaux liés à l'interface utilisateur.",
+      "contribution": "Il a conçu Vite, un outil de build qui repense l'expérience de développement en s'appuyant sur les modules ES natifs du navigateur plutôt que sur un bundling complet à chaque démarrage.",
+      "problematique": "Sur de gros projets, les bundlers traditionnels comme Webpack devenaient de plus en plus lents à démarrer et à rafraîchir en développement, car ils devaient rebundler une grande partie de l'application à chaque changement.",
+      "solution": "Il a proposé de servir le code source quasiment tel quel au navigateur via les imports ES modules natifs pendant le développement, ne bundlant réellement qu'au moment du build de production (via esbuild puis Rollup).",
+      "resultat": "Vite a rapidement gagné une adoption massive dans l'écosystème JavaScript après 2020, poussant de nombreux frameworks et projets existants à l'adopter comme outil de build par défaut à la place de Webpack."
+    },
     "ambiguite": {
       "question": "Vite élimine-t-il complètement le besoin de bundler le code ?",
       "reponse": "Non, seulement pendant le DÉVELOPPEMENT (où il sert les modules quasiment tels quels au navigateur). Au moment du BUILD final pour la production, Vite bundle bel et bien le code (via esbuild puis Rollup) — la confusion vient du fait que ce bundling est invisible et différé pendant qu'on développe."

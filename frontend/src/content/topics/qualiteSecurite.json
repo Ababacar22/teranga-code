@@ -154,6 +154,14 @@
       }
     ],
     "culture": "L'OWASP Top 10 est mis à jour tous les 3-4 ans et fait consensus dans toute l'industrie de la sécurité — le citer précisément en entretien montre une vraie culture sécurité, très valorisée pour des postes backend.",
+    "pionnier": {
+      "nom": "Mark Curphey",
+      "portrait": "Expert en sécurité des applications qui a fondé le projet OWASP (Open Web Application Security Project) en 2001.",
+      "contribution": "Il a créé une communauté ouverte et un ensemble de ressources gratuites pour aider les développeurs à construire des applications web plus sûres.",
+      "problematique": "Au début des années 2000, il n'existait aucune ressource standardisée, indépendante et librement accessible sur les vulnérabilités web les plus courantes — chaque équipe réinventait ses propres pratiques de sécurité.",
+      "solution": "Fonder un projet communautaire et open source rassemblant des experts du monde entier pour documenter les vulnérabilités les plus critiques et publier des guides pratiques, dont le désormais célèbre OWASP Top 10.",
+      "resultat": "L'OWASP est devenu la référence mondiale en sécurité applicative, avec le Top 10 cité dans des normes de conformité et utilisé par la quasi-totalité des équipes backend et des pentesters."
+    },
     "ambiguite": {
       "question": "Utiliser HTTPS suffit-il à protéger contre l'injection SQL ou le XSS ?",
       "reponse": "Non : HTTPS chiffre la communication entre client et serveur (protège contre l'interception), mais ne protège absolument pas contre l'injection SQL, le XSS, ou une mauvaise gestion des mots de passe — ce sont des failles côté code, pas côté transport."
@@ -310,6 +318,14 @@
       }
     ],
     "culture": "SOLID fait partie de la culture \"Clean Code\" popularisée par Robert C. Martin dans les années 2000-2010. Une partie de la communauté (mouvement \"pragmatic programming\") juge parfois ces principes trop dogmatiques quand appliqués sans discernement à de petits projets.",
+    "pionnier": {
+      "nom": "Robert C. Martin (\"Uncle Bob\")",
+      "portrait": "Ingénieur logiciel et auteur américain, figure du mouvement de développement logiciel agile, connu pour ses livres \"Clean Code\" (2008) et \"Agile Software Development\" où il formalise les principes SOLID.",
+      "contribution": "Il a rassemblé et nommé les cinq principes de conception orientée objet regroupés sous l'acronyme SOLID, et popularisé les pratiques du \"Clean Code\" à travers ses livres, formations et conférences.",
+      "problematique": "Dans les grands projets logiciels, un code mal structuré devient rapidement rigide, fragile et difficile à faire évoluer sans introduire de nouveaux bugs, ce qui ralentit fortement les équipes sur le long terme.",
+      "solution": "Formaliser des principes de conception clairs (responsabilité unique, ouvert/fermé, substitution de Liskov, ségrégation des interfaces, inversion des dépendances) et des règles concrètes d'écriture de code lisible, pour guider les développeurs vers un code plus maintenable.",
+      "resultat": "SOLID et le Clean Code sont devenus des références largement enseignées et citées en entretien technique dans l'industrie du logiciel, bien qu'ils fassent aussi l'objet de débats sur leur application trop rigide."
+    },
     "ambiguite": {
       "question": "Faut-il toujours appliquer les 5 principes SOLID, même sur un petit script ?",
       "reponse": "Non — c'est un vrai débat : appliquer SOLID rigoureusement à un script de 50 lignes ajoute souvent plus de complexité que de valeur. La plupart des praticiens recommandent SOLID pour du code destiné à évoluer longtemps, pas comme une règle absolue partout."
@@ -471,6 +487,14 @@
       }
     ],
     "culture": "La culture du TDD divise réellement la profession : certaines équipes en font une pratique quasi religieuse, d'autres la jugent trop rigide pour du code exploratoire — beaucoup d'équipes pragmatiques écrivent les tests après avoir stabilisé une première version.",
+    "pionnier": {
+      "nom": "Kent Beck",
+      "portrait": "Ingénieur logiciel américain, cofondateur du mouvement Extreme Programming et coauteur du Manifeste Agile, qui a formalisé et popularisé le Test-Driven Development (TDD) à la fin des années 1990 et au début des années 2000.",
+      "contribution": "Il a défini et diffusé la pratique du TDD, ainsi que le cycle \"Red-Green-Refactor\" qui structure aujourd'hui l'écriture de tests dans de nombreuses équipes.",
+      "problematique": "L'ajout de nouvelles fonctionnalités dans un logiciel existant provoquait fréquemment des régressions non détectées, faute de vérifications systématiques du comportement du code après chaque changement.",
+      "solution": "Proposer d'écrire le test avant le code de production (\"red\"), écrire juste assez de code pour le faire passer (\"green\"), puis améliorer le code sans changer son comportement (\"refactor\") — un cycle court et répété.",
+      "resultat": "Le TDD est devenu une pratique de référence largement enseignée et adoptée dans l'industrie, avec des frameworks de test dédiés dans la quasi-totalité des langages de programmation modernes."
+    },
     "ambiguite": {
       "question": "100% de couverture de code veut-il dire 0 bug ?",
       "reponse": "Non : la couverture mesure seulement quelles lignes sont exécutées par les tests, pas si tous les cas métier sont vérifiés. Un test peut exécuter une ligne sans jamais vérifier son comportement correctement — 100% de couverture n'élimine pas les bugs de logique."
@@ -630,6 +654,14 @@
       }
     ],
     "culture": "La culture de la code review varie énormément d'une entreprise à l'autre : certaines exigent 2-3 approbations avant de merger, d'autres font confiance et mergent avec une seule review rapide (\"move fast\") — ni l'une ni l'autre n'est universellement \"la bonne\".",
+    "pionnier": {
+      "nom": "Michael Fagan",
+      "portrait": "Ingénieur chez IBM qui a formalisé en 1976 une méthode structurée de revue de code et de documents techniques, connue sous le nom d'\"inspection Fagan\".",
+      "contribution": "Il a défini un processus rigoureux avec des rôles définis (modérateur, auteur, relecteurs) et des étapes formelles pour inspecter systématiquement le code avant son intégration.",
+      "problematique": "Dans les grands projets logiciels, les défauts introduits tôt dans le développement n'étaient souvent détectés que très tard (tests, voire production), où leur correction coûtait beaucoup plus cher.",
+      "solution": "Mettre en place une inspection structurée et systématique du code par les pairs, avec des étapes formelles de préparation, de réunion de revue et de suivi des corrections, avant que le code n'avance dans le cycle de développement.",
+      "resultat": "Les études internes chez IBM ont montré une réduction significative du nombre de défauts détectés après la mise en production, posant les bases des pratiques modernes de code review utilisées aujourd'hui sur GitHub et GitLab."
+    },
     "ambiguite": {
       "question": "Un \"LGTM\" rapide est-il une vraie code review ?",
       "reponse": "Techniquement oui (c'est une approbation), mais dans la culture de beaucoup d'équipes, un LGTM sans commentaire sur une grosse PR est vu comme une review superficielle plutôt qu'une vraie relecture."

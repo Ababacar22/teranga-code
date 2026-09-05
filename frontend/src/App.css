@@ -1018,6 +1018,19 @@ button.code-line:hover {
   color: var(--clay);
 }
 
+.culture-notes__card--pionnier {
+  background: rgba(43, 29, 14, 0.06);
+  border: 2px solid var(--ink);
+}
+
+.culture-notes__card--pionnier strong {
+  color: var(--ink);
+}
+
+.culture-notes__card--pionnier p {
+  margin: 4px 0;
+}
+
 .culture-notes__question {
   font-weight: 700;
   margin-bottom: 4px !important;

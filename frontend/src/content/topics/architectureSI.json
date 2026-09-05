@@ -94,6 +94,14 @@
       }
     ],
     "culture": "Le choix de la politique de cache est un sujet aussi débattu dans l'ingénierie que le choix d'un framework — Facebook a par exemple développé McRouter, sa propre couche de routage au-dessus de Memcached, uniquement pour affiner ces stratégies à très grande échelle.",
+    "pionnier": {
+      "nom": "Maurice Wilkes",
+      "portrait": "Informaticien britannique, pionnier de l'informatique à l'Université de Cambridge, connu notamment pour avoir dirigé la construction de l'EDSAC, l'un des tout premiers ordinateurs à programme enregistré.",
+      "contribution": "Il a introduit le concept de mémoire cache dans un article de 1965 intitulé \"Slave Memories and Dynamic Storage Allocation\".",
+      "problematique": "L'écart de vitesse entre le processeur, très rapide, et la mémoire principale, beaucoup plus lente, limitait les performances des ordinateurs de l'époque.",
+      "solution": "Il a proposé d'intercaler une petite mémoire rapide (\"slave memory\") entre le processeur et la mémoire principale, contenant une copie des données les plus utilisées récemment.",
+      "resultat": "Ce principe est devenu la base du cache tel qu'on le connaît aujourd'hui, présent aussi bien dans le matériel (cache CPU) que dans les systèmes logiciels modernes (Redis, CDN, etc.)."
+    },
     "ambiguite": {
       "question": "Un cache-aside et un write-through, est-ce la même chose ?",
       "reponse": "Non : cache-aside concerne la LECTURE (l'appli va chercher en base au cache miss, puis remplit le cache elle-même) ; write-through concerne l'ÉCRITURE (le cache est mis à jour en même temps que la base). Les deux peuvent d'ailleurs être combinés dans un même système."
@@ -193,6 +201,14 @@
       }
     ],
     "culture": "Le débat \"L4 vs L7\" revient souvent en entretien infra : L4 est plus rapide et simple (il ne regarde presque rien), L7 est plus intelligent mais plus coûteux en calcul — le choix dépend souvent de si l'équipe a besoin de règles de routage fines ou juste de répartir le trafic simplement.",
+    "pionnier": {
+      "nom": "Fernando Corbató",
+      "portrait": "Informaticien américain au MIT, pionnier des systèmes à temps partagé (time-sharing) dans les années 1960, avec le système CTSS (Compatible Time-Sharing System).",
+      "contribution": "Ses travaux sur l'ordonnancement des processus en temps partagé ont contribué à populariser le principe du \"round-robin scheduling\", où chaque tâche reçoit un temps processeur à tour de rôle.",
+      "problematique": "Sur les premiers ordinateurs, une seule tâche pouvait monopoliser le processeur, empêchant plusieurs utilisateurs ou programmes de progresser en même temps.",
+      "solution": "Le principe du tour de rôle (round-robin) consiste à allouer un temps fixe à chaque tâche ou requête avant de passer à la suivante, de façon cyclique et équitable.",
+      "resultat": "Ce principe, né dans l'ordonnancement de processus, s'est étendu bien au-delà des systèmes d'exploitation et sert aujourd'hui de base à l'un des algorithmes de répartition de charge les plus utilisés. Aucune figure unique n'est universellement créditée pour l'invention du round-robin appliqué au load balancing lui-même — c'est un concept qui a émergé progressivement dans la communauté des systèmes distribués."
+    },
     "ambiguite": {
       "question": "Un load balancer et un reverse proxy, est-ce la même chose ?",
       "reponse": "Ils se recoupent beaucoup en pratique (Nginx fait les deux), mais le rôle premier d'un reverse proxy est de masquer/protéger les serveurs en amont, alors que celui d'un load balancer est de RÉPARTIR la charge entre plusieurs d'entre eux — un load balancer est souvent un cas particulier de reverse proxy, pas l'inverse."
@@ -293,6 +309,14 @@
       }
     ],
     "culture": "Kubernetes (souvent abrégé \"K8s\") est né chez Google, qui gérait déjà un orchestrateur interne similaire (Borg) depuis des années avant de rendre l'idée open source en 2014 — un cas assez rare d'une entreprise partageant publiquement une technologie aussi centrale à sa propre infrastructure.",
+    "pionnier": {
+      "nom": "Brendan Burns, Joe Beda et Craig McLuckie",
+      "portrait": "Trois ingénieurs de Google qui ont cofondé le projet Kubernetes en 2014, en s'appuyant sur l'expérience interne de l'entreprise avec son système d'orchestration Borg, utilisé depuis des années pour gérer ses propres infrastructures.",
+      "contribution": "Ils ont conçu et lancé Kubernetes comme projet open source, afin de rendre accessibles à l'ensemble de l'industrie les principes d'orchestration de conteneurs éprouvés en interne chez Google.",
+      "problematique": "Faire tourner et maintenir des dizaines ou des centaines de conteneurs applicatifs sur de nombreuses machines, avec redémarrage automatique, montée en charge et déploiements sans interruption, était un problème complexe que chaque entreprise devait résoudre par elle-même.",
+      "solution": "Ils ont créé un système déclaratif où l'on décrit l'état souhaité de l'application (nombre d'instances, ressources, santé), et où l'orchestrateur se charge en continu de faire correspondre la réalité à cette description.",
+      "resultat": "Kubernetes est devenu en quelques années le standard de fait de l'orchestration de conteneurs, adopté par la quasi-totalité des grandes plateformes cloud et administré aujourd'hui par la Cloud Native Computing Foundation."
+    },
     "ambiguite": {
       "question": "Docker et Kubernetes, est-ce concurrents ou complémentaires ?",
       "reponse": "Complémentaires, pas concurrents : Docker crée et fait tourner UN conteneur ; Kubernetes orchestre des dizaines de conteneurs (potentiellement construits avec Docker) à travers plusieurs machines. Kubernetes a besoin d'un runtime de conteneurs pour fonctionner, il ne le remplace pas."
@@ -387,6 +411,14 @@
       }
     ],
     "culture": "Le terme \"polyglot persistence\" (utiliser plusieurs types de bases dans un même système, chacune pour son usage) s'est imposé dans l'industrie vers 2011, en réaction à des années où \"une seule grosse base relationnelle pour tout\" était la norme quasi unique — une architecture moderne combine aujourd'hui souvent 2 à 4 familles différentes.",
+    "pionnier": {
+      "nom": "Edgar F. Codd",
+      "portrait": "Chercheur britannique chez IBM, qui a publié en 1970 l'article fondateur \"A Relational Model of Data for Large Shared Data Banks\".",
+      "contribution": "Il a inventé le modèle relationnel, qui organise les données en tables reliées par des clés plutôt que par des structures hiérarchiques ou par pointeurs, alors dominantes.",
+      "problematique": "Les bases de données de l'époque dépendaient fortement de la structure physique de stockage, rendant les applications fragiles au moindre changement de schéma et les requêtes complexes à écrire.",
+      "solution": "Codd a proposé de séparer la représentation logique des données (tables, relations, contraintes) de leur implémentation physique, en s'appuyant sur des bases mathématiques issues de la théorie des ensembles et de la logique des prédicats.",
+      "resultat": "Le modèle relationnel est devenu la base de systèmes comme Oracle, PostgreSQL ou MySQL, et a dominé l'industrie des bases de données pendant plusieurs décennies. Le terme \"NoSQL\" a lui été inventé bien plus tard, en 1998, par Carlo Strozzi pour désigner une base de données relationnelle légère n'utilisant pas SQL — un usage différent de celui qui s'est popularisé dans les années 2000 pour les bases distribuées non relationnelles."
+    },
     "ambiguite": {
       "question": "MongoDB (document) et Redis (clé-valeur), est-ce juste deux variantes du même type NoSQL ?",
       "reponse": "Non, ce sont deux familles bien distinctes malgré le label commun \"NoSQL\" : MongoDB stocke des documents complexes et interrogeables en profondeur, Redis stocke des paires clé-valeur simples optimisées pour la vitesse pure — leurs cas d'usage se recoupent rarement en pratique."
@@ -487,6 +519,14 @@
       }
     ],
     "culture": "Le pattern API Gateway s'est généralisé avec la montée des microservices dans les années 2015-2020 : sans lui, chaque client (web, mobile) devait connaître l'adresse de CHAQUE microservice individuellement — un vrai casse-tête de maintenance que le Gateway a résolu en centralisant le point d'entrée.",
+    "pionnier": {
+      "nom": "Gregor Hohpe et Bobby Woolf",
+      "portrait": "Deux ingénieurs logiciel, auteurs en 2003 du livre de référence \"Enterprise Integration Patterns\", qui catalogue des solutions éprouvées pour intégrer des systèmes d'entreprise entre eux.",
+      "contribution": "Ils ont formalisé et documenté un vocabulaire commun de patterns pour les architectures orientées messages et événements (message queue, publish-subscribe, event-driven), largement repris depuis dans l'industrie.",
+      "problematique": "Faire communiquer plusieurs systèmes ou services d'entreprise entre eux, souvent hétérogènes, sans les coupler trop fortement les uns aux autres, était un problème récurrent traité de façon ad hoc et peu documentée avant leur ouvrage.",
+      "solution": "Leur livre propose un ensemble de patterns nommés et illustrés (comme le \"Publish-Subscribe Channel\" ou le \"Message Router\") pour structurer les échanges asynchrones entre systèmes de façon découplée.",
+      "resultat": "\"Enterprise Integration Patterns\" est devenu une référence largement citée dans la conception d'architectures événementielles et de systèmes de messagerie, influençant des outils comme Apache Camel, Spring Integration ou les bus de messages modernes (Kafka, RabbitMQ)."
+    },
     "ambiguite": {
       "question": "Une architecture événementielle élimine-t-elle le besoin d'appels directs entre services ?",
       "reponse": "Non — la plupart des systèmes réels combinent les deux : appels directs (synchrones) pour ce qui doit répondre immédiatement à l'utilisateur (ex: vérifier un stock avant de confirmer un achat), événementiel (asynchrone) pour ce qui peut être traité en différé (ex: envoyer un email de confirmation)."

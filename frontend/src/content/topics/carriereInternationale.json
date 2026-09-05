@@ -95,6 +95,14 @@
       }
     ],
     "culture": "La méthode STAR est enseignée explicitement dans les guides de préparation aux entretiens des grandes entreprises américaines — beaucoup de candidats s'entraînent à la réciter avant même de connaître les questions techniques posées.",
+    "pionnier": {
+      "nom": "Les psychologues du travail (I/O psychology)",
+      "portrait": "À partir des années 1970-1980, des psychologues industriels et organisationnels ont cherché à rendre les entretiens d'embauche plus fiables et moins arbitraires.",
+      "contribution": "Ils ont formalisé le principe de l'entretien structuré basé sur le comportement passé ('behavioral interviewing'), dont la méthode STAR est une version simplifiée popularisée ensuite par les entreprises.",
+      "problematique": "Les entretiens non structurés, basés sur l'impression générale ou des questions hypothétiques ('que feriez-vous si...'), prédisaient mal la performance réelle au travail.",
+      "solution": "Baser l'évaluation sur des exemples concrets et vérifiables de comportements passés, selon l'idée que le comportement passé est le meilleur prédicteur du comportement futur.",
+      "resultat": "L'entretien comportemental structuré est aujourd'hui l'un des formats d'entretien les plus utilisés et les mieux validés scientifiquement dans le recrutement, notamment dans la tech."
+    },
     "ambiguite": {
       "question": "Faut-il inventer ou enjoliver une anecdote pour qu'elle corresponde parfaitement à la méthode STAR ?",
       "reponse": "Non — les interviewers expérimentés posent des questions de relance précises ('et concrètement, qu'as-tu dit dans cette réunion ?') qui démasquent rapidement une histoire enjolivée ou inventée. Mieux vaut choisir une anecdote réelle, même modeste, et la structurer honnêtement selon STAR plutôt que d'en fabriquer une impressionnante mais fragile aux questions de suivi."
@@ -184,6 +192,14 @@
       }
     ],
     "culture": "Beaucoup d'entreprises du Golfe (Dubaï, Riyad, Doha) mènent leurs entretiens techniques exclusivement en anglais même pour des candidats francophones — la maîtrise de l'anglais technique oral y est souvent un critère éliminatoire avant même l'évaluation technique.",
+    "pionnier": {
+      "nom": "Grace Hopper",
+      "portrait": "Informaticienne et officière de marine américaine (1906-1992), pionnière de la programmation dès les débuts de l'informatique sur l'ordinateur Harvard Mark I.",
+      "contribution": "Elle a défendu dès les années 1950 l'idée que le code devait pouvoir être écrit dans un langage proche de l'anglais courant plutôt qu'en notation mathématique pure, contribuant à la création du premier compilateur puis à l'origine du langage COBOL.",
+      "problematique": "À l'époque, programmer exigeait de manipuler du code machine ou une notation symbolique difficile à lire, ce qui rendait la programmation inaccessible et peu portable entre équipes.",
+      "solution": "Créer des compilateurs traduisant des instructions proches de l'anglais naturel en code machine, rendant la programmation plus lisible et partageable.",
+      "resultat": "Cette approche a durablement ancré l'anglais comme langue de référence du code et du vocabulaire technique informatique, un héritage encore visible aujourd'hui dans les mots-clés des langages de programmation et le jargon technique mondial."
+    },
     "ambiguite": {
       "question": "Faut-il viser un anglais parfait, sans accent ni hésitation, pour réussir ces entretiens ?",
       "reponse": "Non — la grande majorité des recruteurs internationaux, notamment dans la tech, évaluent la clarté de la communication technique, pas l'accent. Un anglais avec accent mais des phrases structurées et un vocabulaire technique précis passe largement mieux qu'un anglais hésitant sur le fond, même sans accent."
@@ -275,6 +291,14 @@
       }
     ],
     "culture": "De nombreux ingénieurs partant vers le Golfe passent par des recruteurs spécialisés qui gèrent l'intégralité de la relocation — un phénomène bien moins présent pour les recrutements en France ou aux USA, où le candidat gère généralement seul les démarches administratives.",
+    "pionnier": {
+      "nom": "Laszlo Bock",
+      "portrait": "Ancien Senior Vice President People Operations de Google (2006-2016), auteur du livre 'Work Rules!' (2015) qui documente les pratiques RH internes de l'entreprise.",
+      "contribution": "Il a publiquement détaillé et théorisé les méthodes de recrutement technique structuré de Google (entretiens multiples, grilles d'évaluation standardisées, comité de décision indépendant des managers), des pratiques largement reprises ensuite par d'autres entreprises tech dans le monde.",
+      "problematique": "Les décisions de recrutement basées sur l'intuition d'un seul manager étaient peu fiables et sujettes à des biais, avec un risque élevé d'erreurs de recrutement coûteuses.",
+      "solution": "Structurer le processus autour de plusieurs entretiens standardisés, de grilles d'évaluation communes et d'un comité de recrutement séparé du manager recruteur, afin de rendre la décision plus objective et cohérente entre équipes.",
+      "resultat": "Cette approche, documentée dans 'Work Rules!', a influencé les pratiques de recrutement technique de nombreuses entreprises tech mondiales, notamment le format de l'onsite loop avec plusieurs interviewers indépendants."
+    },
     "ambiguite": {
       "question": "Le process le plus rapide (souvent le Moyen-Orient) est-il forcément le moins exigeant techniquement ?",
       "reponse": "Non — un process court ne veut pas dire un niveau d'exigence technique réduit, seulement moins d'étapes intermédiaires. Beaucoup d'entreprises internationales installées dans le Golfe recrutent avec les mêmes standards techniques que leurs sièges américains ou européens, simplement avec un cycle de décision plus rapide."

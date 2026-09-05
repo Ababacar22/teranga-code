@@ -152,6 +152,14 @@
       }
     ],
     "culture": "Les langages modernes divergent culturellement sur l'encapsulation stricte : Java/C# l'imposent par convention (private/public), tandis que Python n'a aucune vraie encapsulation (juste une convention _nom) — un choix assumé (\"we're all consenting adults\").",
+    "pionnier": {
+      "nom": "Ole-Johan Dahl et Kristen Nygaard",
+      "portrait": "Deux informaticiens norvégiens qui ont conçu le langage Simula au Centre de calcul norvégien à Oslo dans les années 1960.",
+      "contribution": "Ils ont créé Simula 67, le premier langage à introduire les notions de classe et d'objet, posant les bases conceptuelles de la programmation orientée objet.",
+      "problematique": "Modéliser des systèmes complexes de simulation (files d'attente, processus industriels) où les langages procéduraux existants devenaient ingérables à mesure que la complexité augmentait.",
+      "solution": "Regrouper données et comportements associés dans des \"classes\" instanciables en \"objets\", chacun encapsulant son propre état interne.",
+      "resultat": "Simula a directement inspiré Smalltalk, C++ et la quasi-totalité des langages orientés objet modernes ; Dahl et Nygaard ont reçu le prix Turing en 2001 pour cette contribution."
+    },
     "ambiguite": {
       "question": "Un champ privé (#solde) en JavaScript, est-ce vraiment infranchissable ?",
       "reponse": "Oui, contrairement à la convention _solde (juste une convention, contournable) : les champs #privés de JavaScript moderne (ES2022) sont réellement inaccessibles depuis l'extérieur de la classe, appliqués par le moteur JS lui-même."
@@ -317,6 +325,14 @@
       }
     ],
     "culture": "\"Favor composition over inheritance\" est devenu un mantra culturel dominant dans l'industrie depuis les années 2000, en réaction aux abus d'héritage profond des années 90 (hiérarchies de classes à 6-7 niveaux devenues ingérables).",
+    "pionnier": {
+      "nom": "Alan Kay",
+      "portrait": "Informaticien américain, chercheur au Xerox PARC dans les années 1970, qui a inventé le terme \"programmation orientée objet\".",
+      "contribution": "Il a conçu Smalltalk, l'un des tout premiers langages orientés objet à part entière, en s'inspirant des classes de Simula.",
+      "problematique": "Créer un système logiciel où des unités autonomes pourraient collaborer par simple envoi de messages, plutôt que par manipulation directe de données partagées.",
+      "solution": "Un modèle où absolument tout est un objet, chaque objet possédant son propre état et communiquant avec les autres uniquement via l'envoi de messages (appels de méthodes).",
+      "resultat": "Smalltalk a introduit des concepts encore centraux aujourd'hui (fenêtres, interface graphique à la souris) et a influencé directement Objective-C, Java, Ruby et la conception moderne de l'héritage et du polymorphisme."
+    },
     "ambiguite": {
       "question": "Le polymorphisme nécessite-t-il obligatoirement de l'héritage ?",
       "reponse": "Non : en JavaScript/Python (typage dynamique), le \"duck typing\" permet du polymorphisme sans aucune relation d'héritage — si un objet a la méthode attendue, il peut être utilisé, peu importe sa classe."
@@ -478,6 +494,14 @@
       }
     ],
     "culture": "React a fortement popularisé la composition dans la culture frontend : les composants s'assemblent via children/props plutôt que par héritage de classes, ce qui a habitué toute une génération de développeurs web à penser \"composition\" par défaut.",
+    "pionnier": {
+      "nom": "Erich Gamma et les co-auteurs du Gang of Four",
+      "portrait": "Erich Gamma, informaticien suisse, avec Richard Helm, Ralph Johnson et John Vlissides, ont co-écrit ensemble l'ouvrage \"Design Patterns\" publié en 1994.",
+      "contribution": "Ils ont catalogué et formalisé 23 patrons de conception orientés objet, dont le principe \"préférer la composition à l'héritage\".",
+      "problematique": "Les hiérarchies d'héritage profondes rendaient le code fragile : modifier une classe mère avait des effets de bord imprévisibles sur toutes ses classes filles, et le comportement figé à la compilation manquait de flexibilité.",
+      "solution": "Construire des comportements en assemblant des objets entre eux (relation \"a un\") plutôt qu'en empilant des couches d'héritage (relation \"est un\"), afin de pouvoir changer un comportement à l'exécution.",
+      "resultat": "Ce principe est devenu une référence quasi universelle en conception logicielle et a directement influencé la conception d'API modernes, dont les Hooks de React."
+    },
     "ambiguite": {
       "question": "Utiliser des Hooks React (useEffect, useState), est-ce de la composition ?",
       "reponse": "Oui, dans l'esprit : les Hooks permettent de composer des comportements réutilisables dans un composant sans hériter d'une classe de base — une application directe du principe \"composition over inheritance\"."
@@ -639,6 +663,14 @@
       }
     ],
     "culture": "La programmation fonctionnelle a connu un vrai retour en force dans la culture JS depuis l'essor de React/Redux (2015+) : des concepts historiquement académiques (Haskell, Lisp) comme l'immutabilité sont devenus des attentes standards en entretien frontend moderne.",
+    "pionnier": {
+      "nom": "John McCarthy",
+      "portrait": "Informaticien américain, professeur à Stanford, pionnier de l'intelligence artificielle et créateur du langage Lisp en 1958.",
+      "contribution": "Il a conçu Lisp, l'un des tout premiers langages à formaliser les principes de la programmation fonctionnelle (fonctions comme valeurs, récursion, traitement de listes).",
+      "problematique": "Manipuler du code et des données de façon interchangeable pour la recherche en intelligence artificielle, où les programmes devaient raisonner sur des structures symboliques évolutives.",
+      "solution": "Représenter à la fois le code et les données sous forme de listes, et traiter les fonctions comme des valeurs de première classe pouvant être passées, combinées et retournées par d'autres fonctions.",
+      "resultat": "Lisp a introduit des concepts encore utilisés aujourd'hui (récursion, garbage collection, fonctions d'ordre supérieur) et a directement influencé les langages fonctionnels modernes ainsi que des pratiques JavaScript comme `.map()` et `.reduce()`."
+    },
     "ambiguite": {
       "question": "JavaScript est-il un langage fonctionnel ou orienté objet ?",
       "reponse": "Ni strictement l'un ni l'autre : JavaScript est multi-paradigme, il permet les deux styles (classes ES6 pour l'OOP, fonctions pures pour le FP) sans en imposer aucun — un choix de style laissé au développeur ou à l'équipe."

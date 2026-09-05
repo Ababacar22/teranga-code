@@ -166,6 +166,14 @@
       }
     ],
     "culture": "Les questions de complexité algorithmique sont culturellement associées aux entretiens \"à l'américaine\" (LeetCode-style) — une pratique controversée : de nombreux ingénieurs expérimentés critiquent ce format car il teste peu ce qu'on fait réellement au quotidien, mais il reste très répandu.",
+    "pionnier": {
+      "nom": "Donald Knuth",
+      "portrait": "Informaticien américain né en 1938, professeur à Stanford, auteur de la série de référence \"The Art of Computer Programming\" dont le premier volume paraît en 1968.",
+      "contribution": "Il a popularisé et systématisé l'usage de la notation Big O en informatique pour analyser la complexité des algorithmes, en s'appuyant sur une notation mathématique déjà utilisée en théorie des nombres par Paul Bachmann à la fin du XIXe siècle.",
+      "problematique": "Il n'existait pas de langage commun et rigoureux pour comparer objectivement l'efficacité de deux algorithmes différents, indépendamment de la machine ou de l'implémentation utilisée.",
+      "solution": "Il a formalisé et diffusé dans ses ouvrages et articles une notation standardisée (O, Ω, Θ) décrivant le comportement asymptotique du temps ou de l'espace utilisé par un algorithme en fonction de la taille des données.",
+      "resultat": "Cette notation est devenue le vocabulaire universel de l'analyse d'algorithmes, enseignée dans toutes les formations en informatique et utilisée quotidiennement dans les entretiens techniques et la conception de systèmes."
+    },
     "ambiguite": {
       "question": "Un algorithme O(n) est-il toujours plus rapide qu'un O(n²) en pratique ?",
       "reponse": "Pas forcément pour de petites données : les constantes cachées par la notation Big O peuvent rendre un O(n²) simple plus rapide qu'un O(n) avec une lourde initialisation, tant que n reste petit. Big O décrit le comportement asymptotique, pas la performance réelle à toute échelle."
@@ -338,6 +346,14 @@
       }
     ],
     "culture": "Le choix entre tableau et liste chaînée est rarement un vrai dilemme en JavaScript moderne : le moteur V8 optimise tellement les tableaux que les listes chaînées faites main sont rares en pratique web, contrairement à des langages bas niveau (C, Rust).",
+    "pionnier": {
+      "nom": "Friedrich L. Bauer",
+      "portrait": "Informaticien allemand (1924-2015), professeur à l'université technique de Munich, l'un des pionniers de l'informatique européenne et co-inventeur du langage ALGOL.",
+      "contribution": "Avec son collègue Klaus Samelson, il a formalisé le principe de la pile (\"pushdown store\"/\"Keller-Prinzip\"), une structure de données LIFO (dernier entré, premier sorti), déposée sous forme de brevet en 1957.",
+      "problematique": "Les premiers compilateurs devaient évaluer des expressions arithmétiques imbriquées (avec parenthèses et priorités d'opérateurs) et gérer les appels de sous-programmes, sans structure adaptée pour mémoriser dans le bon ordre les opérations ou appels en attente.",
+      "solution": "Bauer et Samelson ont proposé d'utiliser une structure en pile pour empiler temporairement les valeurs et opérateurs en attente de traitement, et les dépiler dans l'ordre inverse de leur ajout.",
+      "resultat": "Ce principe est devenu fondamental en informatique : il structure aujourd'hui la pile d'appels (call stack) de pratiquement tous les langages de programmation, ainsi que l'évaluation d'expressions dans les compilateurs et interpréteurs modernes."
+    },
     "ambiguite": {
       "question": "Une pile (stack) et la \"call stack\" de JavaScript, est-ce lié ?",
       "reponse": "Oui, littéralement : la call stack de JavaScript qui suit l'exécution des fonctions est elle-même une structure de données de type pile (LIFO). C'est pour ça qu'une récursion infinie provoque un \"Stack Overflow\"."
@@ -499,6 +515,14 @@
       }
     ],
     "culture": "BFS et DFS sont des questions d'entretien récurrentes, mais leur usage réel varie selon la culture d'équipe : une équipe frontend n'implémente presque jamais ces algorithmes à la main (React s'en charge pour le Virtual DOM), alors qu'une équipe data/infra les manipule régulièrement.",
+    "pionnier": {
+      "nom": "Edsger Dijkstra",
+      "portrait": "Informaticien néerlandais (1930-2002), l'une des figures fondatrices de l'informatique théorique, connu aussi pour ses travaux sur la programmation structurée.",
+      "contribution": "Il a conçu en 1956 l'algorithme qui porte son nom, permettant de calculer le plus court chemin entre un nœud de départ et tous les autres nœuds d'un graphe pondéré.",
+      "problematique": "Dijkstra cherchait, comme démonstration pour une nouvelle machine (l'ARMAC), un exemple simple mais parlant : il voulait calculer le trajet routier le plus court entre deux villes néerlandaises, Rotterdam et Groningen, à partir d'une carte simplifiée des routes du pays.",
+      "solution": "Il a proposé une méthode gloutonne qui explore progressivement les nœuds du graphe en choisissant toujours celui dont la distance connue depuis le départ est la plus courte, et met à jour les distances des voisins au fur et à mesure.",
+      "resultat": "L'algorithme de Dijkstra, publié en 1959, est devenu une pierre angulaire de l'informatique et reste aujourd'hui à la base de nombreux systèmes de navigation GPS et protocoles de routage réseau."
+    },
     "ambiguite": {
       "question": "Un arbre binaire et un arbre binaire de recherche (BST), est-ce pareil ?",
       "reponse": "Non : un arbre binaire est juste une structure où chaque nœud a au plus 2 enfants, sans règle d'ordre. Un BST ajoute une contrainte précise (enfant gauche plus petit, enfant droit plus grand) qui permet la recherche en O(log n)."
@@ -690,6 +714,14 @@
       }
     ],
     "culture": "\"Ne réimplémente jamais ton propre tri en production\" est un conseil culturel très répandu — les algorithmes de tri intégrés aux langages sont hautement optimisés ; les questions de tri en entretien servent à évaluer le raisonnement, pas à préparer une vraie tâche du quotidien.",
+    "pionnier": {
+      "nom": "Tony Hoare",
+      "portrait": "Informaticien britannique né en 1934, plus tard professeur à Oxford et lauréat du prix Turing en 1980 pour l'ensemble de ses contributions à la conception des langages de programmation.",
+      "contribution": "Il a inventé l'algorithme de tri rapide (Quicksort) entre 1959 et 1961, alors qu'il travaillait comme jeune chercheur visiteur à l'université d'État de Moscou puis pour l'entreprise britannique Elliott Brothers.",
+      "problematique": "Hoare travaillait sur un projet de traduction automatique russe-anglais et avait besoin de trier des mots rapidement afin de les retrouver efficacement dans un dictionnaire, avec les moyens de calcul très limités de l'époque.",
+      "solution": "Il a conçu une méthode \"diviser pour régner\" : choisir un pivot, répartir les éléments plus petits d'un côté et plus grands de l'autre, puis répéter récursivement l'opération sur chaque partie, jusqu'à obtenir un tableau entièrement trié.",
+      "resultat": "Quicksort, avec une complexité moyenne en O(n log n), est devenu l'un des algorithmes de tri les plus utilisés au monde et sert encore aujourd'hui de base (ou d'inspiration) à de nombreuses implémentations de tri dans les bibliothèques standards des langages modernes."
+    },
     "ambiguite": {
       "question": "Array.prototype.sort() de JavaScript, quel algorithme utilise-t-il vraiment ?",
       "reponse": "Ça dépend du moteur JS : V8 (Chrome/Node) utilise TimSort (un hybride entre tri par insertion et tri fusion), pas un tri fusion pur. Le détail change avec le temps — c'est justement pourquoi on ne réimplémente pas soi-même ces algorithmes."

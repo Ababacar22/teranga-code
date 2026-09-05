@@ -177,6 +177,14 @@
       }
     ],
     "culture": "En entretien, le Singleton a mauvaise réputation dans certains cercles JS/TS modernes : beaucoup de devs le considèrent comme un «anti-pattern» hérité du monde Java/C++ des années 90, car il introduit un état global caché difficile à tester. D'autres le défendent pour des cas précis (config, logger) tant qu'il reste explicite.",
+    "pionnier": {
+      "nom": "Erich Gamma",
+      "portrait": "Informaticien suisse, co-auteur avec Richard Helm, Ralph Johnson et John Vlissides du livre fondateur \"Design Patterns: Elements of Reusable Object-Oriented Software\" publié en 1994.",
+      "contribution": "A codirigé la rédaction du catalogue de 23 design patterns, dont le Singleton, en documentant des solutions déjà observées dans du code orienté objet réel plutôt qu'en les inventant de toutes pièces.",
+      "problematique": "Au début des années 1990, les développeurs orientés objet réinventaient sans cesse les mêmes solutions à des problèmes récurrents (comme garantir une instance unique d'une classe), sans vocabulaire commun pour en parler ni les documenter clairement.",
+      "solution": "Avec ses trois coauteurs, il a formalisé le Singleton comme un pattern catalogué avec un nom, un problème, une solution générale et des conséquences discutées — dans un format reproductible pour toute la profession.",
+      "resultat": "Le livre du «Gang of Four» est devenu une référence quasi universelle en génie logiciel ; le vocabulaire des design patterns qu'il a contribué à populariser (dont Singleton) est aujourd'hui enseigné et utilisé dans la quasi-totalité des langages orientés objet."
+    },
     "ambiguite": {
       "question": "Singleton et variable globale, c'est la même chose ?",
       "reponse": "Pas tout à fait : une variable globale n'importe quoi (mutable, sans contrôle), alors qu'un Singleton bien conçu encapsule sa création et garantit qu'une seule instance existe via une interface contrôlée (getInstance()). En pratique, un Singleton mal utilisé finit souvent par se comporter exactement comme une variable globale — d'où sa mauvaise réputation."
@@ -339,6 +347,14 @@
       }
     ],
     "culture": "Factory est l'un des patterns les plus «réinventés sans le savoir» : énormément de développeurs JS écrivent des fonctions factory (create...(), make...()) sans jamais avoir lu le Gang of Four, simplement parce que c'est une solution naturelle.",
+    "pionnier": {
+      "nom": "Ralph Johnson",
+      "portrait": "Informaticien américain, professeur à l'Université de l'Illinois à Urbana-Champaign, et l'un des quatre coauteurs du livre \"Design Patterns\" (1994) du Gang of Four.",
+      "contribution": "A contribué à cataloguer le Factory Method comme solution récurrente pour déléguer la création d'objets à une méthode dédiée plutôt qu'à des appels directs à `new` dispersés dans le code.",
+      "problematique": "Le code orienté objet de l'époque codait souvent en dur la classe concrète à instancier, ce qui rendait l'ajout d'un nouveau type d'objet coûteux et couplait fortement le code appelant aux implémentations concrètes.",
+      "solution": "Le pattern documenté propose de confier la décision « quelle classe concrète créer » à une méthode ou classe dédiée, pour que le code appelant ne dépende que d'une interface commune.",
+      "resultat": "Le Factory Method est aujourd'hui l'un des patterns de création les plus utilisés, visible dans des frameworks comme Prisma ou Spring, souvent réinventé naturellement par des développeurs qui n'ont jamais lu le livre original."
+    },
     "ambiguite": {
       "question": "Factory Method et Factory tout court, c'est pareil ?",
       "reponse": "Le terme \"Factory\" est souvent utilisé de façon informelle pour désigner n'importe quelle fonction/méthode qui crée des objets. Le \"Factory Method\" est plus précis en POO classique : une méthode d'une classe (souvent redéfinissable par des sous-classes) dédiée à la création. En JS/TS, la distinction est rarement formalisée — on parle simplement de \"factory function\"."
@@ -534,6 +550,14 @@
       }
     ],
     "culture": "Le débat \"Observer vs Pub/Sub\" revient souvent en entretien avancé : beaucoup confondent les deux, alors qu'ils ont des cas d'usage différents en architecture (couplage direct vs événementiel via un broker comme Kafka ou RabbitMQ).",
+    "pionnier": {
+      "nom": "Trygve Reenskaug",
+      "portrait": "Informaticien norvégien qui a conçu l'architecture Modèle-Vue-Contrôleur (MVC) en 1978-1979, alors qu'il travaillait au Xerox Palo Alto Research Center (PARC) sur le langage Smalltalk-80.",
+      "contribution": "En concevant MVC, il a formalisé le mécanisme par lequel une Vue se tient informée des changements d'état d'un Modèle sans que celui-ci ait besoin de connaître les détails de ses vues — le principe même que le Gang of Four cataloguera plus tard sous le nom de pattern Observer.",
+      "problematique": "Il cherchait un moyen de garder plusieurs représentations visuelles (vues) synchronisées avec les données sous-jacentes d'une application Smalltalk, sans coupler fortement les données à leur affichage.",
+      "solution": "Il a proposé que les vues s'enregistrent auprès du modèle et soient notifiées automatiquement à chaque changement, plutôt que de vérifier son état en permanence — la logique d'abonnement/notification au cœur de l'Observer.",
+      "resultat": "Ce mécanisme a directement inspiré le pattern Observer formalisé en 1994, et reste aujourd'hui la base des architectures événementielles modernes : `addEventListener`, l'EventEmitter de Node.js, RxJS et les stores réactifs comme Redux."
+    },
     "ambiguite": {
       "question": "Observer et Event Emitter (Node.js), c'est le même pattern ?",
       "reponse": "Oui, dans l'esprit : EventEmitter de Node.js est une implémentation concrète du pattern Observer, où le \"sujet\" est l'émetteur et les callbacks .on() sont les observateurs. Le nom change selon l'écosystème, mais le mécanisme reste le même."
@@ -702,6 +726,14 @@
       }
     ],
     "culture": "Strategy est souvent implémenté en JS sans qu'on le nomme ainsi — un simple objet {clé: fonction} suffit, sans jamais créer de classes ni d'interfaces formelles. C'est un bon exemple de pattern orienté objet qui se traduit très naturellement en JS fonctionnel.",
+    "pionnier": {
+      "nom": "John Vlissides",
+      "portrait": "Informaticien américain, chercheur chez IBM et l'un des quatre coauteurs du livre \"Design Patterns\" (1994), aux côtés d'Erich Gamma, Richard Helm et Ralph Johnson.",
+      "contribution": "A contribué à cataloguer le Strategy comme moyen d'encapsuler une famille d'algorithmes interchangeables derrière une interface commune, pour remplacer les longues chaînes de conditions.",
+      "problematique": "Le code orienté objet contenait souvent de longs blocs `if/else` ou `switch` pour choisir un algorithme selon le contexte, rendant l'ajout d'une nouvelle variante risqué et le code difficile à maintenir.",
+      "solution": "Le pattern documenté propose d'extraire chaque algorithme dans sa propre classe (ou fonction) respectant une interface commune, que le code appelant peut choisir et substituer dynamiquement.",
+      "resultat": "Strategy est aujourd'hui omniprésent, y compris sans qu'on le nomme ainsi — visible dans Passport.js, les fonctions de comparaison de `Array.prototype.sort()`, ou tout objet `{clé: fonction}` en JavaScript."
+    },
     "ambiguite": {
       "question": "Strategy et une simple fonction de callback, quelle différence ?",
       "reponse": "Un callback ponctuel résout un besoin unique et local. Strategy formalise une famille d'algorithmes interchangeables derrière la même interface, pensée pour être étendue (ajouter un nouveau mode de paiement sans toucher au code existant) — c'est la structure et l'intention qui distinguent un vrai Strategy d'un simple callback."
@@ -863,6 +895,14 @@
       }
     ],
     "culture": "L'Adapter est omniprésent sans qu'on le remarque : chaque fois qu'une équipe backend écrit une couche pour uniformiser plusieurs fournisseurs cloud (S3, GCS, Azure Blob) derrière une même interface, c'est un Adapter — souvent appelé \"driver\" ou \"provider\" dans le jargon d'équipe plutôt que \"Adapter\".",
+    "pionnier": {
+      "nom": "Richard Helm",
+      "portrait": "Informaticien australien, consultant chez IBM au moment de la rédaction du livre \"Design Patterns\" (1994), et l'un des quatre coauteurs du Gang of Four.",
+      "contribution": "A contribué à cataloguer l'Adapter comme solution pour faire cohabiter deux interfaces incompatibles sans modifier le code existant de l'une d'elles.",
+      "problematique": "Intégrer une bibliothèque ou un composant existant dont l'interface ne correspondait pas à celle attendue par le reste du système obligeait souvent à réécrire du code, ce qu'on cherchait à éviter.",
+      "solution": "Le pattern documenté propose d'envelopper l'objet incompatible dans une classe intermédiaire qui traduit ses appels vers l'interface attendue, sans toucher au code d'origine.",
+      "resultat": "L'Adapter est devenu un réflexe d'architecture logicielle, omniprésent dans les couches d'intégration modernes (drivers de base de données, SDK de paiement, polyfills navigateur) sous des noms variés comme «driver» ou «provider»."
+    },
     "ambiguite": {
       "question": "Adapter et Wrapper, c'est la même chose ?",
       "reponse": "\"Wrapper\" est un terme générique pour tout code qui enveloppe un autre code. Adapter est un wrapper avec un objectif précis : traduire une interface incompatible vers celle attendue. Un Decorator est aussi techniquement un \"wrapper\", mais avec un objectif différent — d'où la confusion fréquente entre les deux patterns."
@@ -1028,6 +1068,14 @@
       }
     ],
     "culture": "Les décorateurs TypeScript natifs (@Injectable() dans NestJS/Angular) popularisent ce pattern sans que les développeurs fassent toujours le lien avec le Design Pattern \"Decorator\" du Gang of Four — la syntaxe @decorator est une facilité de langage, le pattern conceptuel existe indépendamment.",
+    "pionnier": {
+      "nom": "Guido van Rossum",
+      "portrait": "Informaticien néerlandais, créateur du langage de programmation Python, qu'il a commencé à développer à la fin des années 1980 aux Pays-Bas.",
+      "contribution": "A supervisé l'introduction de la syntaxe native `@decorateur` dans Python 2.4 (2004), via la proposition PEP 318, popularisant très concrètement l'idée d'envelopper une fonction pour lui ajouter du comportement sans modifier son code.",
+      "problematique": "Ajouter un comportement transversal (logging, mise en cache, contrôle d'accès) à une fonction ou une méthode obligeait à réécrire manuellement du code d'enveloppe à chaque endroit, de façon répétitive et peu lisible.",
+      "solution": "La syntaxe `@decorateur` a rendu explicite et lisible au niveau du langage ce que le Decorator du Gang of Four proposait déjà au niveau conception : envelopper une fonction dans une autre qui ajoute du comportement, sans modifier l'originale.",
+      "resultat": "Cette syntaxe est devenue un pilier de l'écosystème Python (Flask, Django, `@login_required`) et a directement inspiré les décorateurs de classes en TypeScript utilisés par des frameworks comme NestJS et Angular."
+    },
     "ambiguite": {
       "question": "Le décorateur @Injectable() de NestJS, est-ce le même concept que le Decorator pattern ?",
       "reponse": "Ils partagent le nom et l'idée d'\"ajouter du comportement\", mais @Injectable() est une annotation de métadonnées utilisée par le framework pour l'injection de dépendances — pas un décorateur au sens strict du Gang of Four. Beaucoup de confusion vient de cette réutilisation du mot \"décorateur\"."
@@ -1192,6 +1240,14 @@
       }
     ],
     "culture": "Le Builder est très visible dans l'écosystème JS moderne via les \"query builders\" (Knex.js) et les librairies de validation (Zod, Yup) qui utilisent toutes un style d'API fluide très proche du pattern.",
+    "pionnier": {
+      "nom": "Joshua Bloch",
+      "portrait": "Informaticien américain, ingénieur chez Sun Microsystems puis Google, auteur du livre \"Effective Java\" (première édition en 2001), une référence incontournable de la communauté Java.",
+      "contribution": "A popularisé et formalisé le \"Builder pattern\" comme solution recommandée au «problème du constructeur télescopique» (telescoping constructor), dans les éditions successives d'\"Effective Java\".",
+      "problematique": "Il constatait que les classes avec de nombreux paramètres optionnels accumulaient souvent plusieurs constructeurs surchargés («télescopiques»), rendant le code appelant illisible et sujet aux erreurs d'ordre des paramètres.",
+      "solution": "Il a recommandé de construire l'objet final via un objet Builder intermédiaire, avec des méthodes nommées et chaînables pour chaque paramètre optionnel, avant un appel final `build()`.",
+      "resultat": "Cette approche est devenue une pratique standard en Java et a influencé la conception d'API modernes dans de nombreux langages, visible aujourd'hui dans des query builders comme Knex.js, TypeORM ou les schémas de validation Zod."
+    },
     "ambiguite": {
       "question": "Method chaining et Builder pattern, est-ce la même chose ?",
       "reponse": "Le method chaining (chaque méthode retourne this) est la technique utilisée par Builder, mais on la retrouve aussi ailleurs (.filter().map() sur les tableaux). Builder est spécifiquement une technique de construction d'objet étape par étape ; le chaînage seul, sans construction progressive d'un objet final, n'est pas un Builder."
