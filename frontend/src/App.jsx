@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import RequireAuth from './features/auth/RequireAuth'
 import ThemeToggle from './components/ThemeToggle'
 import SoundToggle from './components/SoundToggle'
+import LanguageToggle from './components/LanguageToggle'
 import { playWhoosh } from './lib/sound'
 import './App.css'
 
@@ -176,6 +177,7 @@ function App() {
       <div className="app-toolbar">
         <ThemeToggle />
         <SoundToggle />
+        <LanguageToggle />
       </div>
       <Suspense fallback={<PageLoading />}>
         <AnimatedRoutes />

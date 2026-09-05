@@ -1,0 +1,573 @@
+[
+  {
+    "id": "load-balancing",
+    "title": "Load Balancing & High Availability",
+    "category": "Cloud & Distributed Systems",
+    "badge": { "id": "badge-load-balancing", "name": "Master of Balance", "emoji": "⚖️" },
+    "griotIntro": [
+      "At the great market of Kolda, a single bissap vendor is quickly overwhelmed by the crowd — several vendors naturally split the line.",
+      "A load balancer spreads incoming traffic across several servers, so none is overwhelmed and the service keeps running even if one goes down."
+    ],
+    "explanation": {
+      "text": "A single server is a single point of failure: if it goes down or saturates, everything stops. A load balancer distributes requests across several identical instances. Click on the lines of this simplified config to understand the principle.",
+      "code": "upstream backend_pool {\n  server 10.0.0.1:4000;\n  server 10.0.0.2:4000;\n  server 10.0.0.3:4000;\n  server 10.0.0.4:4000 weight=3;\n  server 10.0.0.5:4000 backup;\n}\n\nserver {\n  location / {\n    proxy_pass http://backend_pool;\n  }\n}",
+      "annotations": [
+        { "line": 0, "note": "`backend_pool` groups several identical servers running the exact same application code — any one of them can handle any request." },
+        { "line": 1, "note": "Each line is a separate instance of the application, often on different physical machines — if one goes down, the other two keep serving." },
+        { "line": 4, "note": "`weight=3` indicates that this server can receive roughly three times more requests than the others — useful when one machine is more powerful than the rest of the pool." },
+        { "line": 5, "note": "`backup` marks this server as a fallback: it only receives traffic once all the \"normal\" servers in the pool have become unavailable." },
+        { "line": 10, "note": "`proxy_pass` forwards each incoming request to ONE of the servers in the pool — by default, simply cycling through them in order (round-robin)." }
+      ]
+    },
+    "useCases": [
+      "A high-traffic site (sales, product launch) that needs to absorb a spike without slowing down or crashing, by spreading load across several servers.",
+      "A zero-downtime deployment: the load balancer temporarily redirects traffic to servers still running the old version.",
+      "A \"health check\" that automatically removes a failing server from rotation, without immediate human intervention."
+    ],
+    "relatedTools": [
+      { "name": "Nginx / HAProxy", "description": "Widely used software load balancers, capable of distributing HTTP traffic across several backend servers." },
+      { "name": "AWS ELB / Google Cloud Load Balancing", "description": "Managed load balancers from cloud providers, with built-in automatic scaling." },
+      { "name": "Kubernetes Service", "description": "In a Kubernetes cluster, a Service automatically spreads traffic across the available pods (instances) of an application." }
+    ],
+    "practice": {
+      "question": "Why does a load balancer reduce the risk of a total service outage?",
+      "options": [
+        "If a server goes down, the others keep handling requests — there's no longer a single point of failure",
+        "It physically prevents servers from failing",
+        "A load balancer deliberately slows down traffic to avoid failures"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — redundancy is the key: several identical servers, none of which is individually indispensable.",
+        "incorrect": "The load balancer doesn't make servers infallible; it ensures that an individual failure doesn't stop the whole service."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does a load balancer do, in one simple sentence?",
+        "options": [
+          "It spreads incoming requests across several servers to prevent any single one from becoming overloaded",
+          "It caches data to speed up responses",
+          "It compiles the application's source code in production"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is a \"single point of failure\" (SPOF) that a load balancer helps avoid?",
+        "options": [
+          "A single component whose failure brings down the whole system",
+          "A bug that only appears once in the code",
+          "A minor network misconfiguration with no impact"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is a \"health check\" performed regularly by a load balancer?",
+        "options": [
+          "A periodic check that each server in the pool is responding correctly, removing it from rotation otherwise",
+          "An annual audit of the overall infrastructure's security",
+          "A feature reserved only for databases"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why must a service be \"stateless\" (no local state) to fully benefit from a load balancer?",
+        "options": [
+          "Any instance must be able to handle any request, without depending on data stored only in local memory",
+          "The load balancer refuses to work with services that have a database",
+          "This isn't actually a requirement — local state has no impact"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In a systems interview, why isn't \"round-robin\" (simply cycling through in order) always the best load-balancing strategy?",
+        "options": [
+          "If requests have very different costs, some servers can end up overloaded despite an equal split by count",
+          "Round-robin is actually always perfectly optimal, no exceptions",
+          "Round-robin can technically only work with a single server"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Classic interview trap: a load balancer configured with \"sticky sessions\" (session affinity) always routes the same user to the same server. What is the main risk of this approach?",
+        "options": [
+          "If that specific server fails, the user loses their state, and load distribution becomes uneven across servers",
+          "No risk: sticky sessions always improve load balancing, without exception",
+          "Sticky sessions make health checks completely useless"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What difference distinguishes a layer 4 (L4, transport) load balancer from a layer 7 (L7, application) load balancer?",
+        "options": [
+          "L4 routes based on IP address and port, without looking at content; L7 can route based on URL, headers, or HTTP content",
+          "L4 and L7 refer to exactly the same mechanism, only the name changes depending on the vendor",
+          "L7 can only work with unencrypted connections"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "The principle of load balancing is much older than the internet — telephone switchboards and power distribution systems were already spreading load across multiple lines or plants long before the web. It's one of the rare software engineering concepts directly inherited from other industries.",
+    "pionnier": {
+      "nom": "Philip Emeagwali",
+      "portrait": "A computer scientist born in Nigeria, largely self-taught, who conducted research on massive parallel computing in the United States during the 1980s.",
+      "contribution": "In 1989, he won the prestigious Gordon Bell Prize for using 65,536 interconnected processors running in parallel to simulate oil flow in a reservoir — one of the first practical, award-winning uses of massively parallel computing.",
+      "problematique": "Oil-field simulations of this scale required computing power that no monolithic supercomputer of the era could provide at a reasonable cost.",
+      "solution": "Spread the computation across tens of thousands of processors working simultaneously, each handling a portion of the problem — the same principle that underlies load balancing across server clusters today.",
+      "resultat": "His simulation ran faster than on the Cray supercomputers of the time, a striking demonstration that the collective power of many simple machines can surpass that of a single very powerful machine."
+    },
+    "ambiguite": {
+      "question": "Does adding more servers behind a load balancer always solve a performance problem?",
+      "reponse": "Not necessarily: if the bottleneck lies elsewhere (a single database shared by all servers, for example), adding application servers just shifts the load toward that same single point without resolving it."
+    },
+    "bugHunt": {
+      "lines": [
+        "upstream backend_pool {",
+        "  server 10.0.0.1:4000;",
+        "  server 10.0.0.2:4000;",
+        "  server 10.0.0.3:4000;",
+        "}",
+        "server {",
+        "  location / {",
+        "    proxy_pass http://10.0.0.1:4000;",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 7,
+      "explanation": "`proxy_pass` points directly to the fixed address `10.0.0.1:4000` instead of the pool name `backend_pool` defined above. Result: all traffic is sent to this single server, and the other two remain unused — load balancing no longer has any effect, despite the pool being properly configured. The fix is `proxy_pass http://backend_pool;`, so nginx actually distributes requests across the three servers."
+    }
+  },
+  {
+    "id": "message-queues",
+    "title": "Message Queues: Kafka, RabbitMQ",
+    "category": "Cloud & Distributed Systems",
+    "badge": { "id": "badge-message-queues", "name": "Master of Queues", "emoji": "📨" },
+    "griotIntro": [
+      "A baker in Kolda prepares bread at their own pace, even if customers place orders at very different times of day.",
+      "A message queue does the same for two services: it absorbs spikes and lets each one process tasks at its own pace."
+    ],
+    "explanation": {
+      "text": "Without a message queue, a service that calls another service directly must wait for its response — if it's slow or down, everything blocks. A queue decouples the two. Click on the lines of this simplified example to understand the principle.",
+      "code": "// Producer: publishes an event without waiting for it to be processed\nawait queue.publish('order.created', { orderId: 42, amount: 4500 });\nconsole.log('Order recorded, processing in the background');\n\n// Consumer: processes messages at its own pace\nqueue.subscribe('order.created', async (message) => {\n  await sendConfirmationEmail(message.orderId);\n});",
+      "annotations": [
+        { "line": 1, "note": "`publish` drops the message into the queue and returns immediately — the producer does NOT wait for the message to be processed." },
+        { "line": 2, "note": "The user gets a fast response, even if sending the confirmation email takes time or fails temporarily." },
+        { "line": 6, "note": "The consumer processes messages at ITS own pace, independent of how fast they're produced — the queue absorbs the difference." },
+        { "line": 7, "note": "If `sendConfirmationEmail` fails, the message can be requeued for another attempt, without ever losing the order itself." }
+      ]
+    },
+    "useCases": [
+      "Sending a welcome email after sign-up, without making the user wait while the email is actually sent.",
+      "Processing uploaded image resizing in the background, so the upload's HTTP response isn't blocked.",
+      "Absorbing a spike in orders during a promotion, letting the processing system consume them gradually instead of collapsing."
+    ],
+    "relatedTools": [
+      { "name": "RabbitMQ", "description": "A traditional message queue, simple to operate, suited to most inter-service decoupling needs." },
+      { "name": "Apache Kafka", "description": "A large-scale event-streaming platform, designed for massive volumes and replaying message history." },
+      { "name": "BullMQ (Redis)", "description": "A Redis-based task queue library, widely used in the Node.js ecosystem for lighter needs." }
+    ],
+    "practice": {
+      "question": "What is the main benefit of a message queue between two services?",
+      "options": [
+        "It decouples the two services: the producer doesn't wait for the message to be processed by the consumer",
+        "It makes both services faster to write, without changing their behavior",
+        "It completely replaces the need for a database"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — decoupling is the core value of a message queue.",
+        "incorrect": "The main benefit is the temporal decoupling between production and processing, not the speed of writing code."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does a \"producer\" do in a message queue architecture?",
+        "options": [
+          "It publishes messages to the queue, without waiting for them to be processed",
+          "It consumes and processes messages from the queue",
+          "It automatically deletes old messages"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why process sending an email in the background via a queue rather than directly within the HTTP request?",
+        "options": [
+          "The user doesn't have to wait for the email to actually be sent in order to get their response",
+          "It has no impact on the response time perceived by the user",
+          "Emails technically cannot be sent from within an HTTP request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What does the \"at-least-once\" delivery guarantee for a message mean?",
+        "options": [
+          "A message might be delivered more than once if a problem occurs, so processing must be designed to be idempotent",
+          "A message is never delivered more than once, without exception",
+          "A message is never guaranteed to be delivered at all"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is Kafka often preferred over RabbitMQ for very large data volumes?",
+        "options": [
+          "Kafka is designed for very high throughput and lets you replay message history, not just consume messages once",
+          "RabbitMQ is actually always more performant than Kafka, in every case",
+          "Kafka can only work with a single consumer at a time"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an architecture interview, why should processing of a consumed message be designed to be idempotent?",
+        "options": [
+          "Because the same message can be delivered more than once depending on the queue system's guarantee, and processing it twice must not cause a bug",
+          "Idempotence has nothing to do with message queues",
+          "A message can technically never be delivered twice, so the question doesn't arise"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Classic interview trap: what's the key difference between a \"work queue\" model (classic queue) and a \"publish/subscribe\" model?",
+        "options": [
+          "In a work queue, a message is consumed by a single worker among several; in pub/sub, each subscriber receives its own copy of the same message",
+          "These are two different names for exactly the same delivery mechanism",
+          "Pub/sub can technically only have a single subscriber at a time, just like a classic queue"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What is a \"dead-letter queue\" used for?",
+        "options": [
+          "It stores messages that failed after several processing attempts, for later analysis without blocking the main queue",
+          "It permanently deletes all unread messages after 24 hours",
+          "It's only used to archive messages that were already successfully processed"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Kafka, created at LinkedIn and later open-sourced, takes its name from writer Franz Kafka — its creator explained he chose the name simply because it was \"a system optimized for writing,\" a nod to the writer with no direct link to his work.",
+    "pionnier": {
+      "nom": "John O'Hara",
+      "portrait": "An engineer at JPMorgan Chase, behind the initiative that launched the development of AMQP (Advanced Message Queuing Protocol) in 2003.",
+      "contribution": "O'Hara initiated and drove the project to create an open, standardized asynchronous messaging protocol, rather than depending on closed proprietary systems specific to each vendor.",
+      "problematique": "Large banks and companies used proprietary asynchronous messaging systems that were incompatible with each other, which complicated integration between financial systems from different vendors and created strong dependency on a single supplier.",
+      "solution": "Design an open, interoperable messaging protocol (AMQP), usable by any system or vendor, so message producers and consumers could communicate without being locked into a single technology.",
+      "resultat": "AMQP became an open standard (standardized by OASIS and then ISO/IEC), underpinning widely used messaging systems today such as RabbitMQ, which implements this protocol."
+    },
+    "ambiguite": {
+      "question": "Does a message queue guarantee that messages are processed in the exact order they were sent?",
+      "reponse": "It depends on the system and its configuration: some guarantee strict ordering per \"partition\" or per queue, but with multiple consumers running in parallel, the overall processing order is often NOT guaranteed — a design point to check against the actual requirement."
+    },
+    "bugHunt": {
+      "lines": [
+        "queue.subscribe('payment.received', async (message) => {",
+        "  const { orderId, amount } = message;",
+        "  try {",
+        "    await bankAccount.debit(orderId, amount);",
+        "    await markOrderPaid(orderId);",
+        "  } catch (error) {",
+        "    console.error('Processing error', error);",
+        "    queue.retry(message);",
+        "  }",
+        "});"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "`bankAccount.debit()` is called as-is on every retry (`queue.retry`), without ever checking whether this `orderId` has already been debited. Since a message queue's delivery guarantee is generally \"at least once,\" this message can be delivered and reprocessed several times — if the crash happens right after the debit but before `markOrderPaid`, the customer will be charged twice for the same order. The fix is to check an idempotency key (e.g., whether `orderId` is already marked as paid) before calling `debit`."
+    }
+  },
+  {
+    "id": "cap-theorem",
+    "title": "The CAP Theorem",
+    "category": "Cloud & Distributed Systems",
+    "badge": { "id": "badge-cap", "name": "Master of Trade-offs", "emoji": "🔺" },
+    "griotIntro": [
+      "If the road between two villages in the Kolda region is cut off by rain, each village must decide: wait for news, or act on the information it already has.",
+      "The CAP theorem describes exactly this dilemma for a distributed system when part of the network is cut off."
+    ],
+    "explanation": {
+      "text": "CAP states that when facing a network cut (Partition) between two nodes of a distributed system, you must choose between Consistency (everyone sees the same data) and Availability (responding anyway, even with possibly stale data). You can't have all three at once during the outage.",
+      "code": "// CP system (consistency-first):\n// on a network cut, the minority node refuses to write\nif (!canReachMajority()) throw new Error('Unavailable: consistency cannot be guaranteed');\n\n// AP system (availability-first):\n// on a network cut, the node responds anyway, with its local data\nif (!canReachMajority()) return localData; // potentially stale\n\n// AP variant with eventual consistency:\n// the node accepts the write locally then syncs it later\nwriteLocally(data); scheduleSync(data); // deferred reconciliation",
+      "annotations": [
+        { "line": 0, "note": "In a CP system, if the node cannot confirm it's part of the cluster's majority (quorum), it prefers to flatly refuse the write rather than risk an inconsistency." },
+        { "line": 2, "note": "A \"CP\" system prefers to refuse to respond rather than risk giving inconsistent information between two nodes cut off from the rest of the network." },
+        { "line": 6, "note": "An \"AP\" system prefers to respond anyway, even if it means giving slightly stale data — an imperfect answer is better than no answer." },
+        { "line": 10, "note": "This AP variant goes further: it accepts the write immediately locally, then syncs with other nodes once the outage is resolved — a deliberate temporary inconsistency trade-off, typical of \"eventually consistent\" databases like DynamoDB." }
+      ]
+    },
+    "useCases": [
+      "A banking transaction system generally chooses consistency (CP): better to refuse an operation than risk an inconsistent account state.",
+      "A social network displaying a like count often chooses availability (AP): a slightly delayed counter is acceptable, an unavailable site is not.",
+      "Configuring the consistency level of a distributed database (like Cassandra) according to the actual needs of each type of data."
+    ],
+    "relatedTools": [
+      { "name": "Cassandra / DynamoDB", "description": "Distributed databases historically oriented toward \"AP\" (availability), with adjustable consistency depending on needs." },
+      { "name": "PostgreSQL clustering / etcd", "description": "\"CP\"-oriented (consistency) systems, which prefer to refuse an operation rather than risk inconsistency." },
+      { "name": "CAP documentation (Eric Brewer)", "description": "Eric Brewer's original writings, who formulated the CAP theorem in 2000, remain the reference for understanding its nuances." }
+    ],
+    "practice": {
+      "question": "What actually happens when a \"network partition\" occurs between two nodes of a distributed system?",
+      "options": [
+        "The two nodes can no longer communicate with each other, while each keeps receiving requests",
+        "The entire system stops immediately and automatically",
+        "Network partitions never affect properly designed systems"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — it's precisely this situation that forces the choice between consistency and availability.",
+        "incorrect": "A network partition cuts communication between nodes, without necessarily stopping the system — that's the whole dilemma of the CAP theorem."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does the \"C\" in CAP (Consistency) mean?",
+        "options": [
+          "All nodes see the same data at the same time",
+          "The system never goes down",
+          "Data is always encrypted"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What does the \"A\" in CAP (Availability) mean?",
+        "options": [
+          "Every request gets a response, even during a partial network outage",
+          "The system is only accessible during business hours",
+          "Data is only accessible to administrators"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why isn't \"P\" (partition tolerance) really a choice in a real distributed system?",
+        "options": [
+          "Network outages eventually always happen; not tolerating them would mean accepting that the system collapses at every network incident",
+          "P is optional and most modern systems choose not to handle it",
+          "P only concerns systems that don't use the internet"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is it often said that the real CAP choice boils down to \"CP vs AP\" rather than three equal options?",
+        "options": [
+          "Because partition tolerance (P) is effectively mandatory in practice, leaving only a choice between C and A during an outage",
+          "Because consistency and availability are actually the same thing",
+          "Because P can always be disabled without consequence"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "In a systems interview, how would you justify choosing an \"AP\" system for a like counter on a social network?",
+        "options": [
+          "A slightly delayed value remains acceptable for the user experience, whereas an unavailable site would be far more damaging",
+          "A like counter must always be perfectly exact, with no tolerance whatsoever",
+          "The choice between CP and AP has no real impact for this kind of feature"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Common interview trap: is the \"availability\" of the CAP theorem the same thing as the \"availability rate\" (uptime %) advertised by a cloud provider?",
+        "options": [
+          "No — in CAP, availability means every request gets a response during a partition; it's not a percentage of operating time over the year",
+          "Yes, they are rigorously the same concept, just expressed differently",
+          "CAP availability only applies to relational databases"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Does the \"C\" in CAP (Consistency) refer to the same notion as the \"C\" in ACID (Consistency) for databases?",
+        "options": [
+          "No — CAP's C concerns consistency across distributed copies of the same data, while ACID's C concerns respecting a transaction's integrity constraints",
+          "Yes, it's exactly the same definition in both cases",
+          "CAP's C never has anything to do with data consistency"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "The CAP theorem, formulated by Eric Brewer in 2000, was so widely cited (and sometimes misunderstood) in the industry that Brewer himself published a clarification in 2012 (\"CAP Twelve Years Later\") to correct overzealous simplifications — a fairly rare case of the original author having to rein in the popular use of his own theory.",
+    "pionnier": {
+      "nom": "Eric Brewer",
+      "portrait": "An American computer scientist, professor at UC Berkeley, who stated the CAP conjecture in a keynote at the PODC (Principles of Distributed Computing) conference in 2000.",
+      "contribution": "Brewer formulated the conjecture that a distributed system cannot simultaneously guarantee Consistency, Availability, and Partition tolerance (CAP) during a network outage. Seth Gilbert and Nancy Lynch published a formal proof in 2002, turning the conjecture into a recognized theorem.",
+      "problematique": "Designers of large-scale distributed systems (like those Brewer used at Inktomi) had to make technical trade-offs without a clear theoretical framework for reasoning about what was actually possible or impossible in the face of a network failure.",
+      "solution": "Formalize the three properties at play (Consistency, Availability, Partition tolerance) and prove that a system cannot guarantee all three at once during a network partition, forcing an explicit choice between consistency and availability.",
+      "resultat": "The CAP theorem became an essential reference framework for designing and comparing distributed databases (labeling them \"CP\" or \"AP\"), though Brewer had to clarify in 2012 that the trade-off only applies during an active partition, not permanently."
+    },
+    "ambiguite": {
+      "question": "Does the CAP theorem mean a system must choose C OR A permanently, all the time?",
+      "reponse": "No, often misunderstood: the trade-off ONLY applies during an active network partition. In normal operation (no outage), a system can very well offer both consistency and availability — CAP describes a choice that only needs to be made in the degraded case."
+    },
+    "bugHunt": {
+      "lines": [
+        "function canWrite(reachableNodes, totalNodes) {",
+        "  // The node must verify it has a quorum before accepting a write",
+        "  return reachableNodes.length > 0;",
+        "}",
+        "if (canWrite(reachableNodesFromHere, totalNodes)) {",
+        "  acceptWrite(data);",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`canWrite()` considers that it can accept a write as soon as it reaches AT LEAST ONE other node (`reachableNodes.length > 0`), instead of checking that it has the MAJORITY (quorum) of the cluster's nodes. If a network partition splits the cluster into two groups, both sides can then believe they're allowed to write simultaneously — a classic split-brain that violates consistency. The fix is to check `reachableNodes.length > totalNodes / 2`."
+    }
+  },
+  {
+    "id": "serverless",
+    "title": "Serverless: On-Demand Functions",
+    "category": "Cloud & Distributed Systems",
+    "badge": { "id": "badge-serverless", "name": "Master of the Serverless", "emoji": "☁️" },
+    "griotIntro": [
+      "Rather than renting a shop year-round in Kolda, some merchants only pay for a stall on big market days.",
+      "Serverless works the same way: code only runs (and is billed) when it's actually called, not continuously."
+    ],
+    "explanation": {
+      "text": "\"Serverless\" doesn't mean there's no server — just that you don't manage any yourself: the cloud provider starts your code on demand, then stops it. Click on the lines of this function to understand the model.",
+      "code": "const db = new DatabaseClient(); // created outside the handler, reused across \"warm\" invocations\nexport async function handler(event) {\n  const { userId } = JSON.parse(event.body);\n  const user = await db.user.findUnique({ where: { id: userId } });\n  return {\n    statusCode: 200,\n    body: JSON.stringify(user),\n  };\n}\n// This function ONLY runs while a request is being processed",
+      "annotations": [
+        { "line": 0, "note": "`db` is instantiated OUTSIDE the handler: on a \"warm start\" (an already-started instance reused for a following call), this connection is kept without being recreated — a nice performance gain, but never guaranteed (the instance could also be destroyed between two calls)." },
+        { "line": 1, "note": "`handler` is the entry point the cloud provider (AWS Lambda, Vercel...) calls automatically when a request comes in — no server to start yourself." },
+        { "line": 2, "note": "Each call receives a fresh `event` — no persistent memory is guaranteed between two calls, unlike a classic server that runs continuously." },
+        { "line": 9, "note": "Between two calls, this function literally no longer exists in memory — it's billed only for its actual execution time, not for staying \"on\"." }
+      ]
+    },
+    "useCases": [
+      "Processing the resizing of an uploaded image: a one-off task, no need for a server running 24/7 for that.",
+      "A webhook that reacts to an external event (payment confirmed, new commit) without a dedicated server running permanently on standby.",
+      "A prototype or low-traffic project, where paying for a continuously running server wouldn't be cost-effective compared to pay-per-use."
+    ],
+    "relatedTools": [
+      { "name": "AWS Lambda", "description": "The original and most widely used serverless service, triggerable by many event types (HTTP, files, message queues)." },
+      { "name": "Vercel / Netlify Functions", "description": "Serverless functions built into frontend deployment platforms, handy for lightweight backend needs." },
+      { "name": "Cloudflare Workers", "description": "Serverless functions run at the edge, as close as possible to the user, with particularly fast startup." }
+    ],
+    "practice": {
+      "question": "Why is serverless said to be billed \"on usage\" rather than continuously?",
+      "options": [
+        "The code only runs (and is billed) during the actual time it takes to handle a request, not while idle",
+        "Serverless is actually always free, with no billing at all",
+        "Serverless charges a fixed monthly subscription, like a classic server"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — that's the central economic argument of the serverless model.",
+        "incorrect": "Serverless bills the actual execution time, not a server that stays on continuously."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Does \"serverless\" mean there's really no physical server involved at all?",
+        "options": [
+          "No — there are indeed servers, but the cloud provider manages them, not the developer",
+          "Yes, the code runs directly on the user's device",
+          "Yes, no machine actually executes the code"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is a \"cold start\" in serverless?",
+        "options": [
+          "The extra delay on the very first call, while the provider starts a new instance of the function",
+          "A permanent failure of the serverless function",
+          "An operating mode reserved for off-peak hours"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why shouldn't a serverless function rely on data stored in memory between two calls?",
+        "options": [
+          "The instance can be completely destroyed and recreated between two calls, with no guarantee of local memory continuity",
+          "Memory between two calls is always guaranteed identical, without exception",
+          "This is only true for some cloud providers, never for AWS Lambda"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In which case does serverless become economically less advantageous than a classic server?",
+        "options": [
+          "When traffic is very high and constant, a dedicated server running continuously can end up cheaper than paying for each execution individually",
+          "Serverless is always cheaper than a classic server, with no exception",
+          "Serverless cost never depends on traffic volume"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "In an architecture interview, why isn't serverless always the right choice for a long-running task (e.g., several minutes)?",
+        "options": [
+          "Most serverless platforms enforce a maximum execution duration per call, beyond which the function is interrupted",
+          "Serverless has no execution duration limit at all, unlike a classic server",
+          "A long-running task is always forbidden by cloud regulations"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why is serverless often a poor choice for maintaining a WebSocket connection or a continuous data stream?",
+        "options": [
+          "A serverless function is designed for a short per-request cycle, not for keeping an open, long-lived connection between client and server",
+          "Serverless technically can never receive HTTP requests",
+          "WebSockets only exist for classic servers, never in a cloud environment"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What is a risk often cited in architecture interviews, related to serverless's strong dependency on a cloud provider?",
+        "options": [
+          "\"Vendor lock-in\": the code and configuration are often specific to the platform (AWS Lambda, etc.), making migration to another provider costly",
+          "Serverless technically prevents using multiple cloud providers for other services in the application",
+          "This risk doesn't exist since all serverless platforms are strictly identical to each other"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "The term \"serverless\" is still debated in the community: many engineers find it misleading since very real servers do execute the code — some prefer to say \"Functions as a Service\" (FaaS), more accurate but less catchy from a marketing standpoint.",
+    "pionnier": {
+      "nom": "Tim Wagner",
+      "portrait": "A software engineer who led the Amazon product team behind the launch of AWS Lambda in 2014, one of the very first mainstream serverless services.",
+      "contribution": "Wagner drove the design and launch of AWS Lambda, the service that popularized the \"Function as a Service\" model: running code on demand, triggered by events, without the developer having to manage or provision any server.",
+      "problematique": "Developers had to provision, size, and maintain servers continuously even for code triggered only occasionally by events, which wasted resources and added significant operational overhead for often-simple tasks.",
+      "solution": "Offer a platform where code is deployed as an independent function, automatically run by the cloud provider in response to an event, with automatic scaling and shutdown, with no server for the developer to manage.",
+      "resultat": "AWS Lambda, launched in 2014, kicked off the rise of the serverless market, quickly followed by competing offerings (Google Cloud Functions, Azure Functions), and permanently changed how many event-driven applications are architected."
+    },
+    "ambiguite": {
+      "question": "Does serverless completely eliminate the need to think about infrastructure?",
+      "reponse": "No: it eliminates SERVER management (patching, manual scaling, provisioning), but topics like execution duration limits, cold starts, permission configuration, or monitoring remain very much the developer's responsibility."
+    },
+    "bugHunt": {
+      "lines": [
+        "export async function handler(event) {",
+        "  const { userId, amount } = JSON.parse(event.body);",
+        "  const result = await callPaymentService(userId, amount);",
+        "  await generateInvoicePdf(result);",
+        "  await sendInvoiceByEmail(result);",
+        "  return { statusCode: 200, body: JSON.stringify(result) };",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "Chaining a payment network call, a PDF generation, and an email send within the same handler risks exceeding the maximum execution duration imposed by the serverless platform (often a few seconds to a few minutes depending on the provider) — the function would then be interrupted partway through, potentially after the payment but before the invoice is sent. The fix is to split the processing: the handler only triggers the payment and then publishes an event to a message queue so that invoice generation and email sending happen asynchronously and independently."
+    }
+  }
+]

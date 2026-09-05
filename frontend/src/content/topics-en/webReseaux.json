@@ -1,0 +1,570 @@
+[
+  {
+    "id": "http-fondamentaux",
+    "title": "Anatomy of an HTTP request",
+    "category": "Web & Networks",
+    "badge": { "id": "badge-http", "name": "Web Master", "emoji": "🌐" },
+    "griotIntro": [
+      "Tambacounda is the great crossroads of eastern Senegal: every road meets there before continuing on toward Mali.",
+      "An HTTP request also crosses several well-defined stages before reaching its destination and coming back with a reply."
+    ],
+    "explanation": {
+      "text": "Every network call a web app makes is an HTTP request: a method, an address, headers, sometimes a body — and in return, a status code and data. Click on the lines to break down a real call.",
+      "code": "const response = await fetch('https://api.example.com/users/42', {\n  method: 'GET',\n  headers: { Authorization: `Bearer ${token}` },\n});\nconst data = await response.json();\nconsole.log(response.status); // 200\nif (!response.ok) {\n  throw new Error(`Request failed with status ${response.status}`);\n}",
+      "annotations": [
+        { "line": 0, "note": "`fetch` sends a request to the given address — here as `GET` (the default value), so it's meant to read a resource." },
+        { "line": 2, "note": "The `Authorization` header travels with the request to prove the client's identity — without it, the server doesn't know who's calling." },
+        { "line": 3, "note": "`fetch` returns a response whose BODY must be read separately and asynchronously (`.json()`) — the response itself arrives before its content becomes available." },
+        { "line": 4, "note": "`response.status` holds the HTTP code returned by the server — 200 means success, regardless of the actual content of the response." },
+        { "line": 6, "note": "`response.ok` is `false` for any 4xx or 5xx code: `fetch` does NOT automatically reject a Promise on an HTTP error, unlike a network error — you must check `.ok` explicitly." }
+      ]
+    },
+    "useCases": [
+      "Every `fetch`/`axios` call from a frontend application to its backend is an HTTP request, like the one used in this project to load progress.",
+      "A browser loads a web page through a succession of HTTP requests: the HTML, then the CSS, the JS, and the referenced images.",
+      "A tool like Postman exists precisely to compose and inspect HTTP requests manually, without writing any code."
+    ],
+    "relatedTools": [
+      { "name": "Postman / Insomnia", "description": "Tools for manually composing and inspecting HTTP requests, very useful for debugging an API." },
+      { "name": "DevTools (Network tab)", "description": "Lets you observe every HTTP request actually sent by a web page, with its headers and status." },
+      { "name": "curl", "description": "Command-line tool for sending HTTP requests directly from a terminal, without a browser." }
+    ],
+    "practice": {
+      "question": "What is an HTTP header like `Authorization` or `Content-Type` used for?",
+      "options": [
+        "To carry metadata about the request or response, separate from the body of the message",
+        "To completely replace the body of the request",
+        "Headers serve no practical purpose, most servers ignore them"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — headers carry information about the request (who you are, what data format) without cluttering the body of the message.",
+        "incorrect": "Headers carry essential metadata (authentication, content format...), distinct from the body of the request."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does an HTTP status code starting with 4 (e.g. 404, 403) mean?",
+        "options": [
+          "An error on the client side (invalid request, unauthorized, resource not found)",
+          "An error on the server side only",
+          "A partial success of the request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is the difference between a request header and a response header?",
+        "options": [
+          "The former is sent by the client to the server, the latter by the server to the client",
+          "They are exactly the same headers, in both directions",
+          "Only the response can have headers, never the request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is HTTP/2 generally faster than HTTP/1.1 for loading a page with many resources?",
+        "options": [
+          "It allows multiplexing: several requests/responses in parallel over a single connection",
+          "It never uses a TCP connection, unlike HTTP/1.1",
+          "It completely removes the need for HTTP headers"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why must the body of a `fetch` request be read asynchronously (`await response.json()`)?",
+        "options": [
+          "The body data can keep arriving after the response headers have already been received",
+          "It's an arbitrary constraint of the JavaScript language, unrelated to the network",
+          "The response body is always empty, so waiting has no real effect"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, you're asked why an API should always validate incoming data server-side, even if the frontend already validates it. Which answer is most correct?",
+        "options": [
+          "Anyone can send an HTTP request directly to the server, completely bypassing the frontend",
+          "It's never necessary if the frontend already validates correctly",
+          "Server-side validation slows the application down too much to be useful"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What essential difference separates the codes 401 (Unauthorized) and 403 (Forbidden)?",
+        "options": [
+          "401 means the identity is not (or poorly) authenticated, whereas 403 means the identity is known but lacks the necessary rights",
+          "401 and 403 are two interchangeable ways of saying exactly the same error",
+          "403 applies only to server errors, never to client-related errors"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why is the PUT method said to be idempotent while POST is not?",
+        "options": [
+          "Sending the same PUT request several times produces the same final result, whereas repeating an identical POST can create several resources",
+          "PUT and POST are strictly interchangeable in practice, with no difference in behavior",
+          "Idempotence is a notion that only applies to the GET method"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "\"HTTP is a stateless protocol\" is a phrase often repeated without grasping its full cultural significance: this design choice, made from the earliest days of the web, is what allowed the web to scale to billions of users — since each request is independent, any server can handle it.",
+    "pionnier": {
+      "nom": "Tim Berners-Lee",
+      "portrait": "A British engineer working at CERN, he proposed in 1989 a hypertext system to organize the organization's information.",
+      "contribution": "He invented the HTTP protocol, the HTML language, and the concept of the URL, together laying the foundations of the World Wide Web between 1989 and 1991.",
+      "problematique": "Researchers around the world were using heterogeneous and incompatible computer systems, making it difficult to quickly share documents and information among them.",
+      "solution": "He designed a simple request/response protocol (HTTP) letting any client retrieve documents identified by a unique address (URL), independent of the underlying system.",
+      "resultat": "The first website went online in 1991; HTTP became the protocol underlying nearly all of the world's web traffic."
+    },
+    "ambiguite": {
+      "question": "Are HTTP and HTTPS two completely different protocols?",
+      "reponse": "No: HTTPS is simply HTTP carried on top of an encryption layer (TLS). The verbs, headers, and status codes stay identical — only the underlying connection is encrypted and authenticated."
+    },
+    "bugHunt": {
+      "lines": [
+        "async function getUser(id) {",
+        "  const response = await fetch(`https://api.example.com/users/${id}`);",
+        "  const data = response.json();",
+        "  if (response.status === 200) {",
+        "    return data;",
+        "  }",
+        "  throw new Error('User not found');",
+        "}"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "The `await` keyword is missing before `response.json()`: this method returns a Promise, not the data directly. Without `await`, `data` holds an unresolved Promise instead of the expected JSON object. It should read `const data = await response.json();`."
+    }
+  },
+  {
+    "id": "dns",
+    "title": "DNS: from domain name to IP address",
+    "category": "Web & Networks",
+    "badge": { "id": "badge-dns", "name": "Master of Naming", "emoji": "🧭" },
+    "griotIntro": [
+      "In Tambacounda, every neighborhood has a name everyone knows, easier to remember than precise GPS coordinates.",
+      "DNS does the same thing for the internet: it translates an easy-to-remember name (google.com) into an IP address that machines understand."
+    ],
+    "explanation": {
+      "text": "Without DNS, you'd have to remember numeric IP addresses to visit every site. DNS acts as a huge distributed directory. Click on the lines to break down a typical DNS resolution.",
+      "code": "$ dig teranga-code.sn\n\n;; ANSWER SECTION:\nteranga-code.sn.   300   IN   A   142.250.180.14\n\n;; Query time: 24 msec\n;; SERVER: 8.8.8.8#53\n\n$ dig nonexistent-subdomain.teranga-code.sn\n;; ->>HEADER<<- status: NXDOMAIN",
+      "annotations": [
+        { "line": 0, "note": "`dig` queries the DNS system to resolve this domain name into an IP address — this is what your browser does behind the scenes before every visit." },
+        { "line": 3, "note": "An `A` record maps a domain name to an IPv4 address. `300` is the TTL (Time To Live) in seconds: how long this result can be cached before being requested again." },
+        { "line": 6, "note": "The request was handled by the DNS resolver `8.8.8.8` (Google's) — an intermediary server, not the domain's actual owner." },
+        { "line": 9, "note": "`NXDOMAIN` means this domain name simply doesn't exist in DNS — a different case from an unreachable server, which would instead cause a connection timeout." }
+      ]
+    },
+    "useCases": [
+      "Every time you type a URL into your browser, a DNS resolution happens before the very first HTTP request even leaves.",
+      "Setting up a `CNAME` record to point a subdomain (`app.mysite.com`) to a third-party service (e.g. a hosting platform).",
+      "Diagnosing an \"unreachable\" site by first checking whether the problem comes from DNS resolution or from the server itself."
+    ],
+    "relatedTools": [
+      { "name": "dig / nslookup", "description": "Command-line tools for directly querying the DNS system and diagnosing resolution issues." },
+      { "name": "Cloudflare DNS / Route 53", "description": "Widely used managed DNS services for hosting a domain's DNS records with high availability." },
+      { "name": "whois", "description": "Lets you look up a domain name's registration information (owner, dates, DNS servers)." }
+    ],
+    "practice": {
+      "question": "What does the TTL (Time To Live) of a DNS record mean?",
+      "options": [
+        "How long the result can be cached before being requested again from the DNS server",
+        "The maximum time a site is allowed to stay online",
+        "The number of times a domain name can be visited per day"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — a short TTL lets a change propagate quickly, a long TTL reduces the load on DNS servers.",
+        "incorrect": "TTL controls how long a DNS response is cached, not the site's availability."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is a DNS record of type A used for?",
+        "options": [
+          "Mapping a domain name to an IPv4 address",
+          "Encrypting the domain's communications",
+          "Automatically redirecting to another country"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What does a CNAME record do?",
+        "options": [
+          "It points a domain name to another domain name, rather than directly to an IP",
+          "It stores the domain's administrator password",
+          "It blocks all incoming traffic to the domain"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why does a DNS change sometimes take time to propagate to all visitors?",
+        "options": [
+          "Different DNS servers around the world have cached the old response until its TTL expires",
+          "DNS is a single, centralized service, so propagation is always instantaneous",
+          "That never happens, DNS changes are always immediate"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In what order does a browser generally look for a DNS resolution?",
+        "options": [
+          "First its own cache, then the system's, then an external DNS resolver",
+          "Always directly from the final server, with no intermediate step",
+          "The order is random on every request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In a systems interview, why is a very short DNS TTL (e.g. 30 seconds) sometimes used deliberately before a server migration?",
+        "options": [
+          "To be able to quickly switch all visitors to the new IP address in case of an unplanned rollback",
+          "To deliberately slow down the site before the migration",
+          "TTL has no relation whatsoever to server migrations"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "After changing a DNS record with a 24h TTL, why do some users still see the old IP address several hours after the change?",
+        "options": [
+          "Their DNS resolvers cached the old response and won't request it again until the initial TTL expires",
+          "The DNS change was never correctly applied on the authoritative server",
+          "Every user must physically restart their router to see the change"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What is the difference between a recursive DNS resolver and an authoritative DNS server?",
+        "options": [
+          "The recursive resolver queries several servers in turn to find the answer, while the authoritative server holds the official answer for that domain",
+          "These are two different names for exactly the same role in the DNS system",
+          "Only the authoritative server can be queried directly by a browser"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "DNS is often called the internet's \"invisible single point of failure\": a major DNS outage (like those that have hit large providers in the past) can make thousands of sites unreachable at once, even though the servers themselves work perfectly.",
+    "pionnier": {
+      "nom": "Paul Mockapetris",
+      "portrait": "An American computer scientist working at the Information Sciences Institute of the University of Southern California in the early 1980s.",
+      "contribution": "He designed and implemented the DNS (Domain Name System) in 1983, published in RFCs 882 and 883.",
+      "problematique": "ARPANET was growing rapidly and all machine names were managed in a single centralized file (HOSTS.TXT), distributed manually to every machine — a method that became unmanageable as the network expanded.",
+      "solution": "He proposed a hierarchical, distributed name-resolution system, where different servers are authoritative over different portions of the namespace, with delegation and caching.",
+      "resultat": "DNS became the internet's universal directory, capable today of handling billions of domain names with no single point of control."
+    },
+    "ambiguite": {
+      "question": "Are a domain name and a URL the same thing?",
+      "reponse": "No: the domain name (e.g. `teranga-code.sn`) is only ONE PART of the URL. The full URL also includes the protocol (`https://`), possibly a path (`/profile`), and parameters — the domain name is what DNS resolves, not the entire URL."
+    },
+    "bugHunt": {
+      "lines": [
+        "# DNS zone for teranga-code.sn, server migration planned tomorrow at 10am",
+        "$TTL 86400",
+        "teranga-code.sn.        IN   A       142.250.180.14",
+        "www.teranga-code.sn.    IN   CNAME   teranga-code.sn.",
+        "mail.teranga-code.sn.   IN   MX 10   mail.teranga-code.sn.",
+        "; command run just before the migration:",
+        "$ dig teranga-code.sn +short"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "The global TTL is set to 86400 seconds (24h) even though a server migration is planned for the next day: DNS resolvers around the world will keep the old IP address cached for up to 24h after the actual change. The TTL should be lowered (e.g. `$TTL 300`) several hours in advance, so caches expire quickly at cutover time."
+    }
+  },
+  {
+    "id": "https-tls",
+    "title": "HTTPS & TLS: encrypting a connection",
+    "category": "Web & Networks",
+    "badge": { "id": "badge-tls", "name": "Master of Encryption", "emoji": "🔒" },
+    "griotIntro": [
+      "On the road between Tambacounda and Mali, a message entrusted to a trusted messenger and sealed with a stamp cannot be read or altered along the way.",
+      "TLS does the same for a web connection: it guarantees that no one between you and the server can read or modify the data exchanged."
+    ],
+    "explanation": {
+      "text": "HTTPS is HTTP carried on top of TLS, which provides three guarantees: confidentiality (no one can read it), integrity (no one can modify it without it being detected), and authenticity (you're really talking to the right server). Click on the lines of this simplified exchange to understand the principle.",
+      "code": "// 1. The browser requests the server's certificate\n// 2. The certificate is verified against a certificate authority (CA)\n// 3. Client and server agree on a shared session key\n// 4. All following data is encrypted with this key\nfetch('https://api.example.com/login', { method: 'POST', body: JSON.stringify(credentials) });\n// -> the password travels encrypted, unreadable if intercepted\n// 5. If the certificate is not recognized (self-signed, expired), the browser blocks the connection by default\nfetch('https://self-signed.example.com/data').catch(err => console.error('TLS failure:', err.message));",
+      "annotations": [
+        { "line": 0, "note": "The certificate contains the server's public key and proves its identity — a bit like an official ID card." },
+        { "line": 1, "note": "The browser checks that this certificate was indeed signed by a trusted authority (CA) — otherwise, it displays a security warning." },
+        { "line": 2, "note": "Once identity is verified, a temporary session key is negotiated — it's this key that actually encrypts the data, not the certificate itself." },
+        { "line": 6, "note": "Even if someone intercepts this traffic (an unsecured public network, for example), the data remains unreadable without the session key." },
+        { "line": 7, "note": "An invalid certificate (self-signed, expired, wrong domain) makes the TLS request fail by default — the browser refuses the connection rather than silently accepting it in plain text." }
+      ]
+    },
+    "useCases": [
+      "Any login form on the web (like this project's) must be served over HTTPS so the password never travels in plain text.",
+      "A padlock in the browser's address bar signals a valid HTTPS connection — its absence on a sensitive site is a warning sign.",
+      "Let's Encrypt democratized free TLS certificates, making HTTPS accessible even to small personal projects."
+    ],
+    "relatedTools": [
+      { "name": "Let's Encrypt", "description": "A free, automated certificate authority behind the widespread adoption of HTTPS across the web." },
+      { "name": "OpenSSL", "description": "The reference toolkit for generating keys and certificates, and inspecting TLS connections." },
+      { "name": "SSL Labs (Qualys)", "description": "An online service that analyzes and grades a given server's TLS/HTTPS configuration." }
+    ],
+    "practice": {
+      "question": "What main guarantees does TLS provide to an HTTPS connection?",
+      "options": [
+        "Confidentiality, data integrity, and server authenticity",
+        "Only the page's loading speed",
+        "No real guarantee, it's purely visual (the padlock)"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — these three guarantees form the core of what TLS brings to a connection.",
+        "incorrect": "TLS protects against reading, tampering, and server identity spoofing — not speed."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What happens if a site's TLS certificate is not signed by a recognized trusted authority?",
+        "options": [
+          "The browser displays a security warning before letting the user continue",
+          "Nothing, the connection proceeds normally with no signal at all",
+          "The site automatically becomes faster"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why should you never send a password over a plain (unencrypted) HTTP request?",
+        "options": [
+          "Anyone intercepting the network traffic could read it in plain text",
+          "It has no consequence as long as the password is long enough",
+          "HTTP already automatically encrypts all passwords"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is the difference between symmetric and asymmetric encryption in a TLS connection?",
+        "options": [
+          "Asymmetric (public/private key) is used to establish trust when setting up the connection, symmetric (shared key) then encrypts the traffic, which is faster",
+          "These are two different names for exactly the same mechanism",
+          "Only asymmetric encryption is used from start to finish of the connection"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is a certificate authority (CA) necessary in this system?",
+        "options": [
+          "It establishes a chain of trust: it verifies that a server really is who it claims to be before signing its certificate",
+          "It generates all of the server's encrypted traffic itself",
+          "Its role is purely decorative, with no real security value"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In a security interview, why is \"mixed content\" (an HTTPS page loading a resource over HTTP) problematic?",
+        "options": [
+          "That unencrypted resource remains interceptable and modifiable, breaking the security guarantee of the whole page",
+          "It has no impact as long as the main page stays on HTTPS",
+          "Mixed content always speeds up the page load"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Which statement correctly distinguishes the role of encryption from that of authentication in TLS?",
+        "options": [
+          "Encryption prevents the exchanged data from being read, authentication guarantees the server's identity: a site can technically be encrypted without being trustworthy",
+          "Encryption and authentication are exactly the same mechanism within TLS",
+          "Without server authentication, TLS can never encrypt any data"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What does a user risk by ignoring the browser's warning and continuing to a site with an unrecognized self-signed certificate?",
+        "options": [
+          "They lose the guarantee of the server's authenticity and potentially expose themselves to a \"man-in-the-middle\" attack despite an encrypted connection",
+          "Nothing at all, this warning is purely cosmetic and has no real consequence",
+          "The site automatically becomes slower but stays just as safe as with a valid certificate"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "The appearance of the little padlock in browsers profoundly changed the security culture of the mainstream web: this simple visual symbol made HTTPS understandable to millions of non-technical users, gradually pushing the entire web toward encryption by default.",
+    "pionnier": {
+      "nom": "Taher Elgamal",
+      "portrait": "An Egyptian-American cryptographer, he joined Netscape Communications as head of security in the early 1990s.",
+      "contribution": "He led the design of the SSL (Secure Sockets Layer) protocol at Netscape, the direct ancestor of TLS, which earned him the nickname \"father of SSL\".",
+      "problematique": "The nascent web offered no reliable way to secure exchanges between a browser and a server, holding back the growth of e-commerce and any sensitive online transaction.",
+      "solution": "His team designed an encryption protocol placed between the transport layer and application protocols like HTTP, combining encryption, integrity checking, and certificate-based authentication.",
+      "resultat": "SSL evolved into TLS, today's standard used to secure nearly all web traffic, including banking transactions and online commerce."
+    },
+    "ambiguite": {
+      "question": "Is an HTTPS site necessarily a safe and trustworthy site?",
+      "reponse": "No — a widespread misconception. HTTPS only guarantees that the CONNECTION is encrypted and that you're talking to the right server; it says nothing about whether that server is honest or malicious. A phishing site can very well have a valid HTTPS certificate."
+    },
+    "bugHunt": {
+      "lines": [
+        "async function fetchUserData() {",
+        "  const response = await fetch('http://api.example.com/profile', {",
+        "    method: 'GET',",
+        "    headers: { Authorization: `Bearer ${token}` },",
+        "  });",
+        "  return response.json();",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "The URL uses `http://` instead of `https://`: the authentication token and profile data would then travel in plain text, interceptable by anyone on the network. On a page served over HTTPS, this is also a \"mixed content\" error. It should use `https://api.example.com/profile`."
+    }
+  },
+  {
+    "id": "websockets",
+    "title": "WebSockets vs HTTP polling",
+    "category": "Web & Networks",
+    "badge": { "id": "badge-websocket", "name": "Master of Real Time", "emoji": "⚡" },
+    "griotIntro": [
+      "Sending a messenger to ask for news every five minutes, or keeping a phone line open continuously — two ways of staying informed.",
+      "HTTP polling repeats questions; WebSockets keep a connection open to receive news the moment it arrives."
+    ],
+    "explanation": {
+      "text": "Classic HTTP follows a question/answer cycle: for real time (chat, notifications), you'd have to keep asking non-stop. WebSockets open a persistent, two-way connection. Click on the lines to see how it's used.",
+      "code": "const socket = new WebSocket('wss://chat.example.com');\n\nsocket.onopen = () => socket.send('Hello from the client!');\n\nsocket.onmessage = (event) => {\n  console.log('Message received:', event.data);\n};\n\nsocket.onclose = () => console.log('Connection closed');",
+      "annotations": [
+        { "line": 0, "note": "`wss://` (WebSocket Secure) opens a persistent, encrypted connection — unlike `fetch`, it stays open after this first call." },
+        { "line": 2, "note": "Once the connection is established, the client can send messages at any time, without having to start a new HTTP request each time." },
+        { "line": 4, "note": "The server can push messages to the client AT ANY TIME, without the client having asked for anything — impossible with classic HTTP." },
+        { "line": 8, "note": "The connection stays open until explicitly closed (from either side) — unlike an HTTP request, which ends as soon as the response is received." }
+      ]
+    },
+    "useCases": [
+      "A real-time chat application, where every message must appear instantly for all participants.",
+      "A live scoreboard (sports, stock market) that updates without the user needing to reload the page.",
+      "A collaborative feature (like a document edited by several people) that must reflect other users' changes in real time."
+    ],
+    "relatedTools": [
+      { "name": "Socket.IO", "description": "A widely used library that simplifies working with WebSockets on the client and server, with automatic fallback to polling if needed." },
+      { "name": "Server-Sent Events (SSE)", "description": "A lighter alternative to WebSockets, for a one-way stream of information (server to client only)." },
+      { "name": "Pusher / Ably", "description": "Managed services that handle WebSocket infrastructure at scale, so you don't have to maintain it yourself." }
+    ],
+    "practice": {
+      "question": "What is the main difference between HTTP polling and WebSockets?",
+      "options": [
+        "Polling repeats requests at regular intervals; WebSockets maintain an open connection where the server can push data at any time",
+        "They are two different names for the same technique",
+        "Polling is always faster than WebSockets, in every case"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — polling \"pulls\" information periodically, WebSockets let the server \"push\" it immediately.",
+        "incorrect": "Polling checks in at regular intervals; WebSockets keep an open channel for immediate two-way communication."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Why is frequent HTTP polling (e.g. every second) costly at scale?",
+        "options": [
+          "Each request opens a new connection and consumes server resources, even when nothing has changed",
+          "Polling never consumes server resources, unlike WebSockets",
+          "It's never a problem, no matter how many users there are"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Can a server send a message to a client without the client having asked for it, over an established WebSocket connection?",
+        "options": [
+          "Yes, that's precisely the main advantage of WebSockets over classic HTTP",
+          "No, only the client can initiate each exchange, as in HTTP",
+          "Only once per connection, never more"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "In what case was \"long polling\" (an HTTP request kept open longer) used before WebSockets became widespread?",
+        "options": [
+          "To simulate real-time behavior using only classic HTTP tools, before WebSockets were widely supported",
+          "Long polling never existed, it's a myth",
+          "Only to deliberately slow down an application"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why are Server-Sent Events (SSE) sometimes preferred over WebSockets for certain use cases?",
+        "options": [
+          "When the data flow only goes from server to client, SSE is simpler to set up than a full bidirectional connection",
+          "SSE is always strictly superior to WebSockets, in every case",
+          "SSE only works over unsecured HTTP connections"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an architecture interview, what factor should weigh into the choice between WebSockets and polling for a given feature?",
+        "options": [
+          "The actual frequency of updates and whether or not immediate two-way communication is needed",
+          "You should always choose WebSockets, no exceptions, regardless of the feature",
+          "The technical choice never has a real impact on infrastructure costs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Unlike WebSockets, can a Server-Sent Events (SSE) stream directly transmit binary data?",
+        "options": [
+          "No, SSE only transmits encoded text (UTF-8), whereas WebSocket can carry binary or text data",
+          "Yes, SSE and WebSockets are strictly equivalent on this specific point",
+          "SSE can only transmit binary data, never text"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "If the WebSocket connection is dropped (e.g. temporary network loss), who is responsible for reconnecting?",
+        "options": [
+          "The client must implement the reconnection logic itself, the WebSocket API doesn't do it automatically",
+          "The browser always reconnects automatically, with no extra code needed",
+          "A WebSocket connection can technically never be dropped once established"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "WebSockets took time to catch on after their standardization (2011): many network infrastructures and older proxies weren't designed for long-lived connections, which is why the \"automatic fallback\" to polling (as Socket.IO does) remains a common cultural practice out of caution.",
+    "pionnier": {
+      "nom": "Ian Hickson",
+      "portrait": "An engineer employed by Google, lead editor of the HTML5 specification within the WHATWG during the 2000s-2010s.",
+      "contribution": "He formalized and advanced the WebSocket protocol specification within HTML5, in collaboration with other W3C and IETF contributors (including Michael Carter), standardized around 2011.",
+      "problematique": "Real-time web applications (chat, notifications, dashboards) had to resort to costly techniques like repeated polling or long polling, generating unnecessary traffic and latency to simulate two-way communication.",
+      "solution": "The WebSocket specification defined an API and protocol for opening a single, persistent, bidirectional connection between client and server, without the overhead of repeated HTTP headers.",
+      "resultat": "WebSockets became a standard widely supported by browsers, underlying uses such as live chat, online gaming, and real-time financial data feeds."
+    },
+    "ambiguite": {
+      "question": "Should you always prefer WebSockets over HTTP polling, since they're \"more modern\"?",
+      "reponse": "No — for data that changes once an hour, simple spaced-out polling (or even a manual request) is largely sufficient and much simpler to maintain. WebSockets add real complexity (connection management, reconnection, scalability) that should be reserved for cases where real time is an actual need."
+    },
+    "bugHunt": {
+      "lines": [
+        "const socket = new WebSocket('wss://chat.example.com');",
+        "socket.send('Hello from the client!');",
+        "socket.onopen = () => {",
+        "  console.log('Connection established');",
+        "};",
+        "socket.onmessage = (event) => {",
+        "  console.log('Message received:', event.data);",
+        "};"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "`socket.send(...)` is called right after creating the WebSocket, while the connection isn't yet established (it opens asynchronously) — this causes an error. You must wait for the `onopen` event before sending a message, for example with `socket.onopen = () => socket.send('Hello from the client!');`."
+    }
+  }
+]

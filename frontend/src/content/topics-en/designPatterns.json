@@ -1,0 +1,1256 @@
+[
+  {
+    "id": "singleton",
+    "title": "The Singleton Pattern",
+    "category": "Creational",
+    "badge": {
+      "id": "badge-singleton",
+      "name": "Master of the Singleton",
+      "emoji": "🦁"
+    },
+    "griotIntro": [
+      "Teranga, young developer! I am the Griot, keeper of the wisdom of Dakar.",
+      "Today we're learning the Singleton pattern — like the one great baobab at the center of the village: there is only one, and everyone comes to it.",
+      "In code, a Singleton guarantees that a class has only a single instance, accessible everywhere in the application."
+    ],
+    "explanation": {
+      "text": "The Singleton guarantees that only one instance of a class exists and that it is shared everywhere — useful for a config, a DB connection, a cache. Click the highlighted lines below to see how it works.",
+      "code": "class Configuration {\n  static #instance;\n\n  constructor() {\n    this.environment = 'production';\n  }\n\n  static getInstance() {\n    if (!Configuration.#instance) {\n      Configuration.#instance = new Configuration();\n    }\n    return Configuration.#instance;\n  }\n}\n\nconst configA = Configuration.getInstance();\nconfigA.environment = 'development';\n\nconst configB = Configuration.getInstance();\nconsole.log(configB.environment); // 'development'\nconsole.log(configA === configB);  // true",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`static` = a single field shared by the whole class (not one per instance). The `#` makes it private: unreachable from the outside."
+        },
+        {
+          "line": 7,
+          "note": "`static` lets you call `Configuration.getInstance()` directly on the class, without ever doing `new Configuration()` yourself."
+        },
+        {
+          "line": 8,
+          "note": "On the very first call, `#instance` is still `undefined`: the condition is true."
+        },
+        {
+          "line": 9,
+          "note": "The object is created only here, once — later calls skip this line because the condition becomes false."
+        },
+        {
+          "line": 11,
+          "note": "Always returns the same reference stored in memory, never a new object."
+        },
+        {
+          "line": 15,
+          "note": "`configA` receives the reference to the single instance."
+        },
+        {
+          "line": 16,
+          "note": "We mutate the state of this shared instance."
+        },
+        {
+          "line": 18,
+          "note": "Same call, but `#instance` already exists: we get back the same reference, not a new instance."
+        },
+        {
+          "line": 19,
+          "note": "`configB` sees the change made through `configA`: it is literally the same object in memory."
+        },
+        {
+          "line": 20,
+          "note": "`===` compares references, not content — true here because `configA` and `configB` point to the same object."
+        }
+      ]
+    },
+    "useCases": [
+      "A database connection pool in a Node.js API: a single instance shared by every request, so available connections aren't exhausted.",
+      "A React app's global state store (Redux, Zustand): a single source of truth for the whole app's state.",
+      "An application logger (e.g. Winston, Pino): every module writes to the same centralized log stream."
+    ],
+    "relatedTools": [
+      {
+        "name": "NestJS",
+        "description": "Its dependency injection container instantiates services as singletons by default — you write `@Injectable()` without ever coding the pattern yourself."
+      },
+      {
+        "name": "Redux / Zustand",
+        "description": "The application store is a deliberate singleton: a single source of truth for the whole app's state."
+      },
+      {
+        "name": "Prisma Client",
+        "description": "Best practice: instantiate a single shared `PrismaClient` across the whole app (exactly what `backend/src/db/prisma.js` does in this project)."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class Configuration {",
+        "  static #instance;",
+        "",
+        "  static getInstance() {",
+        "    return new Configuration();",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 4,
+      "explanation": "This line creates a brand new instance on every call — it's missing the `if (!Configuration.#instance)` check before storing and returning it."
+    },
+    "practice": {
+      "question": "Which of these snippets correctly follows the Singleton pattern?",
+      "options": [
+        "class Config { static #i; getInstance() { if (!Config.#i) Config.#i = new Config(); return Config.#i; } }",
+        "class Config { static #i; static getInstance() { if (!Config.#i) Config.#i = new Config(); return Config.#i; } }",
+        "class Config { static getInstance() { return new Config(); } }"
+      ],
+      "correctIndex": 1,
+      "feedback": {
+        "correct": "Exactly — the check prevents re-creation, and `static` lets you call `Config.getInstance()` directly on the class.",
+        "incorrect": "Not quite: either `getInstance()` isn't declared `static` (so it can't be called directly on the class), or a new instance is recreated on every call."
+      }
+    },
+    "quiz": [
+      {
+        "question": "An application calls `Configuration.getInstance()` twice. Why are the two results strictly equal (`===`)?",
+        "options": [
+          "Because `getInstance()` returns the same reference stored in `Configuration.#instance`",
+          "Because JavaScript automatically treats two objects created from the same class as identical",
+          "Because the `static` keyword prevents JavaScript from creating multiple `Configuration` objects"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "A developer removes the `static` keyword before `getInstance()`. What happens if you then try to call `Configuration.getInstance()`?",
+        "options": [
+          "`getInstance()` is no longer accessible directly on the class: you'd first need an instance to call it",
+          "It still works exactly the same, `static` has no effect here",
+          "The private field `#instance` automatically becomes public"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "With the example code (the constructor initializes `environment = 'production'`), one module does `configA.environment = 'development'` after retrieving the instance. Another module then retrieves `configB = Configuration.getInstance()` and reads `configB.environment`. What is that value?",
+        "options": [
+          "`'development'`, because `configA` and `configB` reference the same instance",
+          "`'production'`, because every call to `getInstance()` returns a freshly reset configuration",
+          "`undefined`, because `environment` isn't declared `static`"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In a test suite, a first test mutates the Singleton's state (`config.environment = 'test'`). A second test then expects the default value and fails. What is the most likely cause?",
+        "options": [
+          "The Singleton holds state shared across tests, which aren't isolated from one another",
+          "The JavaScript garbage collector deleted the instance between the two tests",
+          "Private fields (`#`) are incompatible with test frameworks"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Your Node.js application already uses a framework with a dependency injection (DI) container. A colleague still proposes hand-coding a `DatabaseManager` Singleton. What's the most relevant answer in an interview?",
+        "options": [
+          "The DI container can manage this service as a singleton (a single shared instance) while keeping the dependency explicit and easily swappable for tests — often preferable to a hand-coded Singleton",
+          "A manual Singleton is always preferable because it guarantees no other instance can ever exist",
+          "Any form of shared instance should be avoided: every request must create its own database connection"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "In Node.js (single-threaded), a developer adds an asynchronous operation (e.g. loading config from a file) inside `getInstance()` before assigning `#instance`. Two concurrent calls to `getInstance()` are fired before the first `await` finishes. What might happen?",
+        "options": [
+          "Two concurrent executions may each find `#instance` still `undefined` and create two different instances, breaking the Singleton guarantee",
+          "Node.js automatically prevents this case because it is single-threaded",
+          "Nothing: `await` guarantees `#instance` is already assigned before any second call"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What's the difference between \"lazy\" initialization (as in `getInstance()`) and \"eager\" initialization (immediate, e.g. `static #instance = new Configuration()`) for a Singleton?",
+        "options": [
+          "Lazy only creates the instance the first time it's actually needed; eager creates it as soon as the module loads, even if it's never used",
+          "There is no observable difference between the two approaches",
+          "Eager permanently prevents multiple instantiation, unlike lazy"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "In interviews, the Singleton has a poor reputation in some modern JS/TS circles: many developers consider it an \"anti-pattern\" inherited from the 1990s Java/C++ world, since it introduces hidden global state that's hard to test. Others defend it for specific cases (config, logger) as long as it stays explicit.",
+    "pionnier": {
+      "nom": "Erich Gamma",
+      "portrait": "Swiss computer scientist, co-author with Richard Helm, Ralph Johnson, and John Vlissides of the foundational book \"Design Patterns: Elements of Reusable Object-Oriented Software,\" published in 1994.",
+      "contribution": "Co-led the writing of the catalog of 23 design patterns, including the Singleton, documenting solutions already observed in real object-oriented code rather than inventing them from scratch.",
+      "problematique": "In the early 1990s, object-oriented developers kept reinventing the same solutions to recurring problems (like guaranteeing a single instance of a class), with no shared vocabulary to discuss or document them clearly.",
+      "solution": "With his three co-authors, he formalized the Singleton as a cataloged pattern with a name, a problem, a general solution, and discussed consequences — in a format reproducible across the whole profession.",
+      "resultat": "The \"Gang of Four\" book became a near-universal reference in software engineering; the design pattern vocabulary it helped popularize (including Singleton) is taught and used today in nearly every object-oriented language."
+    },
+    "ambiguite": {
+      "question": "Are a Singleton and a global variable the same thing?",
+      "reponse": "Not quite: a global variable is a free-for-all (mutable, uncontrolled), whereas a well-designed Singleton encapsulates its creation and guarantees only one instance exists through a controlled interface (getInstance()). In practice, a poorly used Singleton often ends up behaving exactly like a global variable — hence its bad reputation."
+    }
+  },
+  {
+    "id": "factory",
+    "title": "The Factory Method Pattern",
+    "category": "Creational",
+    "badge": {
+      "id": "badge-factory",
+      "name": "Master of the Factory",
+      "emoji": "🏭"
+    },
+    "griotIntro": [
+      "Picture a blacksmith's workshop in Dakar: you ask for a tool, and he picks and forges the right model without you needing to know the details.",
+      "The Factory Method does the same: it delegates object creation to a dedicated method, instead of using `new` all over the code."
+    ],
+    "explanation": {
+      "text": "A Factory chooses which concrete class to instantiate based on a condition, without scattering `new MyClassX()` calls all over the code. Click the lines to see how.",
+      "code": "class NotificationFactory {\n  static create(type) {\n    if (type === 'email') return new EmailNotification();\n    if (type === 'sms') return new SmsNotification();\n    throw new Error('Unknown type');\n  }\n}\n\nconst notif = NotificationFactory.create('email');\nnotif.send('Welcome!');",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`static` lets you call `create()` directly on the class, without ever instantiating `NotificationFactory` itself."
+        },
+        {
+          "line": 2,
+          "note": "Based on the received `type`, we choose which concrete class to instantiate — the calling code never needs to know about `EmailNotification`."
+        },
+        {
+          "line": 4,
+          "note": "An unknown type throws an explicit error rather than silently returning `undefined`."
+        },
+        {
+          "line": 8,
+          "note": "The calling code just asks for a type ('email'), without ever writing `new EmailNotification()` itself."
+        },
+        {
+          "line": 9,
+          "note": "Whatever concrete class is returned, it honors the same interface — here, a `send()` method."
+        }
+      ]
+    },
+    "useCases": [
+      "A payment platform (Wave, Orange Money, card) that creates the right payment processor based on the user's checkout choice.",
+      "A document generation system that produces a PDF, Excel, or CSV depending on the format requested by the user.",
+      "An ORM (like Prisma) that instantiates the right database driver (PostgreSQL, MySQL, SQLite) based on the project's configuration."
+    ],
+    "relatedTools": [
+      {
+        "name": "Prisma",
+        "description": "Its CLI generates the right client (`@prisma/adapter-pg`, etc.) based on the provider chosen in `schema.prisma` — a factory at the tooling level."
+      },
+      {
+        "name": "React Router",
+        "description": "`createBrowserRouter()` is literally a factory that builds the router object from a route configuration."
+      },
+      {
+        "name": "Stripe SDK",
+        "description": "Builds different payment objects (card, transfer, wallet) based on the method chosen by the user."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class NotificationFactory {",
+        "  static create(type) {",
+        "    if (type === 'email') return new EmailNotification();",
+        "    if (type === 'sms') return new EmailNotification();",
+        "    throw new Error('Unknown type');",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "For the 'sms' type, the Factory still returns an `EmailNotification` instead of an `SmsNotification` — an unfortunate copy-paste that breaks the very promise of the Factory pattern: that the requested type matches the object actually created. The fix: `return new SmsNotification();`."
+    },
+    "practice": {
+      "question": "What's the main advantage of a Factory over scattered direct calls to `new` throughout the code?",
+      "options": [
+        "The calling code no longer depends on concrete classes, only on the Factory",
+        "The code always runs faster",
+        "You never need classes anymore"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — the decoupling between \"what to create\" and \"how to use it\" is the real value.",
+        "incorrect": "The Factory doesn't speed anything up by itself; its value is decoupling and centralizing creation logic."
+      }
+    },
+    "quiz": [
+      {
+        "question": "A recruiter asks you: \"When would you use a Factory instead of a direct constructor?\" Which answer is most relevant?",
+        "options": [
+          "When the type of object to create depends on a condition or a configuration",
+          "Always, even for simple objects with no variation",
+          "Never, `new` is always enough"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What's the difference between Factory Method and Abstract Factory?",
+        "options": [
+          "Factory Method creates one type of object, Abstract Factory creates families of related objects",
+          "They're two names for exactly the same pattern",
+          "Abstract Factory can't be used in object-oriented programming"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Which SOLID principle does the Factory particularly help respect?",
+        "options": [
+          "The Open/Closed principle: adding a type without modifying existing code",
+          "The Single Responsibility Principle only",
+          "No SOLID principle in particular"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "When does a Factory become an anti-pattern?",
+        "options": [
+          "When it turns into a giant `switch` that's hard to maintain and never gets refactored",
+          "When it's used to create more than two types of objects",
+          "A Factory can never become problematic"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Which of these situations best justifies a Factory?",
+        "options": [
+          "Creating different types of payment (card, Wave, Orange Money) based on the user's choice",
+          "Creating a single local variable inside a function",
+          "Displaying static text in the interface"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A Factory always returns an object honoring the same interface (`send()`), even though the concrete implementation differs. Why is this essential for the calling code?",
+        "options": [
+          "Because the calling code can use the object without ever knowing or caring about its actual concrete class",
+          "Because it completely eliminates the need to write unit tests",
+          "Because JavaScript refuses to run code if objects don't share the same interface"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A CI pipeline flags that adding a new notification type ('push') requires modifying `NotificationFactory.create()` AND several other files that have `if (type === 'push')` branches. What can be concluded about this implementation?",
+        "options": [
+          "The Factory isn't the only place where type-based branching logic exists, which undermines the point of the pattern (centralizing creation)",
+          "That's normal and expected: a Factory should always be duplicated across multiple files",
+          "The problem comes solely from the presence of the `throw` keyword in the Factory"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Factory is one of the patterns most often \"reinvented unknowingly\": tons of JS developers write factory functions (create...(), make...()) without ever having read the Gang of Four, simply because it's a natural solution.",
+    "pionnier": {
+      "nom": "Ralph Johnson",
+      "portrait": "American computer scientist, professor at the University of Illinois at Urbana-Champaign, and one of the four co-authors of the Gang of Four's \"Design Patterns\" book (1994).",
+      "contribution": "Helped catalog the Factory Method as a recurring solution for delegating object creation to a dedicated method rather than scattered direct calls to `new`.",
+      "problematique": "Object-oriented code of the time often hard-coded the concrete class to instantiate, which made adding a new object type expensive and tightly coupled the calling code to concrete implementations.",
+      "solution": "The documented pattern proposes entrusting the decision of \"which concrete class to create\" to a dedicated method or class, so the calling code only depends on a common interface.",
+      "resultat": "The Factory Method is today one of the most widely used creational patterns, visible in frameworks like Prisma or Spring, and often naturally reinvented by developers who never read the original book."
+    },
+    "ambiguite": {
+      "question": "Is Factory Method the same thing as just \"Factory\"?",
+      "reponse": "The term \"Factory\" is often used informally to mean any function/method that creates objects. \"Factory Method\" is more precise in classic OOP: a method of a class (often overridable by subclasses) dedicated to creation. In JS/TS, the distinction is rarely formalized — people just say \"factory function.\""
+    }
+  },
+  {
+    "id": "observer",
+    "title": "The Observer Pattern",
+    "category": "Behavioral",
+    "badge": {
+      "id": "badge-observer",
+      "name": "Master of the Watch",
+      "emoji": "👁️"
+    },
+    "griotIntro": [
+      "At the Sandaga market, when the price of fish changes, every vendor subscribed to the day's rumor learns it at the same time.",
+      "That's the Observer: a subject automatically notifies all its subscribers (observers) when its state changes."
+    ],
+    "explanation": {
+      "text": "The Observer automatically notifies every subscribed object when a state changes — the foundation of event-driven architectures (`addEventListener`, Redux, RxJS). Click the lines to see the mechanism.",
+      "code": "class Subject {\n  #observers = [];\n  subscribe(fn) { this.#observers.push(fn); }\n  notify(data) { this.#observers.forEach((fn) => fn(data)); }\n}\n\nconst fishPrice = new Subject();\nfishPrice.subscribe((p) => console.log('New price:', p));\nfishPrice.notify(1500);\n\nconst emptyMarket = new Subject();\nemptyMarket.notify('nothing to report'); // no subscribers: forEach does nothing, no error thrown",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "Private list of \"subscribed\" functions — unreachable from outside the class."
+        },
+        {
+          "line": 2,
+          "note": "`subscribe` adds a function to the list of observers, without ever running it right away."
+        },
+        {
+          "line": 3,
+          "note": "`notify` calls EVERY subscribed function with the new data — the automatic notification to all observers."
+        },
+        {
+          "line": 7,
+          "note": "We subscribe: this function will be called on every future `notify()`, not right now."
+        },
+        {
+          "line": 8,
+          "note": "All subscribers (just one here) receive `1500` — exactly the mechanism behind `addEventListener`."
+        },
+        {
+          "line": 10,
+          "note": "A freshly created `Subject` has no subscribed observers — `#observers` is an empty array."
+        },
+        {
+          "line": 11,
+          "note": "Calling `notify()` on a subject with no subscribers throws no error: `forEach` on an empty array simply does nothing. A useful edge case to know — notifying doesn't require having subscribers."
+        }
+      ]
+    },
+    "bugHunt": {
+      "lines": [
+        "class Subject {",
+        "  #observers = [];",
+        "  subscribe(fn) { this.#observers.push(fn); }",
+        "  notify(data) { this.#observers.forEach((fn) => fn(data)); }",
+        "}",
+        "",
+        "function listenTemporarily(subject) {",
+        "  const cb = (data) => console.log(data);",
+        "  subject.subscribe(cb);",
+        "}"
+      ],
+      "buggyLineIndex": 8,
+      "explanation": "This function subscribes `cb` to the subject but provides no way to unsubscribe afterward (no `unsubscribe` method, no returned cleanup function): if `listenTemporarily` is called repeatedly (e.g. on every render of a component), the `#observers` list grows indefinitely and old functions are never freed — a classic Observer pattern memory leak. The fix: expose an `unsubscribe(fn)` method on `Subject` and call it (or return a cleanup function) once the subscription is no longer needed."
+    },
+    "timeline": [
+      {
+        "label": "Subscription",
+        "description": "An observer registers with the subject via subscribe()."
+      },
+      {
+        "label": "State change",
+        "description": "The data monitored by the subject changes (e.g. the price of fish)."
+      },
+      {
+        "label": "Notification",
+        "description": "The subject calls notify() and alerts all its subscribed observers."
+      },
+      {
+        "label": "Reaction",
+        "description": "Each observer runs its own logic in response, independently of the others."
+      },
+      {
+        "label": "Unsubscription",
+        "description": "An observer can withdraw once it no longer needs to be notified."
+      }
+    ],
+    "useCases": [
+      "An e-commerce application that notifies the email service, the inventory service, and accounting as soon as an order is confirmed.",
+      "A real-time dashboard (e.g. stock prices, delivery tracking) that updates the interface as soon as new data arrives via WebSocket.",
+      "Node.js's event system (`EventEmitter`), used by Express and many libraries to react to internal events."
+    ],
+    "relatedTools": [
+      {
+        "name": "RxJS",
+        "description": "A library entirely dedicated to reactive programming — \"Observables\" are an enriched version of the Observer pattern."
+      },
+      {
+        "name": "EventEmitter (Node.js)",
+        "description": "Node.js's native API (`.on()`, `.emit()`) directly implements the Observer pattern, used under the hood by Express."
+      },
+      {
+        "name": "React (useSelector, useEffect)",
+        "description": "A component \"observing\" a Redux store or a dependency automatically re-renders when the observed value changes."
+      }
+    ],
+    "practice": {
+      "question": "Which very common JavaScript mechanism is a concrete implementation of the Observer pattern?",
+      "options": [
+        "DOM events with `addEventListener`",
+        "`for` loops",
+        "Template literals"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — every `addEventListener` subscribes an observer to an event (the subject).",
+        "incorrect": "Think of mechanisms that \"notify\" external code when something changes: events are the most common example."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What classic risk of the Observer should you know for an interview?",
+        "options": [
+          "Memory leaks if observers are never unsubscribed",
+          "It's impossible to have more than two observers",
+          "The pattern only works in Python"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What's the difference between Observer and Pub/Sub (publish-subscribe)?",
+        "options": [
+          "In Pub/Sub, an intermediary (broker/event bus) fully decouples the emitter and the subscribers; in classic Observer, the subject knows its observers directly",
+          "Pub/Sub is simply the old name given to the Observer pattern before the 2000s",
+          "Pub/Sub can only have a single subscriber"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "In React, which concept is close to the Observer pattern?",
+        "options": [
+          "A component that automatically re-renders when an observed state or context changes",
+          "Props that never change",
+          "CSS-in-JS"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is the Observer useful for respecting the single responsibility principle?",
+        "options": [
+          "The subject doesn't need to know the business logic of each observer, it just notifies",
+          "It forces everything into one giant class",
+          "It removes the need for classes"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What's a good business example of Observer in an e-commerce application?",
+        "options": [
+          "Notifying several services (email, inventory, accounting) when an order is confirmed",
+          "Computing the sum of two numbers",
+          "Sorting a list of products by price"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "In a React component, a `useEffect` subscribes to an event but forgets to return a cleanup function (`return () => unsubscribe()`). What's the main risk?",
+        "options": [
+          "On every re-render/remount of the component, a new observer is added without the old ones being removed, causing a memory leak and duplicate calls",
+          "The component will never be able to re-render again",
+          "React automatically throws a compilation error if cleanup is missing"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A `Subject` notifies its observers synchronously via `forEach`. One of the observers throws an exception during its execution. What happens to the remaining observers in the list?",
+        "options": [
+          "The exception interrupts the `forEach`: the remaining observers won't be notified, unless each call is individually protected (e.g. try/catch)",
+          "The other observers are notified normally, JavaScript silently ignores exceptions inside a `forEach`",
+          "The `Subject` automatically resets itself and becomes empty again"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The \"Observer vs Pub/Sub\" debate comes up often in advanced interviews: many people confuse the two, even though they have different use cases in architecture (direct coupling vs. event-driven through a broker like Kafka or RabbitMQ).",
+    "pionnier": {
+      "nom": "Trygve Reenskaug",
+      "portrait": "Norwegian computer scientist who designed the Model-View-Controller (MVC) architecture in 1978-1979, while working at Xerox Palo Alto Research Center (PARC) on the Smalltalk-80 language.",
+      "contribution": "In designing MVC, he formalized the mechanism by which a View stays informed of a Model's state changes without the Model needing to know the details of its views — the very principle the Gang of Four would later catalog as the Observer pattern.",
+      "problematique": "He was looking for a way to keep several visual representations (views) synchronized with the underlying data of a Smalltalk application, without tightly coupling the data to its display.",
+      "solution": "He proposed that views register with the model and be automatically notified on every change, rather than constantly polling its state — the subscription/notification logic at the heart of the Observer.",
+      "resultat": "This mechanism directly inspired the Observer pattern formalized in 1994, and remains today the foundation of modern event-driven architectures: `addEventListener`, Node.js's EventEmitter, RxJS, and reactive stores like Redux."
+    },
+    "ambiguite": {
+      "question": "Are Observer and Event Emitter (Node.js) the same pattern?",
+      "reponse": "Yes, in spirit: Node.js's EventEmitter is a concrete implementation of the Observer pattern, where the \"subject\" is the emitter and the .on() callbacks are the observers. The name changes depending on the ecosystem, but the mechanism stays the same."
+    }
+  },
+  {
+    "id": "strategy",
+    "title": "The Strategy Pattern",
+    "category": "Behavioral",
+    "badge": {
+      "id": "badge-strategy",
+      "name": "Master of Strategy",
+      "emoji": "♟️"
+    },
+    "griotIntro": [
+      "A good pirogue captain chooses his route according to the tide: sometimes out at sea, sometimes hugging the coast.",
+      "The Strategy pattern encapsulates several interchangeable algorithms and lets the code pick the right one at the right moment."
+    ],
+    "explanation": {
+      "text": "Strategy replaces a long `if/else` with a family of interchangeable algorithms behind a common interface. Click the lines to see how adding a payment method touches nothing existing.",
+      "code": "const strategies = {\n  card: (amount) => amount * 1.02,\n  wave: (amount) => amount * 1.01,\n  cash: (amount) => amount,\n};\n\nfunction calculateTotal(amount, mode) {\n  return strategies[mode](amount);\n}\n\nfunction calculateTotalSafely(amount, mode) {\n  if (!strategies[mode]) throw new Error(`Unknown payment mode: ${mode}`);\n  return strategies[mode](amount);\n}",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "Each payment mode is an independent function — adding a new mode doesn't touch any of the others."
+        },
+        {
+          "line": 2,
+          "note": "Wave applies different fees than a card — each \"strategy\" encapsulates its own calculation logic."
+        },
+        {
+          "line": 3,
+          "note": "Paying in cash adds no fees: the amount stays unchanged."
+        },
+        {
+          "line": 7,
+          "note": "We select the right function by its name (`mode`) and call it — no `if/else` that grows with every new payment mode."
+        },
+        {
+          "line": 11,
+          "note": "Unlike `calculateTotal`, this variant checks that the strategy exists before calling it — without that, `strategies[mode]` would be `undefined` and `undefined(amount)` would throw a confusing `TypeError`."
+        },
+        {
+          "line": 13,
+          "note": "Once the check passes, the call stays identical: the principle of Strategy (dynamically choosing the algorithm) doesn't change, only robustness improves."
+        }
+      ]
+    },
+    "bugHunt": {
+      "lines": [
+        "const strategies = {",
+        "  card: (amount) => amount * 1.02,",
+        "  wave: (amount) => amount * 1.01,",
+        "  cash: (amount) => amount,",
+        "};",
+        "",
+        "function calculateTotal(amount, mode) {",
+        "  return strategies.card(amount);",
+        "}"
+      ],
+      "buggyLineIndex": 7,
+      "explanation": "The function completely ignores the received `mode` parameter and always calls `strategies.card` in a hard-coded way — no matter which payment mode the user chose, card fees are always applied. This breaks the very point of the Strategy pattern: dynamically selecting the algorithm. The fix: `return strategies[mode](amount);`."
+    },
+    "useCases": [
+      "A delivery platform that calculates different fees depending on the chosen carrier (motorbike, car, on-foot courier).",
+      "A search results sorting engine that switches algorithms based on the criterion chosen by the user (relevance, price, date).",
+      "A form validation library that applies a different validation strategy depending on the field type (email, phone number, password)."
+    ],
+    "relatedTools": [
+      {
+        "name": "Passport.js",
+        "description": "Its central concept is literally called \"strategy\": each authentication method (local, Google, JWT) is an interchangeable strategy."
+      },
+      {
+        "name": "ESLint",
+        "description": "Each rule that can be enabled/disabled in the config acts as a validation strategy applied to the code."
+      },
+      {
+        "name": "Array.prototype.sort()",
+        "description": "The comparison function passed as an argument is an interchangeable sorting strategy without changing the overall algorithm."
+      }
+    ],
+    "practice": {
+      "question": "What problem does the Strategy pattern solve best?",
+      "options": [
+        "A long `if/else` or `switch` that grows with every new algorithm case",
+        "The need to have a single instance of a class",
+        "Building complex objects step by step"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — that's the classic anti-pattern Strategy comes to replace.",
+        "incorrect": "It's neither a single-instance problem (Singleton) nor step-by-step construction (Builder)."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Strategy and Factory are often confused. What's the key difference?",
+        "options": [
+          "Strategy encapsulates an interchangeable behavior/algorithm, Factory encapsulates object creation",
+          "They are exactly the same pattern",
+          "Factory can only be used together with Strategy"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "In which case is Strategy particularly worth mentioning in an interview?",
+        "options": [
+          "Calculating different delivery fees depending on the chosen carrier",
+          "Displaying a static title at the top of a page",
+          "Declaring a constant variable"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "In JavaScript, what's an idiomatic way to implement Strategy without classes?",
+        "options": [
+          "An object or a Map associating a key with a function (as in the example above)",
+          "One single very large `if/else`",
+          "Impossible without classes in JS"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Which SOLID principle is directly illustrated by Strategy?",
+        "options": [
+          "The Open/Closed principle: adding a new strategy without modifying the calling code",
+          "The Liskov substitution principle only",
+          "None"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What's a risk of overusing the Strategy pattern?",
+        "options": [
+          "Too many small strategy classes/functions can add unnecessary complexity when the number of cases stays low and stable",
+          "The code becomes impossible to test",
+          "There's no risk at all, it should be used everywhere systematically"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A developer tests `calculateTotal(1000, 'cash')` and always gets the same result as `calculateTotal(1000, 'card')`. Looking at the code of `calculateTotal`, what's the most likely cause?",
+        "options": [
+          "The function calls a fixed strategy (e.g. `strategies.card`) instead of dynamically using `strategies[mode]`",
+          "Cash and card have exactly the same fees by definition of the Strategy pattern",
+          "JavaScript doesn't allow more than two keys in a strategies object"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A backend team wants to dynamically add new fee-calculation strategies from a database (without redeploying code), while keeping the spirit of the Strategy pattern. What approach is most appropriate?",
+        "options": [
+          "Store the calculation rules in an interpretable form (e.g. a numeric rate in the database) and dynamically build the strategy functions from that data, rather than hard-coding each strategy",
+          "Add a huge `switch` with a `case` for every possible new strategy in advance",
+          "It's not possible: the Strategy pattern requires all strategies to be known at compile time"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Strategy is often implemented in JS without being named as such — a simple {key: function} object is enough, without ever creating classes or formal interfaces. It's a good example of an object-oriented pattern that translates very naturally into functional JS.",
+    "pionnier": {
+      "nom": "John Vlissides",
+      "portrait": "American computer scientist, researcher at IBM, and one of the four co-authors of the \"Design Patterns\" book (1994), alongside Erich Gamma, Richard Helm, and Ralph Johnson.",
+      "contribution": "Helped catalog Strategy as a way to encapsulate a family of interchangeable algorithms behind a common interface, to replace long chains of conditions.",
+      "problematique": "Object-oriented code often contained long `if/else` or `switch` blocks to choose an algorithm based on context, making adding a new variant risky and the code hard to maintain.",
+      "solution": "The documented pattern proposes extracting each algorithm into its own class (or function) honoring a common interface, which the calling code can choose and swap dynamically.",
+      "resultat": "Strategy is omnipresent today, even without being named as such — visible in Passport.js, the comparison functions of `Array.prototype.sort()`, or any `{key: function}` object in JavaScript."
+    },
+    "ambiguite": {
+      "question": "What's the difference between Strategy and a simple callback function?",
+      "reponse": "A one-off callback solves a single, local need. Strategy formalizes a family of interchangeable algorithms behind the same interface, designed to be extended (adding a new payment mode without touching existing code) — it's the structure and intent that distinguish a true Strategy from a simple callback."
+    }
+  },
+  {
+    "id": "adapter",
+    "title": "The Adapter Pattern",
+    "category": "Structural",
+    "badge": {
+      "id": "badge-adapter",
+      "name": "Master of the Adapter",
+      "emoji": "🔌"
+    },
+    "griotIntro": [
+      "A traveler arriving in Dakar with a European electrical plug needs an adapter to plug it into the local network.",
+      "The Adapter does the same in code: it translates an existing interface into the one expected by the client, without modifying the original code."
+    ],
+    "explanation": {
+      "text": "The Adapter makes two incompatible interfaces work together, typically when integrating a third-party library you can't modify. Click the lines to see the translation.",
+      "code": "// External API imposed on us, different shape\nclass LegacyService { fetchData() { return { d: [1,2,3] }; } }\n\n// Adapter to the interface expected by our app\nclass ServiceAdapter {\n  #service = new LegacyService();\n  getData() { return this.#service.fetchData().d; }\n}\n\nclass UnstableLegacyService { fetchData() { return null; } }\nclass RobustServiceAdapter {\n  #service = new UnstableLegacyService();\n  getData() { return this.#service.fetchData()?.d ?? []; }\n}",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "The external service exposes `fetchData()`, which returns `{ d: [...] }` — a shape we don't control and don't want to change."
+        },
+        {
+          "line": 5,
+          "note": "The Adapter keeps an instance of the incompatible service internally, hidden behind its own private field."
+        },
+        {
+          "line": 6,
+          "note": "`getData()` is the interface OUR app expects — internally, it translates to the actual call on the external service and extracts just `.d`."
+        },
+        {
+          "line": 9,
+          "note": "Edge case: imagine an external service that can return `null` (e.g. a silent network error) instead of the expected object."
+        },
+        {
+          "line": 12,
+          "note": "The robust Adapter protects itself with `?.` and `??`: if the external service returns nothing usable, we return an empty array instead of letting the calling code crash with a `TypeError`."
+        }
+      ]
+    },
+    "bugHunt": {
+      "lines": [
+        "class ServiceAdapter {",
+        "  getData() {",
+        "    const service = new LegacyService();",
+        "    return service.fetchData();",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "The Adapter is supposed to translate the format of `LegacyService` (`{ d: [...] }`) into the interface expected by the app (a plain array). Here, `getData()` returns the raw object `{ d: [...] }` without extracting `.d` — the calling code, which expects an array, will crash trying to iterate over it. The fix: `return service.fetchData().d;`."
+    },
+    "useCases": [
+      "Integrating a third-party payment library (e.g. Stripe, PayPal) whose API doesn't exactly match the `Payment` interface used in your app.",
+      "Unifying access to multiple file storage providers (Amazon S3, Google Cloud Storage, local disk) behind a single `StorageAdapter` interface.",
+      "Making an old internal (legacy) API coexist with new code written according to modern conventions, without rewriting the old API."
+    ],
+    "relatedTools": [
+      {
+        "name": "Prisma",
+        "description": "\"Driver adapters\" (`@prisma/adapter-pg`, etc.) adapt different database engines behind a single Prisma API."
+      },
+      {
+        "name": "unstorage / unified cloud SDKs",
+        "description": "Libraries that adapt S3, Google Cloud Storage, or the local disk behind a single storage interface."
+      },
+      {
+        "name": "Polyfills",
+        "description": "A polyfill adapts an old environment so it exposes a modern API expected by the code (e.g. `fetch` on an old browser)."
+      }
+    ],
+    "practice": {
+      "question": "In which scenario would you use an Adapter?",
+      "options": [
+        "Integrating a third-party payment library whose API doesn't match the interface used in your app",
+        "Guaranteeing that a class has only a single instance",
+        "Notifying several subscribers of a state change"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — that's the typical use case for the Adapter: making two existing interfaces compatible.",
+        "incorrect": "Those are actually the use cases for Singleton and Observer."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What's the difference between Adapter and Decorator?",
+        "options": [
+          "Adapter changes the interface to make it compatible, Decorator keeps the same interface but adds responsibilities",
+          "Both Adapter and Decorator change the exposed interface of the wrapped object",
+          "Decorator can never be combined with Adapter"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is the Adapter valuable when you can't modify a library's source code?",
+        "options": [
+          "It lets you wrap the existing code without touching it, respecting the open/closed principle",
+          "It forces you to rewrite the whole library",
+          "It removes the need for interfaces"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "A concrete backend Node.js example of Adapter would be:",
+        "options": [
+          "A layer that unifies access to several storage providers (S3, local disk) behind the same interface",
+          "A simple `for` loop",
+          "A single global variable"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Which family of patterns does the Adapter belong to?",
+        "options": [
+          "Structural",
+          "Creational",
+          "Behavioral"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What's a sign that an Adapter would be useful in your current code?",
+        "options": [
+          "You write a lot of repeated conversion/mapping code on every call to an external API",
+          "All your functions already have exactly the same signature",
+          "You don't use any external library"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A team is migrating from Stripe to another payment provider. Thanks to a `PaymentAdapter` honoring a common `Payment` interface, what's the impact on the rest of the application's code?",
+        "options": [
+          "The rest of the application, which only depends on the `Payment` interface, needs no modification at all — only the Adapter changes",
+          "The whole application must be rewritten because each payment provider has a totally different API",
+          "Both providers must be kept active at the same time"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "An Adapter wraps a slow external service (200ms per call). A developer proposes adding a cache inside the Adapter to speed up repeated calls. Is this consistent with the role of the Adapter?",
+        "options": [
+          "Not strictly: the Adapter's role is to translate an interface, not to manage performance — a cache should rather be a separate Decorator wrapping the Adapter, to avoid mixing responsibilities",
+          "Yes, an Adapter should always include all possible additional logic (cache, retry, logs) to be complete",
+          "It's technically impossible: an Adapter can't be combined with other patterns"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The Adapter is everywhere without being noticed: every time a backend team writes a layer to unify several cloud providers (S3, GCS, Azure Blob) behind the same interface, that's an Adapter — often called a \"driver\" or \"provider\" in team jargon rather than \"Adapter\".",
+    "pionnier": {
+      "nom": "Richard Helm",
+      "portrait": "Australian computer scientist, consultant at IBM at the time the \"Design Patterns\" book (1994) was written, and one of the four Gang of Four co-authors.",
+      "contribution": "Helped catalog the Adapter as a solution for making two incompatible interfaces coexist without modifying either one's existing code.",
+      "problematique": "Integrating an existing library or component whose interface didn't match what the rest of the system expected often forced rewrites, which people wanted to avoid.",
+      "solution": "The documented pattern proposes wrapping the incompatible object inside an intermediary class that translates its calls into the expected interface, without touching the original code.",
+      "resultat": "The Adapter has become a software architecture reflex, omnipresent in modern integration layers (database drivers, payment SDKs, browser polyfills) under various names like \"driver\" or \"provider\"."
+    },
+    "ambiguite": {
+      "question": "Are Adapter and Wrapper the same thing?",
+      "reponse": "\"Wrapper\" is a generic term for any code that wraps other code. Adapter is a wrapper with a specific goal: translating an incompatible interface into the one expected. A Decorator is also technically a \"wrapper\", but with a different goal — hence the frequent confusion between the two patterns."
+    }
+  },
+  {
+    "id": "decorator",
+    "title": "The Decorator Pattern",
+    "category": "Structural",
+    "badge": {
+      "id": "badge-decorator",
+      "name": "Master of Decoration",
+      "emoji": "🎨"
+    },
+    "griotIntro": [
+      "An embroidered boubou keeps its original shape, but each embroidery adds a new touch without changing the base garment.",
+      "The Decorator adds responsibilities to an object dynamically, without modifying its class or causing an explosion of subclasses."
+    ],
+    "explanation": {
+      "text": "The Decorator wraps a function or object to add behavior (logging, caching, validation) without touching the original code — and it's combinable. Click the lines to see how.",
+      "code": "function withLog(fn) {\n  return (...args) => {\n    console.log('Called with', args);\n    return fn(...args);\n  };\n}\n\nconst add = (a, b) => a + b;\nconst addWithLog = withLog(add);\naddWithLog(2, 3); // logs, then 5",
+      "annotations": [
+        {
+          "line": 0,
+          "note": "`withLog` takes a function as input and returns a NEW one, which behaves like the original but with added behavior."
+        },
+        {
+          "line": 2,
+          "note": "Behavior added BEFORE the original call — here, logging."
+        },
+        {
+          "line": 3,
+          "note": "We then call the original function normally, with the same arguments, and return its result."
+        },
+        {
+          "line": 8,
+          "note": "The original `add` is never modified — `addWithLog` is a new object that wraps it."
+        },
+        {
+          "line": 9,
+          "note": "The result (5) is identical to `add(2,3)`, but with the extra log — the interface stayed the same."
+        }
+      ]
+    },
+    "useCases": [
+      "Express middlewares (`app.use(logger)`, `app.use(auth)`) that wrap each request with additional, stackable behavior.",
+      "A caching system that wraps an expensive function (API call, SQL query) to memoize its result without touching the original function.",
+      "TypeScript/NestJS class decorators (`@Injectable()`, `@Controller()`) that add metadata/behavior to an existing class."
+    ],
+    "relatedTools": [
+      {
+        "name": "Express / NestJS middlewares",
+        "description": "Each middleware wraps the request/response with additional, stackable behavior — the Decorator applied to HTTP routing."
+      },
+      {
+        "name": "Python decorators (@)",
+        "description": "The `@app.route`, `@login_required` syntax in Python is a native and very visible implementation of the Decorator pattern."
+      },
+      {
+        "name": "TypeScript decorators",
+        "description": "`@Injectable()`, `@Controller()` in NestJS add metadata/behavior to a class without modifying its source code."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function withLog(fn) {",
+        "  return (...args) => {",
+        "    console.log('Called with', args);",
+        "    fn(...args);",
+        "  };",
+        "}",
+        "",
+        "const add = (a, b) => a + b;",
+        "const addWithLog = withLog(add);",
+        "console.log(addWithLog(2, 3));"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "The `return` is missing before `fn(...args)`: the decorated function does execute the original but never returns its result, always returning `undefined` instead. This breaks the core promise of the Decorator: wrapping a function without changing its observable behavior for the caller. The fix: `return fn(...args);`."
+    },
+    "practice": {
+      "question": "What's the main advantage of the Decorator compared to creating a subclass for every combination of features?",
+      "options": [
+        "It avoids the explosion of subclasses by combining behaviors dynamically",
+        "It completely prevents inheritance",
+        "It makes the code untestable"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — that's precisely the problem Decorator solves: the combinatorics of subclasses.",
+        "incorrect": "The Decorator doesn't prevent inheritance, it offers a more flexible alternative in certain cases."
+      }
+    },
+    "quiz": [
+      {
+        "question": "In JavaScript/Node, which common example illustrates the Decorator pattern?",
+        "options": [
+          "Express middlewares that wrap a request/response with additional behavior",
+          "A simple `for` loop",
+          "A JSON configuration file"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What's the difference between Decorator and classic inheritance?",
+        "options": [
+          "Decorator adds behavior at runtime (composition), inheritance fixes it at compile/write time of the class",
+          "They're two names for the same thing",
+          "Inheritance is always preferable"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Can you stack several Decorators on the same object?",
+        "options": [
+          "Yes, that's even one of its greatest strengths (e.g. logging + cache + validation combined)",
+          "No, only one Decorator is allowed per object",
+          "Only in Python"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Which SOLID principle is reinforced by the Decorator?",
+        "options": [
+          "The Open/Closed principle: extending behavior without modifying existing code",
+          "The Single Responsibility Principle only",
+          "None"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What pitfall should you avoid when overusing Decorators?",
+        "options": [
+          "Stacking too many layers makes debugging hard (deep, opaque call stack)",
+          "Decorators are forbidden in production",
+          "No pitfall at all, use them without limit"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Two Decorators are stacked: `withCache(withLog(fetchData))`. In what order do the behaviors execute on a call?",
+        "options": [
+          "First the logic of `withCache` (the outermost decorator), which may or may not call the inner function `withLog(fetchData)` depending on whether the data is already cached",
+          "Always `fetchData` first, regardless of the stacking order of the decorators",
+          "The stacking order of the decorators has no effect on behavior whatsoever"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why does the Decorator respect the Liskov substitution principle, unlike some poorly designed subclasses?",
+        "options": [
+          "Because a decorated object exposes exactly the same interface as the original object and can therefore replace it anywhere without breaking the calling code",
+          "Because the Decorator completely forbids inheritance in the whole project",
+          "Because Liskov only applies to Singletons"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Native TypeScript decorators (@Injectable() in NestJS/Angular) popularize this pattern without developers always making the connection to the Gang of Four's \"Decorator\" Design Pattern — the @decorator syntax is a language convenience, the conceptual pattern exists independently.",
+    "pionnier": {
+      "nom": "Guido van Rossum",
+      "portrait": "Dutch computer scientist, creator of the Python programming language, which he began developing in the late 1980s in the Netherlands.",
+      "contribution": "Oversaw the introduction of native `@decorator` syntax in Python 2.4 (2004), via proposal PEP 318, very concretely popularizing the idea of wrapping a function to add behavior to it without modifying its code.",
+      "problematique": "Adding cross-cutting behavior (logging, caching, access control) to a function or method required manually rewriting wrapper code at every location, repetitively and with poor readability.",
+      "solution": "The `@decorator` syntax made explicit and readable at the language level what the Gang of Four's Decorator already proposed at the design level: wrapping a function inside another that adds behavior, without modifying the original.",
+      "resultat": "This syntax has become a pillar of the Python ecosystem (Flask, Django, `@login_required`) and directly inspired the class decorators in TypeScript used by frameworks like NestJS and Angular."
+    },
+    "ambiguite": {
+      "question": "Is NestJS's @Injectable() decorator the same concept as the Decorator pattern?",
+      "reponse": "They share the name and the idea of \"adding behavior\", but @Injectable() is a metadata annotation used by the framework for dependency injection — not a decorator in the strict Gang of Four sense. A lot of the confusion comes from this reuse of the word \"decorator\"."
+    }
+  },
+  {
+    "id": "builder",
+    "title": "The Builder Pattern",
+    "category": "Creational",
+    "badge": {
+      "id": "badge-builder",
+      "name": "Master Builder",
+      "emoji": "🧱"
+    },
+    "griotIntro": [
+      "To build a beautiful hut, the mason lays the foundations, then the walls, then the roof — step by step, never all at once.",
+      "The Builder constructs a complex object step by step, separating its construction from its final representation."
+    ],
+    "explanation": {
+      "text": "A Builder avoids a constructor with too many optional parameters, by offering a fluent, step-by-step API. Click the lines to see the chaining.",
+      "code": "class PizzaBuilder {\n  #pizza = { toppings: [] };\n  addTopping(t) { this.#pizza.toppings.push(t); return this; }\n  size(s) { this.#pizza.size = s; return this; }\n  build() { return this.#pizza; }\n}\n\nconst pizza = new PizzaBuilder()\n  .size('L')\n  .addTopping('thiof')\n  .addTopping('onions')\n  .build();\n\nconst pizzaWithoutSize = new PizzaBuilder()\n  .addTopping('mafe')\n  .build();\nconsole.log(pizzaWithoutSize.size); // undefined: no default value if .size() is never called",
+      "annotations": [
+        {
+          "line": 2,
+          "note": "`return this` is the key to fluent chaining: each method returns the builder itself, which lets you chain calls."
+        },
+        {
+          "line": 3,
+          "note": "Same principle: we mutate the object under construction, then return `this`."
+        },
+        {
+          "line": 4,
+          "note": "`build()` finally returns the finished object, once all the previous steps have been chained."
+        },
+        {
+          "line": 7,
+          "note": "The chain `.size().addTopping().addTopping().build()` is far more readable than a constructor with 5 optional parameters in some order."
+        },
+        {
+          "line": 13,
+          "note": "You can freely skip an optional step like `.size()`: the Builder enforces no order and no mandatory step, unlike a constructor that would force all its parameters."
+        },
+        {
+          "line": 16,
+          "note": "Result: `pizzaWithoutSize.size` is `undefined`, since no default value is applied in `build()` — a more robust Builder would validate or set a default before constructing the final object."
+        }
+      ]
+    },
+    "bugHunt": {
+      "lines": [
+        "const builder = new PizzaBuilder();",
+        "const pizzaA = builder.size('M').addTopping('thiof').build();",
+        "builder.addTopping('onions');",
+        "const pizzaB = builder.size('L').build();",
+        "console.log(pizzaA.toppings);"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "`build()` returns a direct reference to the internal `#pizza` object, without cloning it. Reusing the same `builder` after a first `.build()` (line 3) keeps mutating this SAME object, already returned as `pizzaA` — `pizzaA.toppings` ends up including 'onions', which wasn't intended. The fix: either create a new `PizzaBuilder()` for each pizza, or have `build()` return a copy (e.g. `return { ...this.#pizza };`) and reset the internal state after construction."
+    },
+    "useCases": [
+      "A SQL query builder (Knex.js, TypeORM) that constructs a complex query step by step: `.select().from().where().orderBy()`.",
+      "Configuring a complex HTTP request with many optional options (headers, timeout, retry) in a custom API client.",
+      "Creating a PDF document or a complex HTML email, assembled section by section before final generation."
+    ],
+    "relatedTools": [
+      {
+        "name": "Knex.js / TypeORM QueryBuilder",
+        "description": "Chain `.select().from().where()` to build a complex SQL query step by step — the textbook example of Builder."
+      },
+      {
+        "name": "Puppeteer / Playwright",
+        "description": "Their web navigation APIs are often chained fluently (`page.goto().click().fill()`), in the spirit of a Builder."
+      },
+      {
+        "name": "Prisma Client",
+        "description": "Its query syntax (`where`, `include`, `select` combined) progressively builds a complex query before execution."
+      }
+    ],
+    "practice": {
+      "question": "What problem does the Builder solve best?",
+      "options": [
+        "A constructor with too many optional parameters, hard to read and to call correctly",
+        "The need for a single shared instance",
+        "Automatically notifying several subscribers"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — it's the famous \"telescoping constructor problem\" that Builder solves.",
+        "incorrect": "Those are actually the use cases for Singleton and Observer."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is a \"fluent\" API (method chaining), often used with Builder?",
+        "options": [
+          "Every method returns `this`, allowing calls to be chained",
+          "An API that only has one method",
+          "A purely asynchronous API"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Which well-known JS library uses a Builder-like style to construct queries?",
+        "options": [
+          "A SQL query builder (e.g. Knex.js) that chains `.select().from().where()`",
+          "A simple `console.log`",
+          "JSON.stringify"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What's the difference between Builder and Factory?",
+        "options": [
+          "Builder constructs a complex object step by step, Factory creates an object in one go based on a given type",
+          "Builder is a special case of Factory that only accepts one parameter",
+          "Factory can never create complex objects"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "When is Builder overkill (too complex for the need)?",
+        "options": [
+          "When the object only has 2-3 simple, mandatory properties",
+          "When the object has 15 combinable optional parameters",
+          "Never, Builder is always the best option"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Which family of patterns does the Builder belong to?",
+        "options": [
+          "Creational",
+          "Structural",
+          "Behavioral"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why is the Builder particularly well suited to constructing an object with many combinable optional parameters, compared to an object with fixed mandatory parameters?",
+        "options": [
+          "Because each configuration method is optional and can be called in any order before `build()`, unlike a constructor which would force all its parameters in a fixed order",
+          "Because a Builder is always faster to execute than a classic constructor",
+          "Because an object with mandatory parameters can't be created at all in JavaScript"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A team reuses the same `PizzaBuilder` instance to build several pizzas in a row inside a loop. What risk does this introduce if `build()` returns a direct reference to the internal state without cloning it?",
+        "options": [
+          "Objects returned by earlier calls to `build()` can be retroactively modified by later calls, because they share the same memory reference",
+          "No risk at all: every `.build()` always creates a totally independent new object by definition of the pattern",
+          "The loop always causes a compilation error"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The Builder is very visible in the modern JS ecosystem through \"query builders\" (Knex.js) and validation libraries (Zod, Yup), all of which use a fluent API style very close to the pattern.",
+    "pionnier": {
+      "nom": "Joshua Bloch",
+      "portrait": "American computer scientist, engineer at Sun Microsystems then Google, author of the book \"Effective Java\" (first edition in 2001), a must-read reference in the Java community.",
+      "contribution": "Popularized and formalized the \"Builder pattern\" as the recommended solution to the «telescoping constructor problem», across successive editions of \"Effective Java\".",
+      "problematique": "He observed that classes with many optional parameters often accumulated several overloaded (\"telescoping\") constructors, making the calling code hard to read and prone to parameter-order mistakes.",
+      "solution": "He recommended building the final object through an intermediate Builder object, with named, chainable methods for each optional parameter, before a final `build()` call.",
+      "resultat": "This approach has become standard practice in Java and has influenced modern API design in many languages, visible today in query builders like Knex.js, TypeORM, or validation schemas like Zod."
+    },
+    "ambiguite": {
+      "question": "Are method chaining and the Builder pattern the same thing?",
+      "reponse": "Method chaining (each method returns this) is the technique Builder uses, but you also find it elsewhere (.filter().map() on arrays). Builder is specifically a technique for constructing an object step by step; chaining alone, without progressively building a final object, isn't a Builder."
+    }
+  }
+]

@@ -1,0 +1,777 @@
+[
+  {
+    "id": "system-design-fondamentaux",
+    "title": "Approaching a System Design Interview",
+    "category": "System Design",
+    "badge": { "id": "badge-system-design-fond", "name": "Architect of Scale", "emoji": "🏗️" },
+    "griotIntro": [
+      "In Kédougou, gold panners never dig at random: they study the terrain, estimate the vein, then choose their tools.",
+      "A System Design interview follows the same logic. You don't code right away — you frame the problem first.",
+      "It's the dominant format for senior roles in the United States, and increasingly common in France and the Gulf.",
+      "The candidate who jumps straight to a solution without asking questions loses points, even if their solution is brilliant."
+    ],
+    "explanation": {
+      "text": "A system design interview unfolds in 4 phases: (1) clarify the functional and non-functional requirements, (2) estimate the orders of magnitude (users, requests/second, data volume), (3) propose a high-level architecture (boxes and arrows), (4) dive deeper into one or two components with the interviewer and discuss trade-offs. The goal is never 'the' correct answer — it's to reason out loud about trade-offs.",
+      "code": "// Mental checklist to follow during the interview\n1. Requirements\n   - Functional: what must the system do?\n   - Non-functional: how many users? what latency? what availability?\n\n2. Estimation (\"back-of-the-envelope\")\n   - 100M users, 10% active/day = 10M DAU\n   - If each makes 5 requests/day -> 50M req/day ≈ 580 req/s on average\n\n3. High-level architecture\n   - Client -> Load Balancer -> API -> Cache -> Database\n\n4. Deep dive + trade-offs\n   - Where to shard the database? What caching strategy? Strong or eventual consistency?",
+      "annotations": [
+        { "line": 1, "note": "This checklist isn't a rigid algorithm: it's a priority order to make sure nothing is forgotten under pressure." },
+        { "line": 4, "note": "Non-functional requirements (latency, availability, consistency) drive almost every technical choice that follows — clarifying them early avoids reworking the architecture midway through the interview." },
+        { "line": 7, "note": "The estimate doesn't need to be exact: it needs to be consistent and justified. The interviewer judges the reasoning, not the precision of the final number." },
+        { "line": 11, "note": "A high-level architecture fits on a whiteboard: a few boxes, a few arrows. The detail comes after, not before." }
+      ]
+    },
+    "useCases": [
+      "Senior/staff technical interviews at large tech companies (USA, increasingly in Europe)",
+      "Architecture review before launching a new service into production",
+      "Technical discussion with a CTO or architect for a lead role"
+    ],
+    "relatedTools": [
+      { "name": "Excalidraw / virtual whiteboard", "description": "Drawing tool used in remote interviews to sketch out the architecture in real time." },
+      { "name": "Grokking the System Design Interview", "description": "Reference resource for practicing classic cases." },
+      { "name": "Estimation notes", "description": "A notebook of memorized orders of magnitude (network throughput, disk vs RAM latency, average record size) speeds up estimation during the interview." }
+    ],
+    "practice": {
+      "question": "An interviewer asks you to design a URL shortener. What is the best first reaction?",
+      "options": [
+        "Ask questions about the expected scale and constraints before proposing an architecture",
+        "Immediately draw a diagram with database, cache, and API",
+        "Write the hashing function's code first"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: clarifying the problem and its scale before designing avoids building a solution for the wrong problem.",
+        "incorrect": "Rushing into an architecture or code before framing the requirements is the most common — and most penalized — mistake in a system design interview."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the main goal of the \"back-of-the-envelope\" estimation phase?",
+        "options": [
+          "Get orders of magnitude to guide architecture choices",
+          "Calculate the exact dollar cost of the infrastructure",
+          "Entirely replace the need to clarify requirements"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is it risky to propose a complete solution within the first minute?",
+        "options": [
+          "Because you risk designing for the wrong problem, having failed to clarify the needs",
+          "Because interviewers always penalize speed",
+          "Because code must always be written before the architecture"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "In what order does a system design interview typically unfold?",
+        "options": [
+          "Requirements -> estimation -> high-level architecture -> deep dive",
+          "Deep dive -> estimation -> requirements -> architecture",
+          "Architecture -> code -> requirements -> tests"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A candidate proposes an architecture with a single database without ever mentioning the expected load. What is the problem?",
+        "options": [
+          "Without a load estimate, it's impossible to justify whether a single database is enough or whether sharding/replication is needed",
+          "There is no problem, a single database is always sufficient",
+          "The problem is that they didn't use microservices"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What does a senior interviewer value most during a system design interview?",
+        "options": [
+          "Explicit reasoning about trade-offs, even if the final solution is imperfect",
+          "A single perfect solution stated without justification",
+          "The speed at which the candidate fills the whiteboard"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "At large American companies (Google, Meta, Amazon...), the system design interview often counts as much as algorithms for roles from 3-4 years of experience onward — and becomes decisive from the senior level up.",
+    "pionnier": {
+      "nom": "Werner Vogels",
+      "portrait": "Amazon's CTO since 2005, he oversaw the transformation of Amazon's internal infrastructure into distributed services at massive scale.",
+      "contribution": "Through conferences (AWS re:Invent) and his blog 'All Things Distributed', he formalized and publicly spread the principles of reasoning about architectural trade-offs that structure today's system design interview.",
+      "problematique": "Amazon needed to evolve a monolithic system into an architecture able to support massive, unpredictable traffic growth, with no shared method existing to reason about these choices.",
+      "solution": "He promoted a systematic approach: frame the requirements, estimate the scale, then consciously choose trade-offs (consistency, availability, latency) rather than applying a universal architecture.",
+      "resultat": "This reasoning method, popularized across the industry, has become the reference framework used in nearly all system design interviews today."
+    },
+    "ambiguite": {
+      "question": "Do you need to know the 'right' architecture by heart before the interview?",
+      "reponse": "No — and that's a common trap. Reciting a memorized architecture without adapting it to the constraints given by the interviewer (different scale, cost constraint, consistency constraint) is spotted immediately. What matters is the reasoning method, transferable to any problem."
+    }
+  },
+  {
+    "id": "etude-cas-raccourcisseur-url",
+    "title": "Case study: designing a URL shortener",
+    "category": "System Design",
+    "badge": { "id": "badge-url-shortener", "name": "Link Builder", "emoji": "🔗" },
+    "griotIntro": [
+      "A problem simple to state, formidable to handle well: it's the recruiters' favorite textbook case.",
+      "Behind 'shorten a URL' lie choices about hashing, the database, and reading at very large scale.",
+      "This topic lets you judge a candidate on a deliberately narrow scope but with real scalability constraints."
+    ],
+    "explanation": {
+      "text": "The service receives a long URL and returns a unique short URL. Two operations dominate: writing (creating a short link) is rare, reading (redirecting to the long URL) is massive — a read/write ratio often 100:1 or higher. This imbalance steers the whole design toward optimizing reads: aggressive caching, a database optimized for reads by key.",
+      "code": "// Generating the short code\nfunction generateShortCode(longUrl, counter) {\n  // Option A: truncated URL hash (MD5/SHA) -> possible collisions\n  // Option B: global counter encoded in base62 -> unique, but potential SPOF\n  // Option C: pre-allocated ID range per server -> no SPOF, unique\n  return encodeBase62(counter)\n}\n\n// Reading: the most traveled path\napp.get('/:code', async (req, res) => {\n  const longUrl = await cache.get(req.params.code)      // 1. cache first\n  if (longUrl) return res.redirect(longUrl)\n\n  const fromDb = await db.findByCode(req.params.code)     // 2. otherwise, database\n  await cache.set(req.params.code, fromDb.longUrl)        // 3. fill the cache\n  res.redirect(fromDb.longUrl)\n})",
+      "annotations": [
+        { "line": 2, "note": "The code generation choice is THE defining decision of the design: it determines whether collisions can occur and whether there is a single point of failure." },
+        { "line": 5, "note": "Pre-allocating ID ranges per server prevents a centralized global counter from becoming a bottleneck at scale." },
+        { "line": 10, "note": "Checking the cache before the database is the most cost-effective decision in the whole design, since reads massively dominate traffic." },
+        { "line": 13, "note": "Filling the cache after a miss (cache-aside pattern) keeps the service simple without complex synchronization between cache and database." }
+      ]
+    },
+    "useCases": [
+      "URL shortening services (bit.ly, t.co)",
+      "Generating unique invitation or promo codes at scale",
+      "Very high-volume click-tracking and redirection systems"
+    ],
+    "relatedTools": [
+      { "name": "Redis", "description": "In-memory cache almost systematically used to absorb the massive read traffic of this type of service." },
+      { "name": "Base62", "description": "Encoding using 62 characters (a-z, A-Z, 0-9) to produce short, readable codes from an integer." },
+      { "name": "CDN", "description": "Can cache the most popular redirects even closer to the end user." }
+    ],
+    "practice": {
+      "question": "Why is the read/write ratio the most important figure to estimate for this design?",
+      "options": [
+        "Because it determines where to focus optimization effort (cache, replication) — here overwhelmingly on reads",
+        "Because it only determines the service's price",
+        "Because it has no impact on the choice of database"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: a read-dominant system isn't optimized the same way as a write-dominant one — cache and read replication take priority here.",
+        "incorrect": "This ratio directly drives architecture choices: here, since reads dominate by far, all the effort goes into caching and read replication."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Why use a counter encoded in base62 rather than a truncated MD5 hash to generate the short code?",
+        "options": [
+          "To guarantee uniqueness without handling collisions, unlike a truncated hash",
+          "Because base62 is faster to compute than MD5",
+          "Because MD5 cannot be truncated"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is the main risk of a centralized global counter for generating codes?",
+        "options": [
+          "It becomes a single point of failure and a bottleneck at scale",
+          "It can only generate even numbers",
+          "It prevents any caching of redirects"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In the proposed read flow, what happens on a cache miss?",
+        "options": [
+          "The database is read, then the cache is filled before redirecting",
+          "A 404 error is returned directly",
+          "A new short code is regenerated for this URL"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "The service becomes very popular and read traffic increases 50x. Which action has the most impact?",
+        "options": [
+          "Add read replicas and strengthen the cache",
+          "Change the code generation algorithm",
+          "Reduce the length of the stored long URLs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The URL shortener is the 'Hello World' of the system design interview — nearly all candidates face it at least once, often as early as their first senior technical interview.",
+    "pionnier": {
+      "nom": "Kevin Gilbertson",
+      "portrait": "Developer who created TinyURL in 2002, one of the very first widely adopted URL-shortening services on the web.",
+      "contribution": "He popularized the concept of a web service dedicated to turning a long URL into a short one redirecting to the original.",
+      "problematique": "In the early 2000s, long URLs caused concrete problems: they were truncated in emails, broken across multiple lines in forums, or exceeded the character limits of certain forms and messaging systems.",
+      "solution": "TinyURL offered a simple service: submit a long URL and get back a unique short URL that automatically redirects to the original page.",
+      "resultat": "The service was adopted massively and inspired the next generation of shorteners (bit.ly, t.co), making this use case a must-know classic of the system design interview."
+    },
+    "ambiguite": {
+      "question": "Must short-code collisions absolutely be avoided?",
+      "reponse": "Not at all costs: a truncated-hash approach can work if you add a uniqueness check in the database and regenerate on collision. The real trade-off to state in the interview is: implementation simplicity (hash) versus immediate uniqueness guarantee (counter), not a binary 'good/bad' answer."
+    }
+  },
+  {
+    "id": "etude-cas-fil-actualite",
+    "title": "Case study: designing a news feed",
+    "category": "System Design",
+    "badge": { "id": "badge-news-feed", "name": "Feed Curator", "emoji": "📰" },
+    "griotIntro": [
+      "A news feed must feel instantaneous for every user, even when millions of posts are circulating at once.",
+      "It's a dreaded classic because it forces a choice between two opposing philosophies of content distribution.",
+      "The good candidate knows how to name that trade-off, not just draw boxes."
+    ],
+    "explanation": {
+      "text": "Two strategies dominate: 'fan-out on write' (each new post is immediately pushed into the pre-computed feed of every follower) and 'fan-out on read' (the feed is assembled on the fly when the user opens the app, aggregating recent posts from followed accounts). The first is fast to read but expensive to write for accounts with huge numbers of followers; the second is simple to write but slower to read.",
+      "code": "// Fan-out on write: expensive for accounts with millions of followers\nfunction onNewPost(post) {\n  const followers = getFollowers(post.authorId)  // can be huge\n  for (const followerId of followers) {\n    pushToFeedCache(followerId, post)             // writes multiplied by N\n  }\n}\n\n// Fan-out on read: simple to write, slower to read\nfunction getFeed(userId) {\n  const following = getFollowing(userId)\n  const recentPosts = getRecentPostsFrom(following) // on-the-fly aggregation\n  return sortByTime(recentPosts)\n}\n\n// Common hybrid approach in production\nfunction onNewPost(post) {\n  if (getFollowerCount(post.authorId) < CELEBRITY_THRESHOLD) {\n    fanOutOnWrite(post)      // normal accounts: immediate push\n  }\n  // \"celebrity\" accounts: fan-out on read at read time\n}",
+      "annotations": [
+        { "line": 2, "note": "For an account followed by millions of people, pushing a post to every follower on each post can mean millions of writes for a single event." },
+        { "line": 9, "note": "Read-time aggregation avoids this massive-write problem, but every app open becomes more computationally expensive." },
+        { "line": 16, "note": "The hybrid approach (used by most major social networks) applies fan-out on write for normal accounts and fan-out on read for very high-reach accounts — the best of both worlds depending on each account's profile." }
+      ]
+    },
+    "useCases": [
+      "Social networks (news feed, timeline)",
+      "High-volume notification feeds",
+      "Personalized content aggregators (recommendations)"
+    ],
+    "relatedTools": [
+      { "name": "Kafka", "description": "Message queue often used to propagate post events to fan-out workers asynchronously." },
+      { "name": "Redis (sorted sets)", "description": "Stores each user's pre-computed feed for near-constant-time reads." },
+      { "name": "Cassandra", "description": "Column-oriented database suited to the massive, distributed writes required by fan-out on write." }
+    ],
+    "practice": {
+      "question": "Why is a hybrid approach preferred in production for very high-reach accounts?",
+      "options": [
+        "To prevent a post from an account with millions of followers from triggering millions of immediate writes",
+        "Because fan-out on write is always simpler to implement",
+        "Because high-reach accounts never post content"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: switching 'celebrity' accounts to fan-out on read avoids the write spike that would saturate the system when they post.",
+        "incorrect": "The targeted problem is the outsized write volume generated by accounts with huge numbers of followers — the hybrid exists precisely to avoid it."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does fan-out on write do with every new post?",
+        "options": [
+          "It immediately pushes the content into each follower's pre-computed feed",
+          "It waits for the user to open the app to compute everything",
+          "It deletes old posts from the feed"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is the main drawback of fan-out on read?",
+        "options": [
+          "Reading becomes more expensive because the feed is assembled on the fly on every open",
+          "It is technically impossible to implement",
+          "It prevents any feed personalization"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why do accounts with very large numbers of followers pose a particular problem for fan-out on write?",
+        "options": [
+          "A single post triggers a number of writes proportional to the follower count, potentially enormous",
+          "They technically cannot post content",
+          "Their content is automatically cached indefinitely"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A candidate proposes fan-out on write for absolutely every account, without exception. What is the risk at scale?",
+        "options": [
+          "An unmanageable write spike as soon as a very high-reach account posts",
+          "No risk, this approach is always optimal",
+          "The feed will never be sortable in chronological order"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Twitter/X has publicly documented going through several generations of news feed architecture — it's one of the most referenced and discussed system design case studies in the industry.",
+    "pionnier": {
+      "nom": "Ruchi Sanghvi",
+      "portrait": "Engineer and product manager at Facebook, she was the company's first female engineer and led the product team behind the launch of the News Feed in 2006.",
+      "contribution": "She drove the design and launch of the News Feed, one of the very first large-scale aggregated news feeds on a social network.",
+      "problematique": "Facebook users had to individually visit each profile to see their friends' updates, which made discovering new content slow and fragmented.",
+      "solution": "The News Feed automatically aggregated the recent activity of each user's contact network into a single stream, surfacing very early the large-scale content-distribution problem that fan-out on write/on read solves today.",
+      "resultat": "Despite an initial privacy controversy at launch, the News Feed became the dominant format later adopted by nearly all social networks."
+    },
+    "ambiguite": {
+      "question": "Is fan-out on write always the 'wrong' approach to avoid?",
+      "reponse": "No — for the vast majority of accounts (few followers), fan-out on write is perfectly suited and gives instant reads. The real signal to give in the interview is knowing how to identify the edge case (very high-reach accounts) and propose a targeted adaptation, not rejecting the strategy outright."
+    }
+  },
+  {
+    "id": "compromis-echelle",
+    "title": "Architecture trade-offs at large scale",
+    "category": "System Design",
+    "badge": { "id": "badge-tradeoffs-scale", "name": "Master of Trade-offs", "emoji": "⚖️" },
+    "griotIntro": [
+      "There is no perfect architecture — only architectures suited to specific constraints.",
+      "A good engineer never says 'this is the best solution' without adding 'under these conditions.'",
+      "This ability to explicitly name trade-offs is what sets a senior candidate apart from a junior one in the interview."
+    ],
+    "explanation": {
+      "text": "Three trade-offs come up systematically in system design: (1) vertical scaling (a more powerful server, simple but limited) versus horizontal scaling (more servers, complex but nearly unlimited); (2) strong consistency (every node always sees the same data, but higher latency) versus eventual consistency (faster response, risk of reading slightly stale data); (3) sharding by a key (splitting data across several databases), which speeds up reads but complicates queries that span multiple shards.",
+      "code": "// Sharding: splitting users across several databases\nfunction getShardForUser(userId, shardCount) {\n  return hash(userId) % shardCount   // same user -> always the same shard\n}\n\n// Consequence: a simple query stays fast\nconst shard = getShardForUser(userId, 8)\ndb[shard].findUser(userId)             // only 1 database queried\n\n// But a cross-user query becomes expensive\nfunction getTopUsersGlobally() {\n  const results = []\n  for (const shard of allShards) {\n    results.push(...shard.query('ORDER BY score DESC LIMIT 10'))\n  }\n  return mergeAndSort(results)          // manual aggregation across shards\n}",
+      "annotations": [
+        { "line": 3, "note": "The hash guarantees that the same user always lands on the same shard — an essential condition for retrieving their data quickly." },
+        { "line": 7, "note": "A query targeting a single user stays fast: you know exactly which shard to query, with no coordination between databases." },
+        { "line": 11, "note": "As soon as a query must aggregate data spread across several shards, each one must be queried and then merged on the application side — sharding has a cost on this type of query." }
+      ]
+    },
+    "useCases": [
+      "Choosing an architecture for a service undergoing rapid user growth",
+      "Deciding to shard an existing database",
+      "Weighing consistency versus latency for a multi-region system"
+    ],
+    "relatedTools": [
+      { "name": "Vitess / Citus", "description": "Tools that automate sharding of a relational database (MySQL/PostgreSQL) at scale." },
+      { "name": "DynamoDB", "description": "Managed database designed for automatic horizontal scaling with configurable consistency." },
+      { "name": "Consistent hashing", "description": "A distribution technique that minimizes the number of keys to redistribute when adding or removing a shard." }
+    ],
+    "practice": {
+      "question": "Why does sharding complicate queries that aggregate data across multiple users?",
+      "options": [
+        "Because the data is spread across several distinct databases that must be queried and then merged manually",
+        "Because sharding removes the ability to run SQL queries",
+        "Because sharding only affects write speed, never reads"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: what you gain in speed for queries targeting a single entity, you lose in simplicity for queries that span multiple shards.",
+        "incorrect": "Sharding spreads data across several physically distinct databases — a global query must therefore query each shard and then merge the results on the application side."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the main limitation of vertical scaling?",
+        "options": [
+          "There is a physical limit to the power of a single machine",
+          "It is always slower than horizontal scaling",
+          "It only works with NoSQL databases"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What does a stable hash key for sharding (like hash(userId) % shardCount) guarantee?",
+        "options": [
+          "That the same user is always routed to the same shard",
+          "That all requests will be processed in under one millisecond",
+          "That shards always hold exactly the same number of users"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A company chooses eventual consistency for its social media likes system. What trade-off is it making?",
+        "options": [
+          "Accepting that a like counter is sometimes slightly out of date in exchange for lower latency",
+          "Giving up entirely on the ability to count likes",
+          "Guaranteeing that all users always see the same count down to the millisecond"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is adding a shard to a system already in production (re-sharding) a delicate operation?",
+        "options": [
+          "It requires redeploying part of the existing data to the new shard without interrupting the service",
+          "It has no impact, a shard can be added instantly",
+          "It automatically deletes all existing data"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "'Consistent hashing' was popularized by Amazon Dynamo's and Google's architecture papers — today it's an almost systematic topic as soon as a system design interview touches on sharding.",
+    "pionnier": {
+      "nom": "David Karger",
+      "portrait": "Computer science professor at MIT, algorithms specialist, co-author in 1997 of the foundational paper on consistent hashing with MIT colleagues (including Daniel Lewin, Tom Leighton, and others).",
+      "contribution": "He co-developed consistent hashing ('Consistent Hashing and Random Trees'), a mathematical load-distribution technique designed to solve a concrete web-scaling problem.",
+      "problematique": "Web caches distributed with classic hashing (modulo) had to be almost entirely redistributed each time a server was added or removed, making scaling very costly and unstable.",
+      "solution": "Consistent hashing places servers and keys on a logical ring, so that adding or removing a server only redeploys a small fraction of the data, not all of it.",
+      "resultat": "This technique served as the technical foundation for the launch of Akamai (a content delivery network) and is today a central architecture trade-off for sharding large-scale distributed databases."
+    },
+    "ambiguite": {
+      "question": "Is horizontal scaling always superior to vertical scaling?",
+      "reponse": "No. Vertical scaling often remains the right first choice: simpler, without the complexity of distribution, sufficient for many systems that will never exceed a certain scale. Horizontal scaling is justified when the load exceeds what a single machine can absorb, or for fault tolerance — not as a matter of principle."
+    }
+  },
+  {
+    "id": "evolution-architecture-echelle",
+    "title": "From zero to millions of users",
+    "category": "System Design",
+    "badge": { "id": "badge-scale-evolution", "name": "Scale Builder", "emoji": "📈" },
+    "griotIntro": [
+      "No great architecture was born great. All of them started as a simple camp — one server, one database, one access point.",
+      "In Kédougou, a mining village rarely grows all at once: first a few huts, then a shared well, then a road, then a market.",
+      "A system's architecture follows this exact same logic of gradual growth — each new piece answers a specific bottleneck reached by the previous one.",
+      "This is the classic narrative arc of system design courses (popularized in particular by ByteByteGo): rebuilding step by step how you go from 100 to 100 million users."
+    ],
+    "explanation": {
+      "text": "The evolution always follows the same pattern: identify the current bottleneck, add ONE piece to solve it, which shifts the bottleneck elsewhere, and repeat. Single server -> separating web/database -> load balancer (horizontal scaling of the web tier) -> database replication (scaling reads) -> cache (reducing load on the database) -> CDN (reducing static file latency) -> stateless web tier (unlimited horizontal scaling) -> message queue (decoupling asynchronous work) -> monitoring (visibility at scale) -> sharding (scaling database writes, the last frontier to push back).",
+      "code": "// Order in which bottlenecks are resolved, in the order they appear\n\n1. A single server      -> SPOF + CPU/RAM contention between web and DB\n   => separate web and database onto two machines\n\n2. Too much web traffic  -> a single web server saturates\n   => load balancer + multiple web servers (stateless if possible)\n\n3. Encryption + outages  -> each server handles its own TLS, an outage goes unnoticed\n   => TLS terminated at the load balancer + automatic health checks\n\n4. Too many DB reads     -> the primary database saturates on reads\n   => read replicas (1 primary to write, N replicas to read)\n\n5. Slow queries          -> before caching, check if a simple index is enough\n   => index frequently filtered/sorted columns\n\n6. Repeated reads        -> even indexed and replicated, some queries keep recurring\n   => cache (Redis) in front of the database\n\n7. Static files          -> high latency for users far from the origin server\n   => CDN to serve images/CSS/JS closer to the user\n\n8. Geographic latency    -> even with a CDN, dynamic traffic still crosses the globe\n   => GeoDNS: route each user to the nearest data center\n\n9. In-memory sessions    -> a web server keeps track in memory of WHO is logged in\n   => shared session store (Redis) => web tier truly stateless\n\n10. Heavy tasks           -> the user waits for a task that could be deferred\n   => message queue + background workers\n\n11. Too many DB writes    -> even replicated and indexed, a single primary database limits writes\n   => sharding: spread data across multiple primary databases",
+      "annotations": [
+        { "line": 4, "note": "This first bottleneck is almost always the same in any system that's just starting out: the resource shared between compute and storage quickly becomes a source of contention." },
+        { "line": 8, "note": "From here on, a defining decision is needed: making the web server stateless as early as possible avoids having to redo this choice later under pressure." },
+        { "line": 11, "note": "Terminating TLS at the load balancer simplifies certificate management (a single place to renew) and removes the cost of encryption from each web server. Health checks automate what a human would otherwise do manually: watching that each server still responds." },
+        { "line": 15, "note": "Indexing is underrated in interviews: it's often the optimization with the best gain-to-complexity ratio, worth trying before adding an entire infrastructure piece like a cache." },
+        { "line": 18, "note": "A system's read/write ratio determines whether replication alone is enough, or whether sharding will eventually be needed." },
+        { "line": 24, "note": "GeoDNS addresses a problem the CDN alone doesn't cover: the CDN speeds up static files, but a dynamic API request still has to reach an application server — GeoDNS brings that server closer to the user." },
+        { "line": 33, "note": "Sharding is generally the last step, not the first response to a performance problem — it's the most complex option to operate (rebalancing, cross-shard queries) and the least reversible." }
+      ]
+    },
+    "useCases": [
+      "Framing an architecture for a service that must anticipate strong user growth",
+      "Justifying in a technical interview why an infrastructure piece is added at a specific moment, and not before",
+      "Diagnosing where the current bottleneck lies in an existing system"
+    ],
+    "relatedTools": [
+      { "name": "Redis", "description": "Used both as a cache and as a shared session store — one of the most versatile pieces in this evolution." },
+      { "name": "Nginx / HAProxy", "description": "Common software load balancers for distributing traffic across multiple web servers." },
+      { "name": "RabbitMQ / Kafka", "description": "Message queues used to decouple asynchronous processing from the main request path." }
+    ],
+    "practice": {
+      "question": "A system with a single web server and a separate database starts to saturate on WEB TRAFFIC (not on the database). What is the next piece to add?",
+      "options": [
+        "A load balancer with multiple web servers",
+        "Directly, database sharding",
+        "A CDN for all traffic"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: the current bottleneck is web traffic, so the response targets that specific bottleneck — a load balancer and horizontal scaling of the web tier, not the database, which isn't yet the problem.",
+        "incorrect": "The golden rule of this evolution is to solve the CURRENT bottleneck, not to anticipate a problem that doesn't exist yet. Here web traffic is saturating, so the answer is a load balancer + multiple web servers."
+      }
+    },
+    "quiz": [
+      {
+        "question": "After separating the web server and the database onto two machines, which of the two becomes a single point of failure again first if traffic increases?",
+        "options": [
+          "The web server (a single server can only absorb limited traffic)",
+          "Neither, the problem is permanently solved",
+          "The database, systematically before the web server"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why does database replication primarily target READS rather than writes?",
+        "options": [
+          "Because the vast majority of systems have traffic that's overwhelmingly read-heavy, so replicating reads relieves most of the load",
+          "Because it is technically impossible to replicate writes",
+          "Because writes never put load on the database"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is making the web tier 'stateless' a condition for truly unlimited horizontal scaling?",
+        "options": [
+          "Because if each server keeps sessions in local memory, a user stays 'stuck' to a specific server, which limits load distribution",
+          "Because a stateless server automatically consumes less CPU",
+          "Because statelessness prevents any use of a load balancer"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A user in Dakar accesses a site whose servers are all in Paris. Which piece of this evolution specifically addresses their latency on static files (images, CSS)?",
+        "options": [
+          "A CDN",
+          "A message queue",
+          "Database sharding"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is a message queue typically added AFTER the cache and the CDN, rather than from the start?",
+        "options": [
+          "Because it addresses a different problem (heavy tasks blocking the response), which often only appears once the system is already under heavy load",
+          "Because a message queue always replaces the need for a cache",
+          "Because message queues only work with sharded databases"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why is sharding generally presented as the LAST step of this evolution, rather than an early solution?",
+        "options": [
+          "Because it's the most complex option to operate and the least reversible — you only shard once simpler options (replication, cache) are exhausted",
+          "Because sharding is always simpler to set up than replication",
+          "Because sharding systematically solves all network latency problems"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A startup with 500 daily active users asks you whether it already needs a CDN, a Redis cache, and sharding. What do you answer?",
+        "options": [
+          "No — at this scale, a well-sized server (or even two for availability) is plenty; adding these pieces too early costs complexity with no real benefit",
+          "Yes, all the pieces should always be implemented from day one just in case",
+          "No, these pieces are never necessary no matter what scale is reached later"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why is database indexing generally tried BEFORE adding a cache?",
+        "options": [
+          "Because a good index can solve the slowness problem directly in the database, at a much lower implementation cost than an entire infrastructure piece",
+          "Because a cache never works without a prior index",
+          "Because indexing completely replaces the need for replication"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "The CDN already speeds up static files for a remote user. Why add GeoDNS on top?",
+        "options": [
+          "Because the CDN only covers static content — a dynamic API request still has to reach an application server, which GeoDNS brings closer geographically",
+          "Because GeoDNS entirely replaces the need for a CDN",
+          "Because the CDN and GeoDNS solve exactly the same problem twice over"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "This progression (single server -> separation -> load balancer -> TLS/health checks -> replication -> indexing -> cache -> CDN -> GeoDNS -> stateless -> queue -> monitoring -> sharding) is the opening narrative arc of many reference system design courses and books, including the very popular 'System Design Interview' by Alex Xu (ByteByteGo) — it serves as the throughline for almost all interviews of this kind.",
+    "pionnier": {
+      "nom": "Randy Shoup",
+      "portrait": "Former chief architect at eBay, later an engineer at Google and Stitch Fix, known for his public talks detailing eBay's architecture evolution over the course of its growth.",
+      "contribution": "In numerous technical talks, he documented and publicly shared how an architecture evolves through successive stages by solving one bottleneck at a time, rather than through a total redesign planned in advance.",
+      "problematique": "eBay, like many platforms that started small, had to evolve a simple initial architecture to absorb several orders of magnitude of growth in users and traffic, without interrupting service.",
+      "solution": "He formalized the idea that there is no single target architecture to aim for from the outset: each stage of growth identifies its own bottleneck (database, application layer, cache) and answers it with a targeted piece.",
+      "resultat": "His public accounts of eBay's evolution have become a widely cited teaching reference for illustrating the 'zero to millions of users' progression taught in system design."
+    },
+    "ambiguite": {
+      "question": "Do you need to memorize this list of pieces in this exact order for an interview?",
+      "reponse": "No — the exact order varies depending on the real system (a very read-heavy system will prioritize the cache before the load balancer, for example). What matters is the PRINCIPLE: identify the current bottleneck before choosing which piece to add, and be able to justify why this specific piece solves this specific problem — reciting the list without that reasoning is spotted immediately in an interview."
+    }
+  },
+  {
+    "id": "rate-limiter",
+    "title": "Designing a rate limiter",
+    "category": "System Design",
+    "badge": { "id": "badge-rate-limiter", "name": "Guardian of the Flow", "emoji": "🚦" },
+    "griotIntro": [
+      "A shared well in Kédougou is never left with unlimited free access: one turn, one bucket at a time, so the whole village can benefit.",
+      "A rate limiter applies the same wisdom to an API: limiting the number of requests a client can make in a time window, to protect the service for every other client.",
+      "It's one of the most frequently asked system design topics in interviews, because it's concrete, bounded, and quickly reveals whether the candidate understands the memory/precision trade-offs."
+    ],
+    "explanation": {
+      "text": "Four algorithms come up systematically. Token bucket: a bucket of tokens empties on each request and refills at a constant rate — simple and allows short bursts. Leaky bucket: requests enter a queue and leave at a constant rate, smoothing out any burst. Fixed window counter: a counter reset every fixed window (e.g. every minute) — simple but lets double the rate through at the boundary between two windows. Sliding window log: keeps a timestamp per request for an exact count over a sliding window — precise but memory-expensive at scale.",
+      "code": "// Token bucket: simplified implementation\nclass TokenBucket {\n  constructor(capacity, refillRatePerSec) {\n    this.capacity = capacity\n    this.tokens = capacity\n    this.refillRate = refillRatePerSec\n    this.lastRefill = Date.now()\n  }\n\n  allow() {\n    this.refill()\n    if (this.tokens >= 1) {\n      this.tokens -= 1\n      return true          // request accepted\n    }\n    return false            // 429 Too Many Requests\n  }\n\n  refill() {\n    const now = Date.now()\n    const elapsedSec = (now - this.lastRefill) / 1000\n    this.tokens = Math.min(this.capacity, this.tokens + elapsedSec * this.refillRate)\n    this.lastRefill = now\n  }\n}",
+      "annotations": [
+        { "line": 3, "note": "The bucket starts full: this allows absorbing an initial burst without penalizing a client who hasn't consumed anything yet." },
+        { "line": 10, "note": "The refill is recalculated on every call rather than by a separate scheduled task — this avoids maintaining a background process, at the cost of a small computation on each request." },
+        { "line": 14, "note": "The rejection explicitly returns a signal (here a boolean, in practice often an HTTP 429 code) — the calling client knows it must retry later, ideally guided by a 'Retry-After' header." },
+        { "line": 19, "note": "The refill amount is proportional to the elapsed time, not a fixed tick: this stays correct even if `allow()` isn't called for a while." }
+      ]
+    },
+    "useCases": [
+      "Protecting a public API against abuse or massive scraping",
+      "Limiting the number of login attempts to slow down brute-force attacks (already applied on /auth/login in this application)",
+      "Guaranteeing a fair share of resources between multiple clients of the same paid service (quotas per pricing plan)"
+    ],
+    "relatedTools": [
+      { "name": "Redis (with TTL)", "description": "Stores counters or token buckets shared across multiple instances of the service — essential as soon as the rate limiter runs on more than one server." },
+      { "name": "express-rate-limit", "description": "Ready-to-use Node.js middleware implementing several of these algorithms." },
+      { "name": "API Gateway (Kong, AWS API Gateway)", "description": "Often applies rate limiting upstream of services, before the request even reaches the application code." }
+    ],
+    "practice": {
+      "question": "Why does the token bucket allow a 'burst' (a one-off spike of requests) while the leaky bucket forbids it?",
+      "options": [
+        "Because the token bucket can start full and empty all at once, whereas the leaky bucket forces a strictly constant outflow rate",
+        "Because the token bucket never actually limits the rate",
+        "Because the leaky bucket allows an unlimited number of simultaneous requests"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: the token bucket allows consuming several accumulated tokens at once, while the leaky bucket makes requests exit at a strictly fixed rate, regardless of how they arrive.",
+        "incorrect": "The key difference is that the token bucket can have accumulated tokens (so a possible instant burst), while the leaky bucket enforces a constant outflow rate that smooths out any spike."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the main flaw of the fixed window counter?",
+        "options": [
+          "It can let up to twice the allowed limit through if requests cluster around the boundary between two windows",
+          "It always uses more memory than the sliding window log",
+          "It is impossible to implement without a database"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is the sliding window log precise but expensive at scale?",
+        "options": [
+          "Because it keeps a timestamp per request, which consumes memory proportional to the number of requests in the window",
+          "Because it can only work with a single client at a time",
+          "Because it cannot be used with Redis"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A rate limiter runs independently on each server of a pool of 5 servers behind a load balancer, with no shared state. What is the problem?",
+        "options": [
+          "A client can bypass the limit simply by being spread across multiple servers, each applying its own independent limit",
+          "There is no problem, each server should have its own independent limit",
+          "Rate limiting can only work on a single server as a matter of principle"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What should a rate limiter typically return to a client whose request is rejected, in addition to the 429 code?",
+        "options": [
+          "A hint about the delay before retrying (e.g. a Retry-After header)",
+          "A temporary password to bypass the limit",
+          "The full list of other clients who have reached their limit"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is rate limiting often applied both at the API Gateway AND at the application level (e.g. on /auth/login) rather than in just one place?",
+        "options": [
+          "Because each layer protects against a different risk: the gateway limits overall load, the sensitive route limits a specific business abuse (brute-force)",
+          "Because it's an unnecessary redundancy that should always be avoided",
+          "Because the API Gateway technically cannot do rate limiting"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The rate limiter is one of the most iconic chapters of Alex Xu's book 'System Design Interview' (ByteByteGo) — often the very first practical case given to junior/mid-level candidates, since its scope stays manageable in 45 minutes.",
+    "pionnier": {
+      "nom": "Van Jacobson",
+      "portrait": "American network engineer, former researcher at Lawrence Berkeley National Laboratory, known for his foundational work on network congestion control.",
+      "contribution": "In 1988 he designed TCP's congestion control algorithms (slow start, congestion avoidance), which dynamically limit a sender's transmission rate to avoid saturating the network.",
+      "problematique": "In the late 1980s, the primitive Internet suffered 'congestion collapse': too many senders were transmitting data without limit, saturating network links to the point of crashing overall useful throughput.",
+      "solution": "His algorithms make each sender adjust its rate based on observed congestion signals, rather than transmitting at a fixed rate regardless of network conditions.",
+      "resultat": "These rate-control principles saved the fledgling Internet from widespread saturation and directly inspired the logic of modern application-level rate limiters: protecting a shared resource by regulating each client's rate."
+    },
+    "ambiguite": {
+      "question": "Must a rate limiter always strictly reject an excess request, with no exception?",
+      "reponse": "Not necessarily — some systems prefer 'graceful degradation' (slowing the response, queuing) over a hard rejection, especially for trusted internal clients. The choice between strict rejection and queuing depends on the business context, not a universal rule — a good candidate in an interview asks the question rather than assuming."
+    }
+  },
+  {
+    "id": "consistent-hashing",
+    "title": "Consistent hashing",
+    "category": "System Design",
+    "badge": { "id": "badge-consistent-hashing", "name": "Master of the Ring", "emoji": "💍" },
+    "griotIntro": [
+      "Imagine a circular market in Kédougou, where each stall has a fixed position on the circle, and each customer heads to the first stall they encounter while moving forward.",
+      "Adding a new stall only moves the few customers closest to it — everyone else keeps going to the same place as before.",
+      "That's exactly the principle of consistent hashing: distributing data across servers without having to reorganize everything each time a server is added or removed."
+    ],
+    "explanation": {
+      "text": "With classic hashing (key % number of servers), adding or removing a SINGLE server changes the modulo result for almost every key — nearly all the data must be redeployed. Consistent hashing places both servers AND keys on a ring (0 to 2^32-1, simplified here to 0-11). Each key is assigned to the first server encountered moving forward on the ring. Adding or removing a server then only redeploys the keys located between that server and the previous one on the ring — a fraction, not the whole.",
+      "code": "// Assigning a key to a server on the ring\nfunction getServerForKey(key, servers) {\n  const keyPos = hash(key) % RING_SIZE\n  const sorted = [...servers].sort((a, b) => a.pos - b.pos)\n\n  // first server whose position is >= the key's position\n  const target = sorted.find((s) => s.pos >= keyPos)\n\n  return target || sorted[0]   // wrap back to the start of the ring if none found\n}\n\n// Virtual nodes: each physical server occupies SEVERAL positions\nfunction addServerWithVirtualNodes(server, virtualCount, ring) {\n  for (let i = 0; i < virtualCount; i++) {\n    ring.push({ id: server.id, pos: hash(server.id + '-' + i) % RING_SIZE })\n  }\n}",
+      "annotations": [
+        { "line": 5, "note": "Sorting the servers by position is needed on every lookup, unless the ring is kept continuously sorted (e.g. a balanced tree) for optimal performance at scale." },
+        { "line": 8, "note": "Wrapping back to the start of the ring handles the case where the key is positioned after the last server — the ring is circular, not a simple line." },
+        { "line": 12, "note": "Without virtual nodes, a server can inherit a disproportionate share of the ring depending on where it happens to land. Multiplying each server into several virtual points spreads the load much more evenly." }
+      ]
+    },
+    "useCases": [
+      "Distributing keys across distributed cache servers (Memcached, Redis Cluster)",
+      "Large-scale sharding of NoSQL databases (Cassandra, DynamoDB)",
+      "Load distribution across CDN edge servers"
+    ],
+    "relatedTools": [
+      { "name": "Cassandra", "description": "Uses consistent hashing natively to distribute data partitions across the cluster's nodes." },
+      { "name": "Memcached (clients with ketama)", "description": "Client libraries like ketama implement consistent hashing to choose the target cache server." },
+      { "name": "Virtual nodes", "description": "A near-systematic complementary technique to avoid uneven distribution across physical servers." }
+    ],
+    "practice": {
+      "question": "With classic hashing (key % N servers), what happens when a server is added (N becomes N+1)?",
+      "options": [
+        "The modulo result changes for nearly all keys, forcing almost everything to be redeployed",
+        "Nothing changes, keys stay on the same server",
+        "Only new keys are affected, existing keys never are"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: the modulo depends directly on N, so changing it redistributes nearly all keys — which is precisely what consistent hashing avoids.",
+        "incorrect": "With a classic modulo, changing N changes the result for almost every existing key — this is the fundamental problem consistent hashing solves."
+      }
+    },
+    "quiz": [
+      {
+        "question": "On the consistent hashing ring, which server is a key assigned to?",
+        "options": [
+          "The first server encountered moving forward on the ring from the key's position",
+          "Always the server with the lowest position on the entire ring",
+          "A server chosen at random among all available servers"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "When a server is added to the ring, which keys are redeployed?",
+        "options": [
+          "Only the keys located between this new server and the previous server on the ring",
+          "All keys on the ring, without exception",
+          "No key is ever redeployed with consistent hashing"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why use 'virtual nodes' (several positions per physical server) rather than a single position per server?",
+        "options": [
+          "To distribute load more evenly, avoiding a server inheriting a disproportionate share of the ring by chance",
+          "To reduce the total number of servers needed",
+          "Because a server technically can only occupy a single position without virtual nodes"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A system using classic (modulo) hashing suffers total cache unavailability every time a server is added, while everything is redeployed. What architecture change directly addresses this problem?",
+        "options": [
+          "Replacing modulo hashing with consistent hashing",
+          "Adding more servers to compensate",
+          "Removing the cache entirely to avoid the problem"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Does consistent hashing completely eliminate the need to redeploy data when servers change?",
+        "options": [
+          "No — it minimizes the fraction of keys redeployed, but a portion (between the changed server and its neighbor) always has to be redeployed",
+          "Yes, no key is ever redeployed regardless of the change",
+          "No, it actually redeploys systematically more keys than classic modulo hashing"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Consistent hashing was formalized academically in 1997 (Karger et al.) then popularized in production by the Amazon Dynamo paper (2007) — it's now considered an almost unavoidable topic as soon as a system design interview touches on sharding or distributed caching.",
+    "pionnier": {
+      "nom": "David Karger",
+      "portrait": "Computer science professor at MIT, co-author in 1997 of the paper 'Consistent Hashing and Random Trees' with a team of MIT researchers including Daniel Lewin and Tom Leighton, who later co-founded Akamai.",
+      "contribution": "He mathematically formalized consistent hashing, a method of distributing keys on a logical ring that minimizes the number of keys to redeploy when the number of servers changes.",
+      "problematique": "The web of the mid-1990s experienced massive load spikes (the 'flash crowd' or Slashdot effect) on certain sites, and existing distributed cache systems redistributed almost all their data on every server addition or failure, making them fragile at scale.",
+      "solution": "By placing servers and keys on the same hash ring, each key is assigned to the nearest server in a given direction of traversal, so that adding or removing a server only disrupts its immediate neighborhood on the ring.",
+      "resultat": "This technique formed the technical foundation of Akamai, one of the very first large-scale content delivery networks (CDNs), and is now widely used in distributed databases (Cassandra, DynamoDB) and modern distributed caches."
+    },
+    "ambiguite": {
+      "question": "Does consistent hashing guarantee a perfectly even distribution of keys across servers?",
+      "reponse": "No, not without virtual nodes — with few servers each occupying a single position, the distribution can be very uneven depending on where they happen to fall on the ring. Virtual nodes (each physical server occupying dozens or hundreds of positions) are what brings the actual distribution close to a statistical balance, not the base principle alone."
+    }
+  }
+]

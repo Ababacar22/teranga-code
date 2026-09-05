@@ -1,0 +1,714 @@
+[
+  {
+    "id": "api-rest",
+    "title": "REST API",
+    "category": "Architecture",
+    "badge": {
+      "id": "badge-rest",
+      "name": "API Master",
+      "emoji": "🔗"
+    },
+    "griotIntro": [
+      "At the great mosque of Touba, every door has a precise use known to all: entering, leaving, praying.",
+      "A REST API works the same way: each HTTP verb has a precise, predictable use on a resource."
+    ],
+    "explanation": {
+      "text": "The HTTP verb expresses the action to perform on a resource, not the URL — avoid URLs like `/getUserById`. A good API is also stateless (each request carries everything it needs, with no memory kept server-side) and returns the right status code. Click each line for details.",
+      "code": "GET    /users/42        // fetch user 42\nPOST   /users           // create a new user\nPUT    /users/42        // fully replace user 42\nPATCH  /users/42        // partially update user 42\nDELETE /users/42        // delete user 42\nHEAD   /users/42        // like GET but without a body: useful to check a resource exists\nGET    /users?role=admin // filter a collection via query params, never via a new verb\nPATCH  /users/42  { email: null }  // gotcha: null clears the field, a field absent from the JSON leaves it unchanged",
+      "annotations": [
+        {
+          "line": 0,
+          "note": "Reads without ever modifying — a GET request must stay \"safe\": it can be called as many times as you want with no side effect."
+        },
+        {
+          "line": 1,
+          "note": "Creates a new resource. NOT idempotent: two calls create two different users. Expected response: 201."
+        },
+        {
+          "line": 2,
+          "note": "Replaces the resource ENTIRELY — an omitted field is erased. Idempotent: calling it again with the same data always yields the same final state."
+        },
+        {
+          "line": 3,
+          "note": "Only modifies the fields provided, the rest stays unchanged. Unlike POST, PATCH is meant to be idempotent."
+        },
+        {
+          "line": 4,
+          "note": "Deletes the resource. Idempotent in practice: deleting it a second time should break nothing, even if the response becomes 404."
+        },
+        {
+          "line": 5,
+          "note": "HEAD returns the same headers as a GET but without the response body — handy to check a resource exists without downloading its whole content."
+        },
+        {
+          "line": 6,
+          "note": "Filtering, sorting and pagination go through query parameters on the existing resource, never through a one-off endpoint or verb invented for the occasion."
+        },
+        {
+          "line": 7,
+          "note": "Classic interview trap: in a PATCH, an explicit `null` value clears the field, while a field simply absent from the JSON is left untouched — make sure to distinguish the two on the backend."
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "label": "HTTP Request",
+        "description": "The client sends a request (e.g. GET /users/42) to the server."
+      },
+      {
+        "label": "Routing",
+        "description": "The server identifies which route/controller should handle the request."
+      },
+      {
+        "label": "Processing",
+        "description": "The business logic runs, possibly with a database access."
+      },
+      {
+        "label": "Response",
+        "description": "The server returns an HTTP status code and data (often as JSON)."
+      },
+      {
+        "label": "Client-side rendering",
+        "description": "The frontend receives the response and updates the interface for the user."
+      }
+    ],
+    "useCases": [
+      "The backend of this Teranga Code project itself: `POST /auth/register`, `GET /progress`, `POST /progress/xp` follow exactly these REST conventions.",
+      "A mobile app that consumes the same REST API as a website, without duplicating business logic server-side.",
+      "An order management system where `GET /orders/:id` fetches an order and `PATCH /orders/:id` updates only its status."
+    ],
+    "relatedTools": [
+      {
+        "name": "Express / NestJS / Fastify",
+        "description": "The most widely used Node.js frameworks for building REST APIs, each with a different flexibility/structure trade-off."
+      },
+      {
+        "name": "Postman / Insomnia",
+        "description": "Tools for manually testing REST endpoints without writing a frontend, indispensable in backend development."
+      },
+      {
+        "name": "Swagger / OpenAPI",
+        "description": "A standard for documenting a REST API readably and automatically generating interactive documentation."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "router.get('/users/:id/delete', (req, res) => {",
+        "  db.user.delete({ where: { id: req.params.id } });",
+        "  res.json({ ok: true });",
+        "});"
+      ],
+      "buggyLineIndex": 0,
+      "explanation": "A GET request must never have a side effect (it must stay safe and idempotent) — the deletion should use the DELETE method, not GET."
+    },
+    "practice": {
+      "question": "What is the difference between PUT and PATCH?",
+      "options": [
+        "PUT replaces the entire resource, PATCH only modifies the fields provided",
+        "PUT and PATCH are interchangeable as long as the request body contains all fields",
+        "PATCH always requires an identifier in the request body, never in the URL"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — a very classic backend technical interview question.",
+        "incorrect": "PUT = full replacement (an omitted field is erased). PATCH = partial update (fields not provided stay unchanged). That's the key distinction."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does \"stateless\" mean for a REST API?",
+        "options": [
+          "The server keeps no session state between two requests; each request carries everything it needs",
+          "The server can process requests in any order, regardless of their content",
+          "Each request must necessarily open a new TCP connection"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "A POST /users request successfully creates a new user. What status code should the response return?",
+        "options": [
+          "201",
+          "200",
+          "204"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "A client sends the same DELETE /orders/17 request twice in a row (for example because a network issue caused a retry). If the API is well designed to be idempotent, what is the expected behavior?",
+        "options": [
+          "The final state is the same after both calls: order 17 is deleted, regardless of whether one of the two calls returns 404 the second time",
+          "The second call must necessarily return a 500 error to signal the repetition",
+          "The second call deletes another order to compensate"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What does status code 401 mean as opposed to 403?",
+        "options": [
+          "401 = not authenticated (not logged in), 403 = authenticated but not authorized (lacks permissions)",
+          "401 concerns client errors, 403 concerns server errors",
+          "401 and 403 are interchangeable depending on the backend framework used"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, you're asked how to evolve a REST API already used by several mobile clients in production, if you need to change the response structure of GET /users/:id. Which approach is most appropriate?",
+        "options": [
+          "Introduce a new versioned endpoint (e.g. /api/v2/users/:id) and keep the old one running while clients migrate",
+          "Modify the existing endpoint directly: mobile clients will update automatically",
+          "Remove the old endpoint immediately to force the migration"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "To filter, sort or paginate a collection in REST (e.g. GET /users?role=admin&sort=name&page=2), what is the best practice?",
+        "options": [
+          "Use query parameters on the existing GET endpoint, without changing the resource itself",
+          "Create a separate endpoint for every possible combination of filters",
+          "Send the filter criteria in the body of a GET request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Which HTTP header lets a client avoid re-downloading a resource that hasn't changed since its last call?",
+        "options": [
+          "ETag, combined with If-None-Match on subsequent requests",
+          "Content-Type",
+          "Authorization"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "REST isn't the only API culture: GraphQL (Facebook) and gRPC (Google) each have their communities convinced their approach is superior. REST remains dominant for its simplicity and universality, but the \"REST vs GraphQL\" debate comes up very often in architecture interviews.",
+    "pionnier": {
+      "nom": "Roy Fielding",
+      "portrait": "American computer scientist, co-author of the HTTP/1.1 specification and co-inventor of the Apache HTTP server.",
+      "contribution": "He defined the REST (Representational State Transfer) architecture in chapter 5 of his doctoral dissertation in 2000, at the University of California, Irvine.",
+      "problematique": "The web needed a clear architectural style for building distributed systems that remain scalable, simple and evolvable, as the number of applications communicating over HTTP was exploding.",
+      "solution": "He formalized a set of constraints (client-server, statelessness on the server side, uniform interface, layered system) describing how the web was already working with HTTP, rather than inventing a new protocol.",
+      "resultat": "REST became the dominant architectural style for web APIs, adopted today by nearly all online services, well before the more recent rise of GraphQL or gRPC."
+    },
+    "ambiguite": {
+      "question": "Does a \"RESTful\" API always strictly follow REST?",
+      "reponse": "Rarely 100%: REST as defined by Roy Fielding imposes strict constraints (HATEOAS in particular, almost never implemented). In practice, most \"REST APIs\" on the market only follow part of the constraints."
+    }
+  },
+  {
+    "id": "sql-nosql",
+    "title": "Databases: SQL vs NoSQL",
+    "category": "Architecture",
+    "badge": {
+      "id": "badge-db",
+      "name": "Data Master",
+      "emoji": "🗃️"
+    },
+    "griotIntro": [
+      "The millet granary arranges every sack in a fixed, precise order; the market, on the other hand, organizes itself differently every day depending on what arrives.",
+      "SQL structures data according to a rigid schema; NoSQL adapts to more flexible or massive data."
+    ],
+    "explanation": {
+      "text": "SQL guarantees strict relationships and consistency (ACID); NoSQL sometimes sacrifices that rigor for schema flexibility or scalability. Click the lines to compare the two approaches.",
+      "code": "-- SQL: strict relationship between tables\nSELECT commandes.id, users.pseudo\nFROM commandes\nJOIN users ON commandes.user_id = users.id;\n\n// NoSQL (document, e.g. MongoDB): nested data\n{ _id: 1, pseudo: 'aissatou', commandes: [{ id: 1, total: 4500 }] }\n\n-- An index speeds up reads by email, at the cost of extra work on every write\nCREATE INDEX idx_users_email ON users(email);\n\n// NoSQL: data can be deliberately duplicated (denormalization) to avoid joins,\n// at the risk of inconsistency if it changes elsewhere without being resynced",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "We select columns coming from TWO different tables — typical of the relational model."
+        },
+        {
+          "line": 3,
+          "note": "`JOIN` links two tables via a foreign key (`user_id`) — without it, there's no way to combine the two."
+        },
+        {
+          "line": 6,
+          "note": "Here, the orders are directly nested inside the user document — no join needed, but the data is duplicated if the same item appears elsewhere."
+        },
+        {
+          "line": 9,
+          "note": "An index speeds up reads by email but slows down every write, since the index also has to be updated — a very classic trade-off in relational databases."
+        },
+        {
+          "line": 12,
+          "note": "This is the real hidden cost of NoSQL denormalization: read speed is paid for by a risk of desynchronization if the duplicated data isn't updated everywhere it appears."
+        }
+      ]
+    },
+    "useCases": [
+      "PostgreSQL (used in this project via Prisma) for strongly relational data: users, XP, badges with clear constraints.",
+      "MongoDB for storing user profiles whose structure varies a lot (preferences, history) without a rigid schema.",
+      "Redis (key-value) for very fast caching or temporary data (sessions, counters) that don't need complex relationships."
+    ],
+    "relatedTools": [
+      {
+        "name": "Prisma (used in this project)",
+        "description": "An ORM that simplifies access to PostgreSQL in JavaScript/TypeScript, with migrations and automatic typing."
+      },
+      {
+        "name": "MongoDB / Mongoose",
+        "description": "The most widely used document-oriented NoSQL database in JavaScript, with Mongoose as a modeling layer."
+      },
+      {
+        "name": "Redis",
+        "description": "An in-memory key-value store, extremely fast, used for caching, sessions or task queues."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function getUserByEmail(email) {",
+        "  const query = `SELECT * FROM users WHERE email = '${email}'`;",
+        "  return db.raw(query);",
+        "}",
+        "",
+        "getUserByEmail(userInput);"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "Directly concatenating user input into the SQL query opens a SQL injection vulnerability (e.g. a malicious email like `' OR '1'='1`). You should use parameterized queries (placeholders) or an ORM like Prisma, which automatically escapes values."
+    },
+    "practice": {
+      "question": "In which case is a document-oriented NoSQL database particularly well suited?",
+      "options": [
+        "When the data structure varies a lot from one record to another, or horizontal scalability is a priority",
+        "When you need strict ACID transactions on complex relationships",
+        "Never, SQL is always preferable"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — it's a real trade-off, not an absolute hierarchy between the two worlds.",
+        "incorrect": "It's the opposite: for strict transactions and complex relationships, SQL is often still preferable."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does the acronym ACID mean in databases?",
+        "options": [
+          "Atomicity, Consistency, Isolation, Durability — transaction reliability guarantees",
+          "An alternative query language to SQL",
+          "A type of NoSQL database"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is an index in a database, and why use one?",
+        "options": [
+          "A structure that speeds up searches on a column, at the cost of extra work on write",
+          "A full copy of the database",
+          "A type of join"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is the difference between a SQL join (JOIN) and nested data in a NoSQL document?",
+        "options": [
+          "JOIN links separate tables at read time; NoSQL can store related data directly within the same document",
+          "JOIN and nested data always produce exactly the same result, regardless of the use case",
+          "NoSQL represents relationships only through joins, exactly like SQL"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is horizontal scalability (adding servers) often simpler with certain NoSQL databases?",
+        "options": [
+          "They are designed from the start to shard data across multiple machines",
+          "They always store less data than SQL databases",
+          "SQL can technically never be distributed across multiple servers"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, which answer shows good maturity about the SQL vs NoSQL choice?",
+        "options": [
+          "\"It depends on the need: data structure, required consistency, volume and access pattern\"",
+          "\"NoSQL is always better, it's more modern\"",
+          "\"SQL is obsolete, nobody uses it anymore\""
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "An application must handle transfers between bank accounts, where debiting one account and crediting another must succeed or fail together, never leaving an inconsistent state. Which type of database is best suited?",
+        "options": [
+          "A SQL database with ACID transactions",
+          "A document-oriented NoSQL database, for its schema flexibility",
+          "A key-value store like Redis, for its speed"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In a NoSQL document that nests orders directly inside the user document, what is the main risk if a product name needs to be corrected while it appears in hundreds of already-recorded orders?",
+        "options": [
+          "The duplicated data must be updated everywhere it appears, or risk inconsistency if one place is forgotten",
+          "No risk: NoSQL automatically syncs all duplicated copies of a piece of data",
+          "The problem doesn't arise because NoSQL forbids data duplication"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The \"SQL vs NoSQL war\" of the 2010s (fueled by MongoDB's boom) has largely settled down: current culture favors pragmatism — use PostgreSQL by default, and NoSQL only for specific scalability or schema flexibility needs.",
+    "pionnier": {
+      "nom": "Edgar F. Codd",
+      "portrait": "British mathematician and computer scientist, researcher at IBM starting in the 1960s.",
+      "contribution": "In 1970 he published the founding paper of the relational model (\"A Relational Model of Data for Large Shared Data Banks\"), the origin of SQL databases.",
+      "problematique": "Databases of the time organized data according to their physical storage implementation, which made applications fragile to the slightest change in internal structure.",
+      "solution": "He proposed representing data as tables (relations) manipulable through a relational algebra, independent of how they are physically stored.",
+      "resultat": "This model gave rise to the SQL language and to relational database management systems (RDBMS) like Oracle, PostgreSQL or MySQL, which remain the dominant standard for structured data almost 55 years later."
+    },
+    "ambiguite": {
+      "question": "Is PostgreSQL purely a SQL database?",
+      "reponse": "Not only: PostgreSQL natively supports JSON/JSONB columns, which lets it mimic certain NoSQL use cases while keeping ACID guarantees. The SQL/NoSQL boundary is blurrier than it was ten years ago."
+    }
+  },
+  {
+    "id": "monolithe-microservices",
+    "title": "Monolith vs microservices",
+    "category": "Architecture",
+    "badge": {
+      "id": "badge-archi",
+      "name": "Architecture Master",
+      "emoji": "🏗️"
+    },
+    "griotIntro": [
+      "One big family compound, or several small independent houses linked by the same paths: two ways of organizing a community.",
+      "A monolith bundles everything into a single application; microservices split each function into independent services."
+    ],
+    "explanation": {
+      "text": "A monolith is simple to develop and deploy at first, but couples everything together at scale. Microservices decouple, at the cost of much greater operational complexity.",
+      "code": "// Monolith: everything in one single app\napp.use('/users', usersRouter);\napp.use('/orders', ordersRouter);\napp.use('/payments', paymentsRouter);\n\n// Microservices: each domain is a separate service\n// users-service:3001, orders-service:3002, payments-service:3003\n\n// Modular monolith: a compromise, separate modules but a single deployment\napp.use('/users', usersModule.router); // clear boundary, but still a single process\n\n// An API Gateway routes client requests to the right microservice, hiding internal complexity",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "All routes run in the same process, deployed together — a bug in `payments` can crash the whole service, including `users`."
+        },
+        {
+          "line": 3,
+          "note": "A single deployment for the whole app: simple to develop at first, but everything is coupled."
+        },
+        {
+          "line": 6,
+          "note": "Each service runs on its own port, potentially its own database and its own team — independently deployable and scalable, at the cost of real network complexity."
+        },
+        {
+          "line": 9,
+          "note": "The modular monolith keeps a single deployment (so simpler to operate) while enforcing clear boundaries between modules — often a good intermediate step before truly splitting into microservices."
+        },
+        {
+          "line": 11,
+          "note": "The API Gateway is the single client-facing entry point: it routes to the right microservice, handles centralized authentication, and spares the frontend from needing to know each service's address."
+        }
+      ]
+    },
+    "useCases": [
+      "This project's backend (`backend/`) is a simple monolith: a single Express server bundling auth and progress, suited to its current size.",
+      "Netflix or Amazon use microservices at large scale: the payment service can be deployed and scaled independently of the recommendation service.",
+      "A startup that starts with a monolith, then extracts the payment service into a separate microservice when it becomes a bottleneck."
+    ],
+    "relatedTools": [
+      {
+        "name": "Kubernetes",
+        "description": "The standard for orchestrating many microservices in production (deployment, scaling, resilience)."
+      },
+      {
+        "name": "RabbitMQ / Kafka",
+        "description": "Message queues that let microservices communicate asynchronously and in a decoupled way."
+      },
+      {
+        "name": "Docker Compose (used in this project)",
+        "description": "A good starting point to orchestrate a few related services locally, before you need Kubernetes."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "// orders-service accesses users-service's database directly",
+        "const db = require('../users-service/db');",
+        "",
+        "async function getOrderWithUser(orderId) {",
+        "  const order = await db.orders.findUnique({ where: { id: orderId } });",
+        "  const user = await db.users.findUnique({ where: { id: order.userId } });",
+        "  return { ...order, user };",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "A microservice must never access another service's database directly — this recreates the strong coupling typical of a \"distributed monolith\". The right approach is to call the API (REST/gRPC) exposed by users-service to fetch user data."
+    },
+    "practice": {
+      "question": "For a small team starting a new product, which architecture is generally recommended first?",
+      "options": [
+        "A well-structured monolith, simpler and faster to develop",
+        "Microservices from day one, regardless of context",
+        "Neither, you should always go serverless"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — a very common piece of interview advice: \"start with a monolith, split it if/when the need appears\".",
+        "incorrect": "Microservices add real operational complexity, rarely justified at the very start of a project."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the main drawback of microservices compared to a monolith?",
+        "options": [
+          "Increased operational complexity: networking, distributed data consistency, observability",
+          "They are always cheaper to host, regardless of traffic",
+          "They cannot be containerized"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is a \"single point of failure\" in a poorly designed monolith?",
+        "options": [
+          "A component whose failure brings down the entire application",
+          "A place in the code with only one function",
+          "A type of database"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "How do microservices generally communicate with each other?",
+        "options": [
+          "Via network calls (REST API, gRPC) or message queues",
+          "Only by sharing the same memory",
+          "They always share the same database to stay in sync"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is a sign that a monolith should consider splitting up?",
+        "options": [
+          "Several teams keep stepping on each other in the same code, or one component has very different scalability needs from the rest",
+          "The project has fewer than 100 lines of code",
+          "Only when the team exceeds 50 developers, never before"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is a \"modular monolith\"?",
+        "options": [
+          "A monolith organized into well-separated modules (clear boundaries), making a future split into microservices easier if needed",
+          "A strict synonym for microservices",
+          "An architecture that doesn't exist in practice"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What is a clear signal that you should NOT migrate to microservices right away?",
+        "options": [
+          "The team is small (2-3 developers) and the product hasn't found its market yet",
+          "A separate team has owned each business domain for over a year",
+          "One specific component has very different scalability needs from the rest of the system"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In a microservices architecture, how do you guarantee the consistency of an operation spanning several services (e.g. order + payment + stock) when no global ACID transaction is possible?",
+        "options": [
+          "The Saga pattern: a sequence of local steps, each with a compensating action in case of failure",
+          "A classic SQL transaction shared directly across all services",
+          "It can't be managed: you must necessarily go back to a monolith"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Microservices had a strong hype effect in 2015-2020; current culture is more nuanced, with a movement back toward \"modular monoliths\" at some companies (including well-publicized cases like Amazon Prime Video).",
+    "pionnier": {
+      "nom": "Adrian Cockcroft",
+      "portrait": "Software engineer, former Chief Cloud Architect at Netflix between 2007 and 2013.",
+      "contribution": "He led Netflix's migration from a monolith hosted in its own data centers to a microservices architecture deployed on AWS, and spoke extensively in public about the experience.",
+      "problematique": "Netflix had to absorb massive, fast-growing streaming traffic, while its monolithic architecture made deployments slow and fragile: a failure in one part of the system could bring down the whole site.",
+      "solution": "Split the application into independent services, each responsible for a specific business domain (billing, recommendations, video playback...), independently deployable and scalable, with a strong resilience culture (including the Chaos Monkey tool).",
+      "resultat": "This migration, completed around 2012, greatly helped popularize microservices architecture across the industry and let Netflix sustain its global growth without rethinking its architecture at every step."
+    },
+    "ambiguite": {
+      "question": "Does having several services mean you have microservices?",
+      "reponse": "Not necessarily: splitting an application into several services only makes them microservices if they are truly independent (deployment, database, team). Services sharing the same database are more of a distributed monolith."
+    }
+  },
+  {
+    "id": "scalabilite-cache",
+    "title": "Scalability & caching",
+    "category": "Architecture",
+    "badge": {
+      "id": "badge-scale",
+      "name": "Scale Master",
+      "emoji": "📶"
+    },
+    "griotIntro": [
+      "A single bissap vendor can serve ten customers; to serve a thousand, you need several vendors and a system to spread the crowd.",
+      "Scalability is exactly that: preparing your system to absorb much more load without collapsing."
+    ],
+    "explanation": {
+      "text": "Caching reduces load by avoiding recomputing or re-querying what has already been requested recently — a topic much expected in system design interviews. Click the lines to see the cache-aside pattern.",
+      "code": "// Simple caching example with Redis (pseudo-code)\nconst cached = await redis.get(`user:${id}`);\nif (cached) return JSON.parse(cached);\n\nconst user = await db.user.findUnique({ where: { id } });\nawait redis.set(`user:${id}`, JSON.stringify(user), 'EX', 60); // expires after 60s\nreturn user;\n\n// Variant: explicitly invalidate the cache as soon as the data is modified in the database\nawait db.user.update({ where: { id }, data: changes });\nawait redis.del(`user:${id}`); // avoids serving a stale version until the TTL expires",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "We first check whether the data is already cached — a Redis access is much faster than a database query."
+        },
+        {
+          "line": 2,
+          "note": "Cache found (\"cache hit\"): we return directly, without ever touching the database."
+        },
+        {
+          "line": 4,
+          "note": "Cache missed (\"cache miss\"): we go fetch the data at its source, the database — slower."
+        },
+        {
+          "line": 5,
+          "note": "We store the result in the cache for next time, with a 60s expiration (`EX 60`) — avoids serving stale data indefinitely."
+        },
+        {
+          "line": 10,
+          "note": "Actively invalidating the key at write time (rather than waiting for the TTL) guarantees the next read will fetch fresh data from the database — a strategy that complements the TTL, not a replacement for it."
+        }
+      ]
+    },
+    "useCases": [
+      "A CDN (Cloudflare, CloudFront) that caches images and static files close to the user to reduce latency.",
+      "A load balancer in front of several instances of the same Node.js server during a traffic spike (e.g. a promotion launch).",
+      "Caching the result of a costly ranking (leaderboard) query so it's only recomputed once a minute instead of on every visit."
+    ],
+    "relatedTools": [
+      {
+        "name": "Redis",
+        "description": "The most common choice for implementing a fast application cache in front of a slower database."
+      },
+      {
+        "name": "Cloudflare / CloudFront (CDN)",
+        "description": "Content delivery networks that cache static files and pages close to the end user."
+      },
+      {
+        "name": "Nginx / HAProxy",
+        "description": "Load balancers that distribute traffic across several instances of a server."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "async function getUserProfile(req, res) {",
+        "  const cached = await redis.get('user-profile');",
+        "  if (cached) return res.json(JSON.parse(cached));",
+        "",
+        "  const user = await db.user.findUnique({ where: { id: req.user.id } });",
+        "  await redis.set('user-profile', JSON.stringify(user));",
+        "  res.json(user);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "The cache key 'user-profile' is fixed and shared by every user: the first user who triggers a cache miss will have their profile cached and then served to ALL other users afterward. A per-user key is needed (e.g. `user-profile:${req.user.id}`), and ideally a TTL to avoid serving stale data indefinitely."
+    },
+    "practice": {
+      "question": "What is the difference between vertical and horizontal scalability?",
+      "options": [
+        "Vertical = increasing the power of a single machine; horizontal = adding several machines",
+        "Vertical = adding several machines; horizontal = increasing the power of a single machine",
+        "Horizontal scalability only concerns the frontend"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — and horizontal scalability is generally preferred at large scale, despite its complexity.",
+        "incorrect": "Vertical = a bigger machine. Horizontal = more machines. That's the fundamental distinction."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is a load balancer for?",
+        "options": [
+          "Distributing incoming requests across several servers to prevent any single one from being overloaded",
+          "Storing cached data",
+          "Compiling code in production"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why must a service be \"stateless\" to properly benefit from horizontal scalability?",
+        "options": [
+          "Any instance can handle any request without depending on locally stored state",
+          "A stateless service always consumes less memory",
+          "It isn't a necessary condition"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is the main risk of using a cache?",
+        "options": [
+          "Serving stale data if cache invalidation isn't well managed",
+          "A cache always doubles the disk space needed server-side",
+          "A cache can never expire"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is database replication?",
+        "options": [
+          "Duplicating data across several servers for availability and to spread read load",
+          "Automatically removing duplicates",
+          "Encrypting the database"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In a high-load system, why cache the result of a costly query rather than rerunning it every time?",
+        "options": [
+          "To reduce load on the database and improve response time",
+          "Caching has no measurable effect on performance",
+          "Because the database can only be queried once"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Which strategy keeps the cache in sync as soon as data changes in the database, without waiting for the TTL to expire?",
+        "options": [
+          "Explicitly invalidate (delete) the cache key at the very moment the data is modified in the database",
+          "Always wait for the TTL to expire, regardless of the freshness needed",
+          "Completely disable the cache as soon as a piece of data might ever change"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A heavily accessed cache key (e.g. a leaderboard) expires, and thousands of requests arrive at the same instant. What problem can this cause, and how can it be avoided?",
+        "options": [
+          "A \"cache stampede\": all requests hit the database at once; it can be avoided with a lock or by regenerating the cache before it expires",
+          "No problem: Redis automatically balances the load with no special configuration",
+          "The cache for that key must be permanently removed to avoid the problem"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "\"There are only two hard things in Computer Science: cache invalidation and naming things\" is a cult quote (Phil Karlton) that every backend developer runs into sooner or later.",
+    "pionnier": {
+      "nom": "Brad Fitzpatrick",
+      "portrait": "American developer, creator of the community site LiveJournal in the late 1990s.",
+      "contribution": "He created memcached in 2003 to speed up LiveJournal, an in-memory key-value caching system that has since become an industry standard and the direct origin of tools like Redis.",
+      "problematique": "LiveJournal, one of the biggest community sites of its time, saw its database saturated by millions of repeated read requests, which severely slowed down the site under heavy load.",
+      "solution": "Store the results of already-computed costly queries in RAM, on a cluster of dedicated servers, to serve them instantly on subsequent requests rather than going back to the database every time.",
+      "resultat": "Memcached was later adopted by web giants like Facebook, Wikipedia or YouTube to absorb massive traffic; Facebook publicly documented in 2013 (in the paper \"Scaling Memcache at Facebook\") how it ran thousands of memcached servers to serve billions of requests per second."
+    },
+    "ambiguite": {
+      "question": "Does a cache always expire at the right time?",
+      "reponse": "No, that's the classic trap: a TTL that's too long serves stale data, a TTL that's too short cancels the benefits of caching. There's no universal right answer, only a trade-off to tune based on the actual change frequency of the data."
+    }
+  }
+]

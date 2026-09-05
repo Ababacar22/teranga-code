@@ -1,0 +1,679 @@
+[
+  {
+    "id": "encapsulation-abstraction",
+    "title": "Encapsulation & abstraction",
+    "category": "POO",
+    "badge": {
+      "id": "badge-encapsulation",
+      "name": "Master of the Shell",
+      "emoji": "📦"
+    },
+    "griotIntro": [
+      "The baobab pod protects its seeds inside a solid shell — you use the fruit without needing to know each seed.",
+      "Encapsulation hides an object's internal details; abstraction exposes only what's essential for using it."
+    ],
+    "explanation": {
+      "text": "Encapsulation protects an object's internal data; abstraction exposes a simple interface while hiding the complexity. Click on the lines to see how this bank account protects its balance.",
+      "code": "class BankAccount {\n  #balance = 0; // private: unreachable from outside\n\n  deposit(amount) {\n    if (amount <= 0) throw new Error('Invalid amount');\n    this.#balance += amount;\n  }\n\n  get balance() { return this.#balance; } // controlled read access\n}",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`#balance` is private: no outside code can do `account.#balance = 1000000` directly — that's encapsulation."
+        },
+        {
+          "line": 4,
+          "note": "We protect the invariant \"the balance can't become invalid because of a negative deposit\" right at the entry of the method."
+        },
+        {
+          "line": 5,
+          "note": "Only this method, inside the class, is allowed to modify `#balance`."
+        },
+        {
+          "line": 8,
+          "note": "`get balance()` exposes a simple read interface, without ever revealing how the data is stored internally — that's abstraction."
+        }
+      ]
+    },
+    "useCases": [
+      "This project's `PrismaClient` (`backend/src/db/prisma.js`) hides all the complexity of connecting to PostgreSQL behind a simple API (`.user.create()`, `.user.findUnique()`).",
+      "A `WavePayment` class that only exposes `pay(amount)`, hiding the details of calling Wave's external API.",
+      "A React component that only exposes its props, hiding its internal state and rendering logic from the rest of the application."
+    ],
+    "relatedTools": [
+      {
+        "name": "TypeScript (private / #private)",
+        "description": "Reinforces encapsulation at compile time, on top of modern JavaScript's native private fields (`#field`)."
+      },
+      {
+        "name": "Interfaces (TypeScript, Java)",
+        "description": "Define a public contract without revealing the implementation — abstraction formalized in the type system."
+      },
+      {
+        "name": "Public APIs of libraries (e.g. Prisma)",
+        "description": "Deliberately expose few public methods while hiding a complex internal implementation."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class BankAccount {",
+        "  balance = 0;",
+        "  deposit(amount) { this.balance += amount; }",
+        "}",
+        "",
+        "const account = new BankAccount();",
+        "account.balance = -500;"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "The `balance` property is public and can be modified directly without going through `deposit()`, which makes it possible to break the invariant (like a negative balance). It should be private (`#balance`) with controlled access."
+    },
+    "practice": {
+      "question": "Why make a property private (`#balance`) rather than public in a class?",
+      "options": [
+        "To prevent any direct modification that would bypass business rules (e.g. a negative balance)",
+        "So the code runs faster",
+        "It has no real benefit"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — encapsulation protects the object's invariants (here, preventing an inconsistent balance).",
+        "incorrect": "Private visibility has no impact on speed; it protects the integrity of internal data."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the difference between encapsulation and abstraction?",
+        "options": [
+          "Encapsulation hides implementation details; abstraction defines a simplified interface for the class's user",
+          "It's the opposite: abstraction hides the details, encapsulation defines the interface",
+          "Abstraction only concerns databases"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why prefer a getter over direct access to a private property?",
+        "options": [
+          "It allows controlling/validating access, and changing the internal implementation without breaking calling code",
+          "A getter is always faster than direct access",
+          "It's never recommended"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "An interface (or abstract class) mainly allows you to:",
+        "options": [
+          "Define a contract that concrete classes must follow, without imposing the implementation",
+          "Store data in a database",
+          "Completely replace tests"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is the risk if all of a class's properties are public?",
+        "options": [
+          "Any external code can modify the object's state and break its internal invariants",
+          "The code automatically becomes faster",
+          "There is no risk"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, how would you illustrate abstraction with a simple example?",
+        "options": [
+          "\"When I drive a car, I don't need to understand the engine to press the accelerator\"",
+          "\"Abstraction is just making a variable global\"",
+          "\"Abstraction has no possible concrete example\""
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What happens if a class exposes a public setter with no validation on a property that's supposed to be encapsulated?",
+        "options": [
+          "It recreates a breach in encapsulation, allowing business rules to be bypassed as if the property were public",
+          "Nothing, a setter is always safe by definition",
+          "It automatically improves performance"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In TypeScript, a public method that does `return this.#items;` (returns a direct reference to a private array) violates which principle?",
+        "options": [
+          "Encapsulation, because the caller can directly mutate the internal array (`.push()`) without going through the intended methods, even though the property looks protected",
+          "The single responsibility principle, and only that one",
+          "No principle: returning a reference is always safe"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Modern languages diverge culturally on strict encapsulation: Java/C# enforce it by convention (private/public), while Python has no true encapsulation (just a _name convention) — a deliberate choice (\"we're all consenting adults\").",
+    "pionnier": {
+      "nom": "Ole-Johan Dahl and Kristen Nygaard",
+      "portrait": "Two Norwegian computer scientists who designed the Simula language at the Norwegian Computing Center in Oslo in the 1960s.",
+      "contribution": "They created Simula 67, the first language to introduce the notions of class and object, laying the conceptual groundwork for object-oriented programming.",
+      "problematique": "Modeling complex simulation systems (queues, industrial processes) where existing procedural languages became unmanageable as complexity grew.",
+      "solution": "Group related data and behaviors into instantiable \"classes\" turned into \"objects\", each encapsulating its own internal state.",
+      "resultat": "Simula directly inspired Smalltalk, C++, and nearly all modern object-oriented languages; Dahl and Nygaard received the Turing Award in 2001 for this contribution."
+    },
+    "ambiguite": {
+      "question": "Is a private field (#balance) in JavaScript really impossible to bypass?",
+      "reponse": "Yes, unlike the _balance convention (just a convention, easily bypassed): modern JavaScript's (ES2022) #private fields are genuinely inaccessible from outside the class, enforced by the JS engine itself."
+    }
+  },
+  {
+    "id": "heritage-polymorphisme",
+    "title": "Inheritance & polymorphism",
+    "category": "POO",
+    "badge": {
+      "id": "badge-heritage",
+      "name": "Master of the Lineage",
+      "emoji": "🌳"
+    },
+    "griotIntro": [
+      "A child inherits traits from their family, but each expresses those traits in their own way.",
+      "Inheritance shares common behavior between classes; polymorphism lets each one express it differently."
+    ],
+    "explanation": {
+      "text": "Inheritance lets a child class reuse the behavior of a parent class; polymorphism lets you call the same method on different objects, each responding in its own way. Click on the lines to see both at work.",
+      "code": "class Animal {\n  speak() { return '...'; }\n}\nclass Dog extends Animal {\n  speak() { return 'Woof!'; }\n}\nclass Cat extends Animal {\n  speak() { return 'Meow!'; }\n}\n\n[new Dog(), new Cat()].forEach((a) => console.log(a.speak())); // polymorphism",
+      "annotations": [
+        {
+          "line": 3,
+          "note": "`extends Animal`: `Dog` inherits everything `Animal` has, without having to rewrite it."
+        },
+        {
+          "line": 4,
+          "note": "`Dog` redefines (\"overrides\") `speak()` with its own behavior — it replaces `Animal`'s version for this class."
+        },
+        {
+          "line": 6,
+          "note": "`Cat` also inherits from `Animal`, independently of `Dog`."
+        },
+        {
+          "line": 7,
+          "note": "Its own version of `speak()`, different from `Dog`'s."
+        },
+        {
+          "line": 10,
+          "note": "The same call `a.speak()` on each object, but different behavior depending on the actual class of `a` — that's polymorphism."
+        }
+      ]
+    },
+    "useCases": [
+      "Different payment methods (`CardPayment`, `WavePayment`, `CashPayment`) that all inherit from a `Payment` class and implement `pay()` differently.",
+      "A notification hierarchy (`EmailNotification`, `SmsNotification`) that share common behavior but express it differently.",
+      "The browser DOM: `HTMLButtonElement` and `HTMLInputElement` both inherit from `HTMLElement` and share its base methods."
+    ],
+    "relatedTools": [
+      {
+        "name": "Java / C# / PHP (classic OOP)",
+        "description": "Languages where class inheritance is central and heavily used in enterprise frameworks."
+      },
+      {
+        "name": "JavaScript (class extends)",
+        "description": "Implements prototype-based inheritance under a modern class syntax, since ES6."
+      },
+      {
+        "name": "Browser DOM",
+        "description": "The whole hierarchy of HTML elements (`HTMLButtonElement`, `HTMLInputElement`...) is a native, massive example of inheritance."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class Rectangle {",
+        "  constructor(width, height) { this.width = width; this.height = height; }",
+        "  area() { return this.width * this.height; }",
+        "}",
+        "",
+        "class Square extends Rectangle {",
+        "  setWidth(w) { this.width = w; this.height = w; }",
+        "}",
+        "",
+        "function testArea(rect) { rect.width = 5; rect.height = 4; return rect.area() === 20; }"
+      ],
+      "buggyLineIndex": 9,
+      "explanation": "`testArea` assumes `width` and `height` can be modified independently for any `Rectangle`, which is true for a `Rectangle` but false for a `Square` (where width must always equal height): called with a `Square`, the function gives an inconsistent result because `Square` violates the Liskov substitution principle — a subclass should never change the expected behavior of its parent class."
+    },
+    "practice": {
+      "question": "What does polymorphism enable in the example above?",
+      "options": [
+        "Calling `speak()` on objects of different classes, each running its own implementation",
+        "Preventing any method redefinition",
+        "Merging the Dog and Cat classes into one"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — same call, different behavior depending on the object's actual type.",
+        "incorrect": "Polymorphism is exactly the possibility of the same method call producing different behaviors."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Why can inheritance become a trap when overused?",
+        "options": [
+          "It creates tight coupling between parent and child classes, making the code rigid in the face of change",
+          "Inheritance never has any downsides",
+          "It always makes the code faster"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is \"duck typing\" (used in JS/Python), related to polymorphism?",
+        "options": [
+          "If an object has the expected method/behavior, you can use it without checking its exact class",
+          "A mandatory strict typing technique",
+          "A pattern reserved for databases"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What does \"override\" (method redefinition) mean in inheritance?",
+        "options": [
+          "A child class provides its own implementation of a method already defined in the parent class",
+          "Deleting a method from the parent class",
+          "Creating a new class unrelated to the parent"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "The Liskov substitution principle (the \"L\" in SOLID) is directly related to:",
+        "options": [
+          "Inheritance: a subclass should be able to replace its parent class without changing the expected behavior",
+          "Database management only",
+          "The Singleton pattern"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is a classic example where inheritance is misused?",
+        "options": [
+          "`Square extends Rectangle` when changing a Square's width must also change its height, which violates the Rectangle's expected behavior",
+          "A `Dog extends Animal` class that redefines `speak()`",
+          "There is no such thing as misuse of inheritance"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What is an \"abstract\" method in a parent class?",
+        "options": [
+          "A method declared but without implementation in the parent class, which every child class must implement",
+          "A method that can never be called",
+          "A method that is automatically private"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A `Bird` class has a `fly()` method. A `Penguin extends Bird` class redefines `fly()` to throw an exception \"I don't fly\". What's the problem?",
+        "options": [
+          "It violates the Liskov substitution principle: a `Penguin` cannot be used everywhere a `Bird` is expected without breaking the behavior",
+          "No problem, it's a normal method redefinition",
+          "The problem is purely a performance issue"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "\"Favor composition over inheritance\" has become a dominant cultural mantra in the industry since the 2000s, in reaction to the abuses of deep inheritance in the 90s (6-7-level class hierarchies that became unmanageable).",
+    "pionnier": {
+      "nom": "Alan Kay",
+      "portrait": "American computer scientist, researcher at Xerox PARC in the 1970s, who coined the term \"object-oriented programming\".",
+      "contribution": "He designed Smalltalk, one of the very first fully object-oriented languages, drawing inspiration from Simula's classes.",
+      "problematique": "Creating a software system where autonomous units could collaborate by simply sending messages, rather than through direct manipulation of shared data.",
+      "solution": "A model where absolutely everything is an object, each object holding its own state and communicating with others solely through sending messages (method calls).",
+      "resultat": "Smalltalk introduced concepts still central today (windows, mouse-driven graphical interface) and directly influenced Objective-C, Java, Ruby, and the modern design of inheritance and polymorphism."
+    },
+    "ambiguite": {
+      "question": "Does polymorphism necessarily require inheritance?",
+      "reponse": "No: in JavaScript/Python (dynamic typing), \"duck typing\" allows polymorphism with no inheritance relationship at all — if an object has the expected method, it can be used, regardless of its class."
+    }
+  },
+  {
+    "id": "composition-heritage",
+    "title": "Composition vs inheritance",
+    "category": "POO",
+    "badge": {
+      "id": "badge-composition",
+      "name": "Master of Assembly",
+      "emoji": "🔧"
+    },
+    "griotIntro": [
+      "A good craftsman assembles independent pieces to build a flexible object, rather than carving a single block that's impossible to modify.",
+      "\"Favor composition over inheritance\" is one of the most repeated pieces of advice in modern object-oriented design."
+    ],
+    "explanation": {
+      "text": "Composition builds an object by giving it other objects as dependencies (\"has-a\"), rather than through inheritance (\"is-a\") — more flexible at runtime. Click on the lines to compare the two approaches.",
+      "code": "// Rigid inheritance:\nclass RobotDuck extends Duck { fly() { /* engine */ } }\n\n// Flexible composition:\nclass Duck {\n  constructor(flyBehavior) { this.flyBehavior = flyBehavior; }\n  fly() { return this.flyBehavior.fly(); }\n}\nconst robotDuck = new Duck({ fly: () => 'flies with an engine' });",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "With inheritance, every new flying behavior requires a new subclass hard-coded into the codebase — rigid to evolve."
+        },
+        {
+          "line": 5,
+          "note": "The flying behavior is injected from outside, as a constructor parameter — this is the \"has-a\" relationship (the duck HAS a flying behavior)."
+        },
+        {
+          "line": 6,
+          "note": "`fly()` simply delegates to whatever behavior was injected."
+        },
+        {
+          "line": 8,
+          "note": "You can give any flying behavior at runtime, without creating a new class or touching `Duck`."
+        }
+      ]
+    },
+    "useCases": [
+      "This project's React hooks (`useProgress`, `useAuth`) compose reusable behaviors into a component, without any class hierarchy.",
+      "An Express middleware injected into a route (`requireAuth`) rather than a `ProtectedRoute` class inheriting from a `Route` class.",
+      "A notification service that receives its sending strategy (email, SMS, push) as a parameter instead of inheriting from a specific class."
+    ],
+    "relatedTools": [
+      {
+        "name": "React Hooks",
+        "description": "`useProgress`, `useAuth` (this project) compose reusable behaviors without a class hierarchy — the most visible example of composition in React."
+      },
+      {
+        "name": "Dependency Injection (NestJS, Spring)",
+        "description": "Injects dependencies (services) into an object rather than having it inherit them, favoring composition."
+      },
+      {
+        "name": "Express middlewares",
+        "description": "Assembled together (`app.use(middleware1, middleware2)`) rather than forming a class hierarchy."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class Logger { log(msg) { console.log(msg); } }",
+        "",
+        "class Service {",
+        "  constructor(logger = new Logger()) { this.logger = logger; }",
+        "}",
+        "",
+        "const sharedLogger = new Logger();",
+        "const serviceA = new Service(sharedLogger);",
+        "const serviceB = new Service(sharedLogger);",
+        "serviceA.logger.prefix = '[A] ';"
+      ],
+      "buggyLineIndex": 9,
+      "explanation": "With composition, injecting the same shared instance (`sharedLogger`) into several objects creates hidden coupling: modifying `serviceA.logger.prefix` also affects `serviceB.logger`, since it's the same object in memory. For safe composition, either create a new `Logger` instance per service, or make the injected behavior immutable."
+    },
+    "practice": {
+      "question": "What is the main advantage of composition over inheritance?",
+      "options": [
+        "It allows changing a behavior at runtime without depending on a rigid class hierarchy",
+        "It makes the code impossible to test",
+        "It's always slower than inheritance"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — runtime flexibility, low coupling: that's the promise of \"favor composition over inheritance\".",
+        "incorrect": "Composition has no negative impact on testability — quite the opposite, it makes injecting mocks easier."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What relationship does composition typically represent?",
+        "options": [
+          "\"has-a\"",
+          "\"is-a\"",
+          "No relationship at all"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why does composition make unit testing easier?",
+        "options": [
+          "You can easily inject a fake dependency (mock) in place of the real one",
+          "It removes the need for tests",
+          "It makes the code untestable"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "The famous advice \"favor composition over inheritance\" means:",
+        "options": [
+          "Prefer assembling behaviors through composition rather than creating deep, rigid inheritance hierarchies",
+          "Never use inheritance, under any circumstances",
+          "Composition and inheritance are technically incompatible"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In which case is inheritance still relevant?",
+        "options": [
+          "When there's a real, stable \"is-a\" relationship and the hierarchy won't change often",
+          "Always, in 100% of cases",
+          "Never, inheritance is an anti-pattern"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In React, which approach is officially recommended between composition and component inheritance?",
+        "options": [
+          "Composition (components assembled via `children`/props); inheritance between components is discouraged",
+          "Systematic inheritance between components",
+          "React allows neither"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "An `Employee extends Person` class adds a salary. A `Manager` also supervises a list of employees. How should this \"supervises\" relationship be modeled?",
+        "options": [
+          "By composition: the `Manager` has a list of `Employee` (a \"has-a\" relationship), not by inheritance",
+          "By inheritance: `Manager extends Employee[]`",
+          "It doesn't matter, inheritance and composition are interchangeable here"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why does composition make classic `instanceof`-based polymorphism trickier?",
+        "options": [
+          "A composed object doesn't inherit the type of its internal dependencies: `object instanceof FlyBehavior` will be false even if the behavior is injected",
+          "It doesn't make it harder, it's strictly equivalent to inheritance",
+          "Composition completely forbids polymorphism"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "React strongly popularized composition in frontend culture: components are assembled via children/props rather than through class inheritance, which has gotten a whole generation of web developers used to thinking \"composition\" by default.",
+    "pionnier": {
+      "nom": "Erich Gamma and the Gang of Four co-authors",
+      "portrait": "Erich Gamma, a Swiss computer scientist, along with Richard Helm, Ralph Johnson, and John Vlissides, co-wrote the book \"Design Patterns\", published in 1994.",
+      "contribution": "They catalogued and formalized 23 object-oriented design patterns, including the principle \"favor composition over inheritance\".",
+      "problematique": "Deep inheritance hierarchies made code fragile: modifying a parent class had unpredictable side effects on all its child classes, and behavior fixed at compile time lacked flexibility.",
+      "solution": "Build behaviors by assembling objects together (a \"has-a\" relationship) rather than stacking layers of inheritance (an \"is-a\" relationship), so behavior could be changed at runtime.",
+      "resultat": "This principle has become an almost universal reference in software design and directly influenced the design of modern APIs, including React's Hooks."
+    },
+    "ambiguite": {
+      "question": "Is using React Hooks (useEffect, useState) a form of composition?",
+      "reponse": "Yes, in spirit: Hooks let you compose reusable behaviors into a component without inheriting from a base class — a direct application of the \"composition over inheritance\" principle."
+    }
+  },
+  {
+    "id": "fp-vs-oop",
+    "title": "Functional programming vs object-oriented programming",
+    "category": "POO",
+    "badge": {
+      "id": "badge-fp",
+      "name": "Master of Paradigms",
+      "emoji": "🧮"
+    },
+    "griotIntro": [
+      "Two griots can tell the same story differently: one by describing characters who evolve, the other by chaining pure transformations, never changing the past.",
+      "OOP organizes code around objects with state; functional programming favors pure functions and immutability."
+    ],
+    "explanation": {
+      "text": "A pure function always returns the same result for the same inputs, with no side effects — immutability is one of its pillars, widely used by React and Redux. Click on the lines to see the difference.",
+      "code": "// Impure, mutates the original array:\nfunction addImpure(arr, x) { arr.push(x); return arr; }\n\n// Pure, changes nothing, returns a new array:\nfunction addPure(arr, x) { return [...arr, x]; }\n\n// Trap: the \"pure\" copy is only shallow!\nfunction addPureButTrap(list, obj) { const copy = [...list]; copy[0].name = 'modified'; return copy; }",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`push` modifies the original `arr` array IN PLACE — any other code holding a reference to that same array sees the change, even without asking for it."
+        },
+        {
+          "line": 4,
+          "note": "`[...arr, x]` creates a brand new array — the original `arr` is never touched. Same input → always the same result, with no side effects."
+        },
+        {
+          "line": 7,
+          "note": "The spread `[...list]` only copies the first level (a shallow copy) — the objects it contains remain the same references."
+        },
+        {
+          "line": 8,
+          "note": "`copy[0].name = 'modified'` therefore mutates the original `list[0]` object despite looking like a \"pure\" function — a classic interview trap about immutability."
+        }
+      ]
+    },
+    "useCases": [
+      "This project's `useProgress` hook updates XP with `{ ...prev, xp: prev.xp + amount }`, never mutating the previous object — a classic React pattern.",
+      "JavaScript's `.map()`, `.filter()`, `.reduce()` functions, widely used to transform data lists without imperative loops.",
+      "Redux or Zustand, which require pure reducers to keep state predictable and debuggable via tools like Redux DevTools."
+    ],
+    "relatedTools": [
+      {
+        "name": "Redux / Redux Toolkit",
+        "description": "Enforces pure reducers and immutable state, at the heart of functional programming applied to state management."
+      },
+      {
+        "name": "Ramda / Lodash/fp",
+        "description": "JavaScript libraries dedicated to functional programming (composition, currying, immutability)."
+      },
+      {
+        "name": "Elixir / Haskell / Clojure",
+        "description": "\"Purely\" functional languages by design, good examples for understanding the paradigm in depth."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function calculateTotal(items) {",
+        "  let total = 0;",
+        "  items.forEach((item) => { total += item.price; });",
+        "  return total;",
+        "}",
+        "",
+        "function applyDiscount(items, percentage) {",
+        "  items.forEach((item) => { item.price = item.price * (1 - percentage); });",
+        "  return items;",
+        "}"
+      ],
+      "buggyLineIndex": 7,
+      "explanation": "`applyDiscount` directly mutates each `item.price` of the original array passed as a parameter — a hidden side effect: any calling code holding a reference to `items` sees its prices change without having asked for it. A pure functional version would return a new array with new objects: `items.map(item => ({ ...item, price: item.price * (1 - percentage) }))`."
+    },
+    "practice": {
+      "question": "What is a pure function?",
+      "options": [
+        "A function that always returns the same result for the same inputs, with no side effects (no external mutation, no I/O)",
+        "A function with no parameters",
+        "A function that always modifies a global variable"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — predictability and the absence of side effects are the two key criteria of a pure function.",
+        "incorrect": "A pure function is defined by its predictability and lack of side effects, not by its number of parameters."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Why does immutability make debugging easier in a large application?",
+        "options": [
+          "Data never changes \"under your feet\" elsewhere in the code, which reduces unexpected side effects",
+          "It makes the code harder to understand",
+          "It has nothing to do with debugging"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "In React, why should you never mutate state directly (e.g. `state.push(x)`)?",
+        "options": [
+          "React compares references to detect changes and trigger a re-render; mutating directly breaks this detection",
+          "It technically has no consequence",
+          "React forbids any kind of array in state"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is a higher-order function?",
+        "options": [
+          "A function that takes another function as a parameter and/or returns a function (e.g. `map`, `filter`)",
+          "A function defined at the very top of a file",
+          "A function that never returns anything"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Are OOP and functional programming incompatible within the same language?",
+        "options": [
+          "No — JavaScript, for example, allows mixing both paradigms as needed",
+          "Yes, you must pick a single paradigm for the whole project",
+          "Yes, they are completely separate kinds of languages"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is one advantage of pure functions for unit testing?",
+        "options": [
+          "No need to mock anything: same inputs, same outputs, always",
+          "They are impossible to test",
+          "They always require a database to be tested"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why doesn't `const obj = Object.freeze({ profile: { age: 20 } })` guarantee deep immutability?",
+        "options": [
+          "`Object.freeze` is shallow: nested objects like `obj.profile` remain mutable",
+          "`Object.freeze` makes absolutely everything immutable, including nested objects",
+          "`Object.freeze` has no effect in modern JavaScript"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is the hidden side effect in this code: `function sort(arr) { return arr.sort(); }`?",
+        "options": [
+          "`Array.prototype.sort()` sorts the array IN PLACE and returns the same reference: the function mutates its argument despite looking like a pure function",
+          "None, `sort()` always returns a copy of the array",
+          "The issue is purely about performance, not the function's purity"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Functional programming has made a real comeback in JS culture since the rise of React/Redux (2015+): historically academic concepts (Haskell, Lisp) like immutability have become standard expectations in modern frontend interviews.",
+    "pionnier": {
+      "nom": "John McCarthy",
+      "portrait": "American computer scientist, Stanford professor, pioneer of artificial intelligence and creator of the Lisp language in 1958.",
+      "contribution": "He designed Lisp, one of the very first languages to formalize the principles of functional programming (functions as values, recursion, list processing).",
+      "problematique": "Manipulating code and data interchangeably for artificial intelligence research, where programs needed to reason about evolving symbolic structures.",
+      "solution": "Represent both code and data as lists, and treat functions as first-class values that can be passed, combined, and returned by other functions.",
+      "resultat": "Lisp introduced concepts still used today (recursion, garbage collection, higher-order functions) and directly influenced modern functional languages as well as JavaScript practices like `.map()` and `.reduce()`."
+    },
+    "ambiguite": {
+      "question": "Is JavaScript a functional or an object-oriented language?",
+      "reponse": "Strictly neither: JavaScript is multi-paradigm, it allows both styles (ES6 classes for OOP, pure functions for FP) without imposing either one — a style choice left to the developer or the team."
+    }
+  }
+]

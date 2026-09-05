@@ -10,6 +10,48 @@ import DailyChallengeCard from '../components/DailyChallengeCard'
 import { useProgress } from '../features/progression/useProgress'
 import { useAuth } from '../features/auth/AuthContext'
 import { getRecommendedNext } from '../lib/learningPath'
+import { getLanguage } from '../lib/language'
+
+const TEXT = {
+  fr: {
+    tagline: 'Voyage à travers le Sénégal pour te préparer aux entretiens tech.',
+    offline: '🔌 Hors-ligne',
+    guest: '👤 Invité',
+    logout: 'Déconnexion',
+    logoutGuestConfirm: 'Ta progression invité sera définitivement perdue. Continuer ?',
+    guestBanner: "Ta progression n'est sauvegardée que sur cet appareil.",
+    createAccount: 'Crée un compte',
+    guestBannerEnd: 'pour ne pas la perdre.',
+    createAccountConfirm: 'Créer un compte réinitialisera ta session invité actuelle. Continuer ?',
+    path: '🧭 Mon parcours',
+    challenges: '⚔️ Défis',
+    leaderboard: '🏆 Classement',
+    profile: '🪪 Mon profil',
+    glossary: '📖 Lexique',
+    revise: (n) => `🔁 Réviser mes erreurs (${n})`,
+    admin: '🛠️ Admin',
+    badgesUnlocked: (n) => `${n} badge(s) débloqué(s)`,
+  },
+  en: {
+    tagline: 'Travel across Senegal to prepare for your tech interviews.',
+    offline: '🔌 Offline',
+    guest: '👤 Guest',
+    logout: 'Log out',
+    logoutGuestConfirm: 'Your guest progress will be permanently lost. Continue?',
+    guestBanner: 'Your progress is only saved on this device.',
+    createAccount: 'Create an account',
+    guestBannerEnd: 'to avoid losing it.',
+    createAccountConfirm: 'Creating an account will reset your current guest session. Continue?',
+    path: '🧭 My path',
+    challenges: '⚔️ Challenges',
+    leaderboard: '🏆 Leaderboard',
+    profile: '🪪 My profile',
+    glossary: '📖 Glossary',
+    revise: (n) => `🔁 Review my mistakes (${n})`,
+    admin: '🛠️ Admin',
+    badgesUnlocked: (n) => `${n} badge(s) unlocked`,
+  },
+}
 
 function SenegalMap() {
   const navigate = useNavigate()
@@ -30,6 +72,7 @@ function SenegalMap() {
   } = useProgress()
   const { logout, user } = useAuth()
   const pinged = useRef(false)
+  const t = TEXT[getLanguage()]
 
   useEffect(() => {
     if (onboarded && wizardDone && !pinged.current) {
@@ -56,35 +99,35 @@ function SenegalMap() {
         <div className="map-header__top">
           <div>
             <h1>Teranga Code</h1>
-            <p>Voyage à travers le Sénégal pour te préparer aux entretiens tech.</p>
+            <p>{t.tagline}</p>
           </div>
           <div className="map-header__account">
-            {offline && <span className="status-chip status-chip--offline">🔌 Hors-ligne</span>}
-            {isGuest && <span className="status-chip status-chip--guest">👤 Invité</span>}
+            {offline && <span className="status-chip status-chip--offline">{t.offline}</span>}
+            {isGuest && <span className="status-chip status-chip--guest">{t.guest}</span>}
             <span>{user?.pseudo}</span>
             <button
               className="btn btn--secondary btn--small"
               onClick={() => {
-                if (!isGuest || window.confirm('Ta progression invité sera définitivement perdue. Continuer ?')) logout()
+                if (!isGuest || window.confirm(t.logoutGuestConfirm)) logout()
               }}
             >
-              Déconnexion
+              {t.logout}
             </button>
           </div>
         </div>
         {isGuest && (
           <p className="guest-banner">
-            Ta progression n'est sauvegardée que sur cet appareil.{' '}
+            {t.guestBanner}{' '}
             <button
               type="button"
               className="guest-banner__link"
               onClick={() => {
-                if (window.confirm('Créer un compte réinitialisera ta session invité actuelle. Continuer ?')) logout()
+                if (window.confirm(t.createAccountConfirm)) logout()
               }}
             >
-              Crée un compte
+              {t.createAccount}
             </button>{' '}
-            pour ne pas la perdre.
+            {t.guestBannerEnd}
           </p>
         )}
         <div className="map-header__meta">
@@ -93,32 +136,32 @@ function SenegalMap() {
         </div>
         <nav className="map-nav">
           <button className="btn btn--secondary btn--small" onClick={() => navigate('/parcours')}>
-            🧭 Mon parcours
+            {t.path}
           </button>
           {!isGuest && (
             <button className="btn btn--secondary btn--small" onClick={() => navigate('/defis')}>
-              ⚔️ Défis
+              {t.challenges}
             </button>
           )}
           {!isGuest && (
             <button className="btn btn--secondary btn--small" onClick={() => navigate('/classement')}>
-              🏆 Classement
+              {t.leaderboard}
             </button>
           )}
           <button className="btn btn--secondary btn--small" onClick={() => navigate('/profil')}>
-            🪪 Mon profil
+            {t.profile}
           </button>
           <button className="btn btn--secondary btn--small" onClick={() => navigate('/lexique')}>
-            📖 Lexique
+            {t.glossary}
           </button>
           {missedQuestions.length > 0 && (
             <button className="btn btn--secondary btn--small" onClick={() => navigate('/revision')}>
-              🔁 Réviser mes erreurs ({missedQuestions.length})
+              {t.revise(missedQuestions.length)}
             </button>
           )}
           {user?.role === 'admin' && (
             <button className="btn btn--secondary btn--small" onClick={() => navigate('/admin')}>
-              🛠️ Admin
+              {t.admin}
             </button>
           )}
         </nav>
@@ -133,7 +176,7 @@ function SenegalMap() {
         onCityClick={handleEnter}
       />
 
-      {badges.length > 0 && <p className="map-badges-count">{badges.length} badge(s) débloqué(s)</p>}
+      {badges.length > 0 && <p className="map-badges-count">{t.badgesUnlocked(badges.length)}</p>}
     </div>
   )
 }

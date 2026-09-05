@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const topicsDir = join(__dirname, '../src/content/topics')
+const topicsEnDir = join(__dirname, '../src/content/topics-en')
 const schemaPath = join(__dirname, '../src/content/schema/topic.schema.json')
 const schema = JSON.parse(readFileSync(schemaPath, 'utf-8'))
 
@@ -68,6 +69,42 @@ for (const file of readdirSync(topicsDir).filter((f) => f.endsWith('.json'))) {
   }
 }
 
+// Contenu anglais (topics-en/) : mêmes règles de schéma, plus une parité
+// stricte des `id` avec le fichier français correspondant — un sujet
+// ajouté en français sans son équivalent anglais laisserait la version EN
+// du jeu incomplète silencieusement.
+let totalTopicsEn = 0
+for (const file of readdirSync(topicsDir).filter((f) => f.endsWith('.json'))) {
+  const topicsFr = JSON.parse(readFileSync(join(topicsDir, file), 'utf-8'))
+  const enPath = join(topicsEnDir, file)
+  let topicsEn
+  try {
+    topicsEn = JSON.parse(readFileSync(enPath, 'utf-8'))
+  } catch {
+    totalErrors++
+    console.error(`✗ topics-en/${file} — fichier manquant ou JSON invalide (traduction anglaise absente)`)
+    continue
+  }
+
+  const frIds = topicsFr.map((t) => t.id).sort()
+  const enIds = topicsEn.map((t) => t.id).sort()
+  if (JSON.stringify(frIds) !== JSON.stringify(enIds)) {
+    totalErrors++
+    console.error(`✗ topics-en/${file} — les sujets ne correspondent pas à la version française (FR: ${frIds.join(', ')} / EN: ${enIds.join(', ')})`)
+  }
+
+  for (const topic of topicsEn) {
+    totalTopicsEn++
+    const errors = []
+    validate(topic, schema, `topics-en/${file}#${topic.id ?? '?'}`, errors)
+    if (errors.length > 0) {
+      totalErrors += errors.length
+      console.error(`✗ topics-en/${file} — sujet "${topic.id ?? '?'}"`)
+      errors.forEach((e) => console.error(`  - ${e}`))
+    }
+  }
+}
+
 // Vérifie que la liste blanche de badges du backend (utilisée pour valider
 // /progress/complete-topic) reste synchronisée avec les sujets réels — un
 // sujet ajouté ici sans y être ajouté empêche silencieusement tout compte
@@ -90,8 +127,8 @@ for (const file of readdirSync(topicsDir).filter((f) => f.endsWith('.json'))) {
 }
 
 if (totalErrors > 0) {
-  console.error(`\n${totalErrors} erreur(s) sur ${totalTopics} sujets.`)
+  console.error(`\n${totalErrors} erreur(s) sur ${totalTopics} sujets (FR) + ${totalTopicsEn} sujets (EN).`)
   process.exit(1)
 }
 
-console.log(`✔ ${totalTopics} sujets valides.`)
+console.log(`✔ ${totalTopics} sujets valides (FR) + ${totalTopicsEn} sujets valides (EN).`)

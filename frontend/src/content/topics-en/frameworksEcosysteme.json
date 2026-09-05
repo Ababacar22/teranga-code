@@ -1,0 +1,567 @@
+[
+  {
+    "id": "framework-vs-librairie",
+    "title": "Framework vs Library",
+    "category": "Frameworks & Ecosystem",
+    "badge": { "id": "badge-framework-lib", "name": "Master of Foundations", "emoji": "🧱" },
+    "griotIntro": [
+      "At the great fair of Louga, you choose for yourself which merchant to approach — you decide the path.",
+      "A library works the same way: you're the one who calls it. A framework, on the other hand, imposes its own path and calls you when IT decides to."
+    ],
+    "explanation": {
+      "text": "The real distinction isn't the size of the code, but who controls the flow of execution — this is called inversion of control. Click on the lines to see the difference.",
+      "code": "// Library: YOU call the code, you keep control\nimport { formatDate } from 'date-fns';\nconsole.log(formatDate(new Date(), 'dd/MM/yyyy'));\n\n// Framework: IT calls your code (inversion of control)\n// React decides WHEN to call your component\nfunction MyComponent() {\n  return <h1>Hello</h1>;\n}\n// -> React controls the lifecycle, not you\n\n// Even a custom hook remains subject to React's rules\nfunction useCounter() {\n  return useState(0);\n}",
+      "annotations": [
+        { "line": 2, "note": "You decide when to call `formatDate` — your code is driving, the library just waits to be called." },
+        { "line": 6, "note": "You write `MyComponent`, but you never call it yourself — React decides when to render it, re-render it, or destroy it." },
+        { "line": 9, "note": "This is inversion of control: with a framework, IT holds the thread of execution, your code slots into ITS structure." },
+        { "line": 13, "note": "Even a custom hook (`useXxx`) remains a function that React must call itself according to its own rules — reusable logic never fully escapes inversion of control." }
+      ]
+    },
+    "bugHunt": {
+      "lines": [
+        "function Counter() {",
+        "  const [n, setN] = useState(0);",
+        "  return n;",
+        "}",
+        "",
+        "// We want to reuse the logic without going through React",
+        "const value = Counter(); // direct call of the component function",
+        "console.log(value);"
+      ],
+      "buggyLineIndex": 6,
+      "explanation": "Counter is a React component, not an ordinary function: calling it directly breaks the rules of hooks, because `useState` must be invoked by React itself, within the context of a render managed by the framework. This is inversion of control in action — React must call `Counter()`, never your own code. To reuse this logic outside of a component, you need to extract a custom hook (e.g. `useCounter`) and call it from a real component."
+    },
+    "useCases": [
+      "Choosing lodash or date-fns (libraries) for one-off utilities, without imposing structure on the rest of the project.",
+      "Choosing React, Angular, or NestJS (frameworks) to structure an entire application according to imposed conventions.",
+      "Express sits between the two: it structures HTTP routes but remains much more permissive than a framework like NestJS."
+    ],
+    "relatedTools": [
+      { "name": "date-fns / lodash", "description": "Classic utility libraries: you import only the functions you need, with no structural constraints." },
+      { "name": "React / Angular / NestJS", "description": "Frameworks that impose their own lifecycle and conventions — code is written \"inside\" their structure." },
+      { "name": "Express", "description": "Often called a \"micro-framework\": it structures HTTP routing but leaves everything else completely free, unlike NestJS." }
+    ],
+    "practice": {
+      "question": "Why is Express said to be closer to a library than NestJS?",
+      "options": [
+        "Express lets developers organize their project however they want, while NestJS imposes a precise structure (modules, decorators)",
+        "Express is newer than NestJS",
+        "Express cannot handle HTTP routes"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — the library/framework spectrum isn't binary, Express sits between the two.",
+        "incorrect": "The key difference is the degree of structural constraint imposed, not age or routing features."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the fundamental difference between a library and a framework?",
+        "options": [
+          "Who controls the flow of execution: you (library) or it (framework, inversion of control)",
+          "A library is always smaller in code size",
+          "A framework can never be used partially"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is \"inversion of control\"?",
+        "options": [
+          "The framework calls your code according to ITS own rules, rather than your code calling the framework",
+          "A principle that only exists in object-oriented programming",
+          "Reversing the order of unit tests"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Can a library easily be replaced in a project?",
+        "options": [
+          "Generally yes, because it doesn't impose a global structure on the rest of the code",
+          "Never, a library is just as constraining as a framework",
+          "Only if the project has a single file"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is switching frameworks mid-project generally more costly than switching libraries?",
+        "options": [
+          "Because the code is written \"inside\" the framework's conventions, not just connected to it",
+          "Because frameworks are always paid",
+          "It's never more costly, that's a myth"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, how would you justify choosing a library over a framework for a small utility script?",
+        "options": [
+          "A framework would add structure and a learning curve disproportionate to a one-off, isolated need",
+          "Frameworks are always forbidden for small scripts",
+          "Libraries are always faster at runtime, without exception"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A developer claims a library can never become large or complex, unlike a framework. What do you think?",
+        "options": [
+          "That's false: the size and complexity of the code don't define the library/framework distinction, only control of the execution flow matters",
+          "That's true, a library always stays small by definition",
+          "That's true only for libraries written in JavaScript"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is code written with a simple library often easier to test than a component tightly coupled to a framework's lifecycle?",
+        "options": [
+          "Because you call the library's functions yourself in isolation, whereas a component driven by the framework often depends on a runtime environment that needs to be simulated",
+          "Because frameworks technically cannot be tested at all",
+          "Because libraries never have bugs, unlike frameworks"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The debate \"is React a framework or a library\" comes up regularly in the JS community: React officially presents itself as a \"library\" (for the UI only), but its ecosystem (React Router, hooks, component lifecycle) makes it work like a framework in practice — the line is sometimes more a matter of marketing than strict definition.",
+    "pionnier": {
+      "nom": "Martin Fowler",
+      "portrait": "British software engineer and author, long-time Chief Scientist at ThoughtWorks, known for having formalized many software architecture concepts widely adopted by the industry.",
+      "contribution": "In an influential 2004 article (\"Inversion of Control Containers and the Dependency Injection pattern\"), he clarified and popularized the term \"inversion of control,\" which has since become the reference criterion for distinguishing a framework from a library.",
+      "problematique": "Developers used the terms \"framework\" and \"library\" confusingly, with no clear criterion to distinguish them beyond code size or complexity.",
+      "solution": "He proposed defining the distinction by who holds control of the execution flow: the calling code (library) or the called code (framework, via inversion of control).",
+      "resultat": "This criterion is now taught and cited in nearly all resources and technical interviews dealing with this topic, far beyond his original article."
+    },
+    "ambiguite": {
+      "question": "Is React a framework or a library?",
+      "reponse": "Officially a library (it only handles display), but in practice it largely imposes its own way of structuring an application (components, state, lifecycle) to the point where many developers consider it a framework. It's a good example that this boundary isn't always clear-cut."
+    }
+  },
+  {
+    "id": "react-vue-angular",
+    "title": "React, Vue, Angular: Compared Cultures",
+    "category": "Frameworks & Ecosystem",
+    "badge": { "id": "badge-frontend-frameworks", "name": "Master of Interfaces", "emoji": "🖼️" },
+    "griotIntro": [
+      "Three different caravans can all take you to Louga — each with its own pace and its own rules of travel.",
+      "React, Vue, and Angular solve the same problem (building interfaces) with very different philosophies."
+    ],
+    "explanation": {
+      "text": "The three most widely used frontend frameworks have distinct philosophies: React leaves the most freedom (just a view library + JSX), Angular imposes the most structure (TypeScript, dependency injection), Vue aims for an accessible compromise. Click on the lines to compare the same component.",
+      "code": "// React: JSX, logic and display in the same function\nfunction Button({ label, onClick }) {\n  return <button onClick={onClick}>{label}</button>;\n}\n\n// Vue: separate template, declarative syntax in the HTML\n// <template><button @click=\"onClick\">{{ label }}</button></template>\n\n// Angular: class + decorator, TypeScript required\n// @Component({ selector: 'app-button', template: '<button (click)=\"onClick()\">{{label}}</button>' })\n// class ButtonComponent { @Input() label; @Output() onClick = new EventEmitter(); }\n\n// Angular adds two-way binding by default (ngModel)\n// <input [(ngModel)]=\"label\">",
+      "annotations": [
+        { "line": 1, "note": "React mixes JS logic and display structure (JSX) in a single function — flexible, but requires personal discipline to stay readable." },
+        { "line": 5, "note": "Vue separates the template (declarative HTML) from logic — a syntax designed to be readable even without much JS experience." },
+        { "line": 8, "note": "Angular imposes classes, decorators, and TypeScript by default — more imposed structure, more guardrails, but a steeper learning curve." },
+        { "line": 12, "note": "Angular natively offers two-way binding via `ngModel` — the view can modify the data AND automatically push it back into the component, while React and Vue remain unidirectional data flow by default." }
+      ]
+    },
+    "bugHunt": {
+      "lines": [
+        "function ShoppingList() {",
+        "  const [items, setItems] = useState(['bread', 'milk']);",
+        "",
+        "  function addItem(newItem) {",
+        "    items.push(newItem);",
+        "    setItems(items);",
+        "  }",
+        "",
+        "  return <button onClick={() => addItem('eggs')}>Add</button>;",
+        "}"
+      ],
+      "buggyLineIndex": 4,
+      "explanation": "React compares the old and new state reference to decide whether to re-render the component. `items.push(newItem)` mutates the existing array in place: `items` therefore keeps the same reference, and `setItems(items)` triggers no re-render since React detects no change. You need to create a new array, for example `setItems([...items, newItem])`, to respect the immutability expected by React (unlike Vue, whose reactivity system directly detects mutation of a proxied array)."
+    },
+    "useCases": [
+      "React for a startup that wants to iterate fast with a wide choice of third-party libraries, with no imposed structure.",
+      "Angular for a large company that wants strict, consistent structure across dozens of different teams.",
+      "Vue for a team that wants a gentle learning curve, often chosen for gradual migrations of an existing site."
+    ],
+    "relatedTools": [
+      { "name": "Next.js", "description": "Framework built on top of React that adds routing, server-side rendering, and much more — illustrates how the React ecosystem organizes itself in layers." },
+      { "name": "Nuxt", "description": "The Vue equivalent of Next.js — the same \"framework on top of\" a view library logic." },
+      { "name": "Angular CLI", "description": "Angular natively includes its own command-line tool for generating components, services, and tests — a strong cultural difference from React/Vue, which delegate this to the ecosystem." }
+    ],
+    "practice": {
+      "question": "Which statement best describes Angular's philosophy compared to React?",
+      "options": [
+        "Angular imposes a complete structure (TypeScript, dependency injection, official CLI), while React leaves most choices to the ecosystem",
+        "Angular and React are interchangeable with no difference in philosophy",
+        "React imposes more structure than Angular"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — this is the most cited distinction in frontend interviews.",
+        "incorrect": "It's the opposite: Angular is the most structured and prescriptive of the three, React the most permissive."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Which framework imposes TypeScript and a module-based architecture by default?",
+        "options": ["Angular", "React", "jQuery"],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is JSX, used by React?",
+        "options": [
+          "A syntax extension that lets you write HTML directly inside JavaScript",
+          "A new programming language independent of JavaScript",
+          "A configuration file format"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why would a company with many teams choose Angular over React?",
+        "options": [
+          "The structure imposed by Angular reduces style divergence between different teams",
+          "Angular is always faster at runtime than React",
+          "React cannot be used by multiple teams at the same time"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Vue is often described as a compromise between React and Angular. Why?",
+        "options": [
+          "It offers an accessible declarative syntax like Angular, while staying lighter and more flexible like React",
+          "Vue literally combines the source code of React and Angular",
+          "Vue has actually no difference from the other two"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, what is the best answer to \"which frontend framework is the best\"?",
+        "options": [
+          "It depends on context: team size, need for structure, existing ecosystem, acceptable learning curve",
+          "React is always objectively the best choice, without exception",
+          "Angular is obsolete and should never be used again"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Which statement correctly describes the difference between React's Virtual DOM and Vue's reactivity system?",
+        "options": [
+          "React recalculates and diffs a virtual tree on every render to determine changes, while Vue precisely tracks which reactive properties changed thanks to its dependency system, without rebuilding the whole tree",
+          "React and Vue use exactly the same Virtual DOM mechanism, with no difference at all",
+          "Vue has no change-tracking mechanism at all: it re-renders the entire DOM on every change"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why can the strict typing imposed by Angular (TypeScript by default) be seen as both an advantage and a drawback in an interview?",
+        "options": [
+          "It brings more safety and compile-time error detection, but adds weight to the learning curve and code for small projects",
+          "TypeScript always makes code slower at runtime, with no benefit at all",
+          "Angular actually never imposes TypeScript, that's a common myth"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "The \"frontend framework wars\" have been a classic of dev culture since 2014 (AngularJS then Angular vs React vs Vue) — sometimes very passionate debates on social media, whereas in practice most senior engineers consider that the choice matters less than the quality of execution with the tool chosen.",
+    "pionnier": {
+      "nom": "Jordan Walke",
+      "portrait": "Software engineer at Facebook, creator of React, publicly unveiled in 2013 after first being used internally on Facebook's News Feed.",
+      "contribution": "He designed React and its Virtual DOM, an approach that has durably influenced how the industry builds complex, reactive user interfaces.",
+      "problematique": "On complex interfaces with many frequent updates, directly manipulating the browser DOM on every state change became costly in performance and hard to maintain consistently.",
+      "solution": "He proposed representing the interface as a lightweight virtual tree in memory (the Virtual DOM), which React compares to the previous state to compute and apply to the real DOM only the strictly necessary changes.",
+      "resultat": "React became one of the most widely used frontend libraries in the world, and its model (components, state, Virtual DOM) has directly or indirectly inspired a large share of the frontend frameworks that have appeared since."
+    },
+    "ambiguite": {
+      "question": "Are AngularJS and Angular the same framework?",
+      "reponse": "No, despite the very similar name: AngularJS (2010) is the old version, entirely rewritten in 2016 under the name \"Angular\" (sometimes called Angular 2+), with a completely different architecture (TypeScript, components). These are not versions of the same framework but two distinct frameworks that share a lineage."
+    }
+  },
+  {
+    "id": "node-deno-bun",
+    "title": "Node.js, Deno, Bun: JavaScript Runtimes",
+    "category": "Frameworks & Ecosystem",
+    "badge": { "id": "badge-runtimes", "name": "Master of Engines", "emoji": "⚙️" },
+    "griotIntro": [
+      "Three different vehicles can get you across the same road between Louga and Dakar, but not at the same speed nor with the same comfort.",
+      "Node.js, Deno, and Bun all run JavaScript on the server side — with very different choices about security, speed, and built-in tools."
+    ],
+    "explanation": {
+      "text": "Node.js remains the historical standard and the most used in enterprise; Deno and Bun were born to fix design choices in Node considered outdated. Click on the lines to see the same simple task on the three runtimes.",
+      "code": "// Node.js: free file system access by default, modules via npm\nconst fs = require('fs');\nfs.readFileSync('data.txt');\n\n// Deno: security by default, explicit permissions required\n// deno run --allow-read script.ts\nDeno.readTextFileSync('data.txt');\n\n// Bun: Node-compatible, but an all-in-one runtime and bundler, very fast to start\nimport { readFileSync } from 'fs';\nreadFileSync('data.txt');\n\n// Bun and Deno also support top-level await natively\nconsole.log(import.meta.url);",
+      "annotations": [
+        { "line": 2, "note": "Node.js accesses the file system without asking for any special permission — convenient, but malicious code has the same access as any other code." },
+        { "line": 6, "note": "Deno denies all access (files, network) without explicit permission granted at launch — a secure-by-default choice, the opposite of Node." },
+        { "line": 9, "note": "Bun aims for compatibility with the existing Node API (`fs`, `require`) while being a rewritten runtime built to be much faster, with a bundler and package manager built in." },
+        { "line": 13, "note": "`import.meta.url` works natively on Deno and Bun with no extra configuration, whereas Node.js long required workarounds for this kind of module metadata in a CommonJS environment." }
+      ]
+    },
+    "bugHunt": {
+      "lines": [
+        "// script.ts",
+        "const response = await fetch('https://api.example.com/data');",
+        "const data = await response.json();",
+        "console.log(data);",
+        "",
+        "// Running the script",
+        "// deno run script.ts"
+      ],
+      "buggyLineIndex": 6,
+      "explanation": "Deno denies all network access by default: running the script with `deno run script.ts` without permission will cause an error at the `fetch` call, since no network permission was granted. You need to explicitly allow it with `deno run --allow-net script.ts`, in line with Deno's explicit-permission security model — unlike Node.js, which would have run this same fetch without asking anything."
+    },
+    "useCases": [
+      "Node.js for an enterprise project that needs the widest and most mature npm ecosystem on the market.",
+      "Deno for a script or service where security by default (explicit permissions) is a real requirement, or to enjoy native TypeScript support with no configuration.",
+      "Bun to speed up build/startup times of an existing Node project, often adopted as a near-direct replacement."
+    ],
+    "relatedTools": [
+      { "name": "npm / pnpm / yarn", "description": "Package managers of the Node ecosystem — Bun includes its own compatible package manager, much faster." },
+      { "name": "Express / Fastify (Node.js)", "description": "HTTP frameworks historically designed for Node.js, now largely compatible with Bun thanks to its API compatibility." },
+      { "name": "Fresh (Deno)", "description": "Native web framework for Deno, designed to take advantage of the runtime's native security and TypeScript support." }
+    ],
+    "practice": {
+      "question": "What is the difference in security philosophy between Node.js and Deno?",
+      "options": [
+        "Node.js allows all system access by default; Deno requires explicit permissions (--allow-read, --allow-net...)",
+        "Deno and Node.js have exactly the same security model",
+        "Node.js is actually more restrictive than Deno"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — this is the most cited design argument for Deno.",
+        "incorrect": "It's the opposite: Deno was created in part to fix Node.js's default free system access."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Who created Node.js and Deno?",
+        "options": [
+          "The same person, Ryan Dahl, with Deno being in part a response to choices he regretted in Node",
+          "Two completely independent teams with no connection at all",
+          "Deno was created well before Node.js"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is Bun's main selling point?",
+        "options": [
+          "Execution and startup speed, with a runtime, bundler, and package manager combined into a single tool",
+          "Security through explicit permissions",
+          "The impossibility of using JavaScript, only TypeScript"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why does the maturity of the npm ecosystem remain a strong argument in favor of Node.js?",
+        "options": [
+          "Millions of libraries tested in production for over 10 years, unmatched compatibility and documentation",
+          "npm only works with Node.js, no other runtime can use it at all",
+          "It's no longer a valid argument today, npm has been abandoned"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Can an existing Node.js project migrate to Bun without a complete rewrite?",
+        "options": [
+          "Often yes, thanks to the API compatibility Bun aims for with Node.js, with occasional adjustments",
+          "Never, Bun uses a language completely different from JavaScript",
+          "Only if the project uses no npm dependencies at all"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, what factor should weigh most heavily when choosing a runtime for a new enterprise project?",
+        "options": [
+          "The maturity of the ecosystem, long-term support, and the expertise already present in the team — not just raw speed benchmarks",
+          "Only the raw performance benchmarks published by each runtime",
+          "The newest runtime is always the best choice for any project"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "In what case would Deno be a BAD choice despite its security advantages?",
+        "options": [
+          "For an existing enterprise project heavily dependent on native npm packages (C++ bindings) whose compatibility with the Deno ecosystem isn't guaranteed",
+          "Deno never has a bad use case, it replaces Node.js in absolutely every situation",
+          "Deno is a bad choice only for scripts under 10 lines"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Does Deno's native TypeScript support mean there's never a need for a build step anymore?",
+        "options": [
+          "For simple execution, yes, but a complex project (bundling, multiple compatibility targets) may still require extra build steps",
+          "Yes, absolutely no build configuration is ever needed with Deno, whatever the project",
+          "No, in reality Deno doesn't natively support TypeScript"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Ryan Dahl, creator of Node.js, gave a famous talk in 2018 (\"10 Things I Regret About Node.js\") in which he criticizes his own initial design choices — Deno was born directly from that self-criticism. It's a fairly rare example in tech of a creator publicly revisiting their own work to propose a better version of it.",
+    "pionnier": {
+      "nom": "Ryan Dahl",
+      "portrait": "Developer who created Node.js in 2009, presented at JSConf Berlin that same year, then creator of Deno, announced in 2018 at JSConf EU.",
+      "contribution": "He made it possible to run JavaScript server-side with an efficient non-blocking I/O model, then designed a second runtime to fix choices he regretted in his first creation.",
+      "problematique": "At the time, efficiently handling many simultaneous network connections server-side was difficult with the dominant languages and models, often blocking on I/O operations.",
+      "solution": "He built Node.js on Chrome's V8 engine with an event loop and non-blocking I/O, allowing many connections to be handled with few resources; years later, he created Deno to introduce by default an explicit-permission security model and native TypeScript support.",
+      "resultat": "Node.js became one of the most widely used server runtimes in the world, at the base of a huge ecosystem (npm); Deno then influenced the thinking of an entire industry on default security in JavaScript runtimes."
+    },
+    "ambiguite": {
+      "question": "Is Bun just a competitor to Node.js, or something different?",
+      "reponse": "Bun is both a JavaScript runtime (like Node.js) AND a bundler, a package manager, and a test runner, all combined into a single binary. Node.js, on the other hand, has historically delegated these functions to separate tools (webpack, npm, Jest) — so the comparison isn't entirely \"apples to apples\"."
+    }
+  },
+  {
+    "id": "bundlers",
+    "title": "Bundlers: Vite, Webpack, esbuild",
+    "category": "Frameworks & Ecosystem",
+    "badge": { "id": "badge-bundlers", "name": "Master of Assembly", "emoji": "📦" },
+    "griotIntro": [
+      "Before heading to the fair, one carefully gathers and packs all the goods scattered around the house.",
+      "A bundler does the same with your code: it gathers dozens of scattered JS/CSS files into a package optimized for the browser."
+    ],
+    "explanation": {
+      "text": "A bundler solves a concrete problem: browsers load hundreds of small separate files slowly. It combines them, optimizes them, and allows the use of modern features (import/export, JSX, TypeScript) that the browser doesn't understand natively. Click on the lines to see what happens before/after bundling.",
+      "code": "// Before bundling: several separate files\n// utils.js\nexport function addition(a, b) { return a + b; }\n// main.js\nimport { addition } from './utils.js';\nconsole.log(addition(2, 3));\n\n// After bundling (simplified): a single optimized file\n// (function() { function addition(a,b){return a+b} console.log(addition(2,3)) })();\n\n// Code splitting: dynamic import to load a module only when needed\n// const module = await import('./heavyModule.js');",
+      "annotations": [
+        { "line": 2, "note": "The browser would need to load THIS file separately — one more network request, a slower load." },
+        { "line": 4, "note": "`import`/`export` are modern syntax: older browsers or some environments don't understand it natively without a bundler." },
+        { "line": 8, "note": "The bundler merged the two files into one, removed the now-unnecessary imports/exports, and often minified the code to reduce its size." },
+        { "line": 11, "note": "Dynamic import lets the bundler create a separate bundle (\"chunk\") loaded only when that code is actually needed — this is code splitting, a complement to classic bundling." }
+      ]
+    },
+    "bugHunt": {
+      "lines": [
+        "// utils.js",
+        "export function debounce(fn, delay) { /* ... */ }",
+        "export function throttle(fn, delay) { /* ... */ }",
+        "export function heavyUnusedHelper() { /* very large function, never used */ }",
+        "",
+        "// main.js",
+        "import * as utils from './utils.js';",
+        "console.log(utils.debounce(() => {}, 300));"
+      ],
+      "buggyLineIndex": 6,
+      "explanation": "Importing the whole module with `import * as utils` often prevents the bundler from excluding unused functions like `heavyUnusedHelper`, even if only one function (`debounce`) is actually consumed in the file. Tree-shaking works much better with explicit named imports, for example `import { debounce } from './utils.js'`, which let the bundler precisely identify what's used and eliminate the rest at build time."
+    },
+    "useCases": [
+      "Vite for a new modern frontend project: near-instant startup in development thanks to using the browser's native ES modules.",
+      "Webpack for an existing project with a complex configuration already in place and many specific plugins.",
+      "esbuild for ultra-fast bundling needs, often used internally BY other tools (Vite itself uses it for certain steps)."
+    ],
+    "relatedTools": [
+      { "name": "Vite (used in this project)", "description": "Modern bundler that serves code with almost no transformation in development, and optimizes only at final build time — hence its speed." },
+      { "name": "Webpack", "description": "The historical bundler most used for years, highly configurable but known to be slower and more complex to configure than Vite." },
+      { "name": "esbuild / SWC", "description": "Bundlers/transpilers written in compiled languages (Go, Rust) rather than JavaScript, which makes them much faster — often used as the internal engine of other tools." }
+    ],
+    "practice": {
+      "question": "Why is Vite reputed to be faster than Webpack in development?",
+      "options": [
+        "Vite serves code with almost no transformation in development (native ES modules), it only truly bundles at final build time",
+        "Vite never performs any code transformation, even in production",
+        "Webpack was never designed to work with React"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly — this is the key architectural difference between the two tools.",
+        "incorrect": "Vite does optimize code well at build time, but avoids that heavy work during development to stay fast."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the main purpose of a bundler?",
+        "options": [
+          "Combine several JS/CSS files into an optimized set, understandable by all browsers",
+          "Completely replace the need to write JavaScript",
+          "Host the application in production"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why do we need to transform JSX or TypeScript before sending them to the browser?",
+        "options": [
+          "Browsers natively understand neither JSX nor TypeScript, only standard JavaScript",
+          "JSX and TypeScript run faster without transformation",
+          "It's never necessary, all browsers understand them natively"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is minification performed by a bundler?",
+        "options": [
+          "Reducing code size (shortened variable names, removed whitespace) without changing its behavior",
+          "Removing features from the code to simplify it",
+          "Translating the code into another programming language"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is esbuild so fast compared to historical bundlers written in JavaScript?",
+        "options": [
+          "It's written in Go, a compiled language, whereas historical bundlers run on the JavaScript engine itself",
+          "It actually does no work at all, just copies files",
+          "It only exists for very small projects"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, how would you justify migrating an old Webpack project to Vite?",
+        "options": [
+          "A real gain in development speed and configuration simplicity, to be weighed against migration cost and the already-stable existing Webpack configuration",
+          "You must always migrate systematically, without ever evaluating migration cost",
+          "Webpack has not worked at all since 2023"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A team imports a single function with `import { debounce } from 'lodash'` and expects tree-shaking to automatically eliminate the rest of lodash's code at build time. What pitfall explains why this isn't always the case?",
+        "options": [
+          "Tree-shaking depends on the module format (ESM vs CommonJS) and the absence of declared side effects — a library distributed as classic CommonJS like lodash doesn't allow fine-grained elimination without using a variant like `lodash-es` or a targeted import (`lodash/debounce`)",
+          "Tree-shaking always automatically eliminates all unused code, regardless of the imported module's format",
+          "Tree-shaking only works with TypeScript, never with plain JavaScript"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why is code splitting (splitting into several bundles) useful as a complement to classic bundling?",
+        "options": [
+          "It allows loading only the code needed for the current page or feature, instead of sending a single huge file for the entire application on first load",
+          "It's only used to make code harder to read for security reasons",
+          "It completely replaces the need to minify code"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "The massive shift of the JS community toward Vite since 2020-2021 illustrates a recurring cultural phenomenon in the ecosystem: a new tool that fixes the perceived slowness of a dominant tool (here Webpack, long the absolute standard) can shift adoption across an entire industry very quickly, sometimes within just a few years.",
+    "pionnier": {
+      "nom": "Evan You",
+      "portrait": "Developer who created Vue.js in 2014, then Vite, released in 2020, after previously working at Google on experimental UI-related projects.",
+      "contribution": "He designed Vite, a build tool that rethinks the development experience by relying on the browser's native ES modules rather than a full bundling step on every startup.",
+      "problematique": "On large projects, traditional bundlers like Webpack were becoming slower and slower to start and refresh during development, since they had to rebundle a large part of the application on every change.",
+      "solution": "He proposed serving source code almost as-is to the browser via native ES module imports during development, only truly bundling at production build time (via esbuild then Rollup).",
+      "resultat": "Vite quickly gained massive adoption in the JavaScript ecosystem after 2020, pushing many existing frameworks and projects to adopt it as their default build tool instead of Webpack."
+    },
+    "ambiguite": {
+      "question": "Does Vite completely eliminate the need to bundle code?",
+      "reponse": "No, only during DEVELOPMENT (where it serves modules almost as-is to the browser). At final BUILD time for production, Vite does indeed bundle the code (via esbuild then Rollup) — the confusion comes from the fact that this bundling is invisible and deferred while you're developing."
+    }
+  }
+]

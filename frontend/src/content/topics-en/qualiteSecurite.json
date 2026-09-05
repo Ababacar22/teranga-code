@@ -1,0 +1,670 @@
+[
+  {
+    "id": "owasp",
+    "title": "Web Security — OWASP Basics",
+    "category": "Security",
+    "badge": {
+      "id": "badge-owasp",
+      "name": "Master of the Shield",
+      "emoji": "🛡️"
+    },
+    "griotIntro": [
+      "The village guardian always checks who passes through the gate before letting a cart of goods in.",
+      "In web security, never blindly trust user input — that's the golden rule."
+    ],
+    "explanation": {
+      "text": "The OWASP Top 10 lists the most critical web vulnerabilities — SQL injection and XSS lead the list. Click on the lines to see the flaw and its fix.",
+      "code": "// Vulnerable to SQL injection:\nconst query = `SELECT * FROM users WHERE email = '${email}'`;\n\n// Protected with a prepared (parameterized) query:\nawait prisma.user.findUnique({ where: { email } }); // Prisma escapes automatically\n\n// Another trap: comparing a plaintext password, even with a safe query:\nconst valid = password === user.password; // WRONG: the password should never be stored in plaintext\n\n// Best practice: compare the bcrypt hash\nconst valid2 = await bcrypt.compare(password, user.passwordHash); // verifies without ever exposing the plaintext password",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "If `email` is `' OR '1'='1`, the query becomes `... WHERE email = '' OR '1'='1'` — it returns ALL users. The value is pasted directly into the SQL text."
+        },
+        {
+          "line": 4,
+          "note": "Prisma sends `email` as a parameter separate from the SQL text, never concatenated into it — it's impossible to inject SQL through this value."
+        },
+        {
+          "line": 7,
+          "note": "Even when the user is fetched via a safe query, comparing `password === user.password` assumes the password is stored in plaintext in the database — a serious flaw in case of a data breach."
+        },
+        {
+          "line": 10,
+          "note": "Best practice is to hash the password at sign-up (with bcrypt) and compare it with `bcrypt.compare()`, which checks the hash without ever handling the plaintext password on the server side."
+        }
+      ]
+    },
+    "useCases": [
+      "This project uses bcrypt to hash passwords (`backend/src/auth/auth.routes.js`) and Prisma to prevent SQL injection — two OWASP protections applied concretely.",
+      "A comment form that escapes user-submitted HTML before rendering it, to prevent a stored XSS attack.",
+      "An API that systematically checks the JWT on every protected route, to prevent unauthenticated access to sensitive data."
+    ],
+    "relatedTools": [
+      {
+        "name": "OWASP ZAP / Burp Suite",
+        "description": "Security scanning tools used by pentesters to automatically detect common web flaws."
+      },
+      {
+        "name": "helmet (Express)",
+        "description": "Middleware that adds basic security HTTP headers to an Express API in a single line."
+      },
+      {
+        "name": "express-rate-limit (used in this project)",
+        "description": "Limits the number of requests per IP, a simple protection against brute force on authentication routes."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "app.post('/login', async (req, res) => {",
+        "  const { email, password } = req.body;",
+        "  const query = `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;",
+        "  const user = await db.raw(query);",
+        "  if (user) {",
+        "    return res.json({ token: generateToken(user) });",
+        "  }",
+        "  res.status(401).json({ error: 'Invalid credentials' });",
+        "});"
+      ],
+      "buggyLineIndex": 2,
+      "explanation": "The SQL query directly concatenates the user-supplied `email` and `password` into the query text: an attacker could send `email = ' OR '1'='1' --` to bypass authentication and log in without knowing the password. Additionally, comparing `password` directly in the query assumes it is stored in plaintext in the database, another serious flaw. A parameterized query (or an ORM like Prisma) should be used for the email, and passwords should be hashed with bcrypt and compared via `bcrypt.compare()`, never through string concatenation or direct comparison."
+    },
+    "practice": {
+      "question": "How do you protect against SQL injection?",
+      "options": [
+        "Use prepared/parameterized queries (or an ORM like Prisma) instead of concatenating strings",
+        "Never use a database",
+        "Use only client-side JavaScript"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — prepared queries separate the SQL code from the data supplied by the user.",
+        "incorrect": "Protection against SQL injection comes from prepared/parameterized queries, not from the choice of language."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is a Cross-Site Scripting (XSS) attack?",
+        "options": [
+          "Injecting malicious JavaScript code that runs in other users' browsers",
+          "An attack that only targets databases",
+          "A file compression technique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why should you never store a password in plaintext in a database?",
+        "options": [
+          "In case of a data breach, all passwords would be directly exposed",
+          "It always slows down the application",
+          "It's not an important security issue"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is the purpose of hashing (e.g. bcrypt) a password?",
+        "options": [
+          "Turning the password into an irreversible fingerprint, impossible to recover directly even in a breach",
+          "Compressing it to save space",
+          "Encrypting it reversibly with a public key"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is CSRF (Cross-Site Request Forgery)?",
+        "options": [
+          "Forcing an authenticated user to unknowingly perform an action on a site where they're logged in",
+          "A type of NoSQL database",
+          "An image compression method"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why validate and escape user input even server-side, if the frontend already validates it?",
+        "options": [
+          "Client-side validation can always be bypassed (direct requests to the API)",
+          "Server-side validation is redundant and unnecessary",
+          "The frontend is always enough to protect the application"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A parameterized query protects against SQL injection on VALUES. Which of these situations remains vulnerable even with parameterized queries?",
+        "options": [
+          "Dynamically building a table or column name from unvalidated user input (parameters only protect values, not SQL identifiers)",
+          "Using an ORM like Prisma for all queries",
+          "Hashing the password before storing it"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why is storing a JWT token in localStorage considered risky against XSS, compared to an httpOnly cookie?",
+        "options": [
+          "A JavaScript script injected via XSS can read localStorage and steal the token, while an httpOnly cookie is inaccessible to JavaScript",
+          "localStorage is slower than cookies",
+          "A JWT cannot be stored in localStorage"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "The OWASP Top 10 is updated every 3-4 years and is a consensus reference across the entire security industry — citing it precisely in an interview demonstrates real security culture, highly valued for backend positions.",
+    "pionnier": {
+      "nom": "Mark Curphey",
+      "portrait": "Application security expert who founded the OWASP project (Open Web Application Security Project) in 2001.",
+      "contribution": "He created an open community and a set of free resources to help developers build safer web applications.",
+      "problematique": "In the early 2000s, there was no standardized, independent, and freely accessible resource on the most common web vulnerabilities — every team reinvented its own security practices.",
+      "solution": "Found a community-driven, open-source project bringing together experts from around the world to document the most critical vulnerabilities and publish practical guides, including the now-famous OWASP Top 10.",
+      "resultat": "OWASP has become the global reference in application security, with the Top 10 cited in compliance standards and used by nearly every backend team and pentester."
+    },
+    "ambiguite": {
+      "question": "Is using HTTPS enough to protect against SQL injection or XSS?",
+      "reponse": "No: HTTPS encrypts communication between client and server (protects against interception), but does absolutely nothing to protect against SQL injection, XSS, or poor password handling — these are code-level flaws, not transport-level ones."
+    }
+  },
+  {
+    "id": "clean-code-solid",
+    "title": "Clean Code & SOLID Principles",
+    "category": "Quality",
+    "badge": {
+      "id": "badge-clean",
+      "name": "Master of Clean Code",
+      "emoji": "🧹"
+    },
+    "griotIntro": [
+      "A well-kept hut is recognized at a glance; well-written code is understood without needing every line explained.",
+      "Clean Code and the SOLID principles guide you toward code that's readable, maintainable, and easy to evolve."
+    ],
+    "explanation": {
+      "text": "SOLID groups 5 design principles, the first of which — one class, one responsibility — is the most frequently violated. Click on the lines to see why.",
+      "code": "// Violation of the single responsibility principle:\nclass Invoice {\n  calculateTotal() { /* ... */ }\n  saveToDatabase() { /* ... */ } // shouldn't be here\n  sendByEmail() { /* ... */ } // nor this\n}\n// Better: split into Invoice, InvoiceRepository, InvoiceMailer",
+      "annotations": [
+        {
+          "line": 2,
+          "note": "This one makes sense: calculating the total is the core business responsibility of `Invoice`."
+        },
+        {
+          "line": 3,
+          "note": "Saving to the database is an INFRASTRUCTURE responsibility — changing databases should never force a change to `Invoice`."
+        },
+        {
+          "line": 4,
+          "note": "Sending an email is yet ANOTHER responsibility — three different reasons to change this class, which violates the single responsibility principle."
+        },
+        {
+          "line": 6,
+          "note": "By separating them, each class only changes for a single reason — easier to test and evolve independently."
+        }
+      ]
+    },
+    "useCases": [
+      "This project separates `auth.routes.js`, `progress.routes.js`, and `prisma.js`: each module has a clear responsibility, making it easier to maintain.",
+      "A team that enforces ESLint + Prettier in CI to guarantee a consistent code style, regardless of who writes the code.",
+      "Refactoring a 200-line function that handles validation, calculation, and saving into 3 smaller functions that can be tested separately."
+    ],
+    "relatedTools": [
+      {
+        "name": "ESLint / Prettier",
+        "description": "Automatically detect style violations and certain bad practices, before human review even happens."
+      },
+      {
+        "name": "SonarQube",
+        "description": "Static analysis that measures technical debt, code duplication, and violations of principles like SOLID across an entire project."
+      },
+      {
+        "name": "oxlint (used in this project)",
+        "description": "A fast JavaScript/React linter, used here to keep the frontend code clean and consistent."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class SalesReport {",
+        "  calculateTotal(sales) { /* ... */ }",
+        "  generatePDF(total) { /* ... */ }",
+        "  sendEmailToDirector(pdf) { /* ... */ }",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "This class mixes calculation, PDF generation, and email sending — three different responsibilities, which violates the single responsibility principle (SRP). Sending the email should be delegated to a separate service."
+    },
+    "practice": {
+      "question": "Which SOLID principle is violated when an `Invoice` class handles calculation, saving to the database, AND sending an email?",
+      "options": [
+        "The Single Responsibility Principle",
+        "The Liskov Substitution Principle",
+        "No principle is violated"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — a class that does \"too many things\" is the classic sign of an SRP violation.",
+        "incorrect": "It really is a matter of responsibility: the class has too many reasons to change."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does the \"O\" in SOLID (Open/Closed) mean?",
+        "options": [
+          "Code should be open to extension, but closed to direct modification",
+          "Code should always remain fully modifiable",
+          "Code should never be tested"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is giving explicit names to variables/functions considered \"Clean Code\"?",
+        "options": [
+          "It makes the code self-documenting, reducing the need for comments to understand its intent",
+          "It makes the code run faster",
+          "It has no impact on code quality"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "The Liskov Substitution Principle says that a subclass should:",
+        "options": [
+          "Be able to replace its parent class without changing the behavior expected by the calling code",
+          "Always have more methods than its parent class",
+          "Never inherit methods"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why prefer short functions that do \"one thing\"?",
+        "options": [
+          "It's easier to test, understand, and reuse",
+          "Short functions always run faster",
+          "It has no practical benefit"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is Dependency Inversion?",
+        "options": [
+          "Depending on abstractions (interfaces) rather than concrete implementations, to stay flexible to change",
+          "Reversing the order of lines of code",
+          "A principle that only applies to SQL"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A `UserService` class exposes only one public method, `createUser()`, but that method validates the data, hashes the password, inserts into the database, AND sends a welcome email. Does it respect the single responsibility principle?",
+        "options": [
+          "No — the number of public methods doesn't determine SRP compliance; what matters is the number of reasons to change, and here there are several (business rules, persistence, email)",
+          "Yes, since it only exposes a single public method",
+          "Yes, as long as the method is under 50 lines"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What does the Interface Segregation Principle say?",
+        "options": [
+          "It's better to have several small, specific interfaces than one large general interface forcing unnecessary methods on the classes that implement it",
+          "All classes must implement the same single interface",
+          "Interfaces must never have more than one method"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "SOLID is part of the \"Clean Code\" culture popularized by Robert C. Martin in the 2000s-2010s. Part of the community (the \"pragmatic programming\" movement) sometimes considers these principles too dogmatic when applied without discernment to small projects.",
+    "pionnier": {
+      "nom": "Robert C. Martin (\"Uncle Bob\")",
+      "portrait": "American software engineer and author, a leading figure in the agile software development movement, known for his books \"Clean Code\" (2008) and \"Agile Software Development,\" where he formalized the SOLID principles.",
+      "contribution": "He gathered and named the five object-oriented design principles grouped under the SOLID acronym, and popularized \"Clean Code\" practices through his books, training, and talks.",
+      "problematique": "In large software projects, poorly structured code quickly becomes rigid, fragile, and hard to evolve without introducing new bugs, which strongly slows teams down over the long term.",
+      "solution": "Formalize clear design principles (single responsibility, open/closed, Liskov substitution, interface segregation, dependency inversion) and concrete rules for writing readable code, to guide developers toward more maintainable code.",
+      "resultat": "SOLID and Clean Code have become widely taught references cited in technical interviews across the software industry, though they are also subject to debate over overly rigid application."
+    },
+    "ambiguite": {
+      "question": "Should the 5 SOLID principles always be applied, even to a small script?",
+      "reponse": "No — it's a genuine debate: rigorously applying SOLID to a 50-line script often adds more complexity than value. Most practitioners recommend SOLID for code meant to evolve over the long term, not as an absolute rule everywhere."
+    }
+  },
+  {
+    "id": "tests",
+    "title": "Software Testing (Unit, Integration, TDD)",
+    "category": "Quality",
+    "badge": {
+      "id": "badge-tests",
+      "name": "Master of Testing",
+      "emoji": "🧪"
+    },
+    "griotIntro": [
+      "Before serving a dish to the whole family, you taste a spoonful to check the seasoning.",
+      "Automated tests taste your code before the end user does."
+    ],
+    "explanation": {
+      "text": "A unit test checks an isolated function; an integration test checks that several components work well together. Click on the lines to see the logic of an assertion.",
+      "code": "// Example of a unit test (Jest/Vitest style)\ntest('adds two numbers', () => {\n  expect(add(2, 3)).toBe(5);\n});\n\ntest('throws an error on division by zero', () => {\n  expect(() => divide(4, 0)).toThrow();\n});\n\ntest('calls the callback only once', () => {\n  const spy = vi.fn();\n  callCallback(spy);\n  expect(spy).toHaveBeenCalledTimes(1); // checks that no extra call happened\n});",
+      "annotations": [
+        {
+          "line": 2,
+          "note": "We call the function with known inputs and check that the result is exactly what's expected — the heart of a unit test."
+        },
+        {
+          "line": 6,
+          "note": "We wrap the call in an arrow function to capture the error it throws and check that it does indeed occur — without this, the test would crash instead of testing the error behavior."
+        },
+        {
+          "line": 10,
+          "note": "`vi.fn()` creates a spy (mock) function that records every call without executing real logic — useful for checking that a function was called, how many times, and with what arguments."
+        },
+        {
+          "line": 12,
+          "note": "`toHaveBeenCalledTimes(1)` precisely checks the number of calls — a classic trap is calling a callback twice by mistake (e.g. in a poorly cleaned-up `useEffect`), which a simple check of the final result wouldn't detect."
+        }
+      ]
+    },
+    "useCases": [
+      "Unit testing the badge-awarding logic (perfect score → badge unlocked) without launching the whole application.",
+      "An integration test that checks that a `POST /auth/register` correctly creates a user in the database and returns a valid token.",
+      "An E2E test suite (Cypress, Playwright) that simulates a real user: sign-up, login, quiz, checking the displayed XP."
+    ],
+    "relatedTools": [
+      {
+        "name": "Vitest / Jest",
+        "description": "The most widely used JavaScript testing frameworks for unit and integration tests."
+      },
+      {
+        "name": "Playwright / Cypress",
+        "description": "End-to-end testing tools that drive a real browser to simulate a complete user journey."
+      },
+      {
+        "name": "Supertest",
+        "description": "A library for testing Express/API endpoints directly, without a browser, by simulating HTTP requests."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "test('creates a user with a valid email', async () => {",
+        "  const user = await createUser({ email: 'test@test.com', password: '123456' });",
+        "  expect(user).toBeDefined();",
+        "});",
+        "test('rejects an invalid email', async () => {",
+        "  try {",
+        "    await createUser({ email: 'not-an-email', password: '123456' });",
+        "  } catch (e) {",
+        "  }",
+        "});"
+      ],
+      "buggyLineIndex": 8,
+      "explanation": "The second test catches the exception with an empty `catch` block, without ever checking that an error was actually thrown or inspecting its message. As a result, this test passes even if `createUser` silently accepts an invalid email without throwing an error — it's a \"false positive,\" a test that doesn't actually test anything. To fix it, use an explicit assertion such as `await expect(createUser({ email: 'not-an-email', password: '123456' })).rejects.toThrow()`."
+    },
+    "practice": {
+      "question": "What is the difference between a unit test and an integration test?",
+      "options": [
+        "A unit test isolates a single function/unit, an integration test checks the interaction between several real components",
+        "They are strict synonyms",
+        "An integration test can never use a database"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — this is a fundamental distinction to master for a technical interview.",
+        "incorrect": "The level of isolation is key: unit = one isolated unit, integration = several components together."
+      }
+    },
+    "quiz": [
+      {
+        "question": "In the TDD cycle (Red-Green-Refactor), what does the \"Red\" step do?",
+        "options": [
+          "Write a test that fails because the feature doesn't exist yet",
+          "Delete all existing tests",
+          "Deploy to production"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why \"mock\" an external dependency (API, database) in a unit test?",
+        "options": [
+          "To isolate the tested code and make the test fast and reliable, without depending on a real external service",
+          "To deliberately make the test slower",
+          "It's never recommended"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is code coverage?",
+        "options": [
+          "The percentage of lines/branches of code executed by the tests",
+          "The total number of files in the project",
+          "The execution speed of the tests"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Does 100% code coverage guarantee the absence of bugs?",
+        "options": [
+          "No — the code can be executed by the tests without all business cases/edge cases being verified",
+          "Yes, it's an absolute guarantee",
+          "Yes, but only for integration tests"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What does an end-to-end (E2E) test verify?",
+        "options": [
+          "The complete journey of a real user through the application, from frontend to backend",
+          "Only an isolated function",
+          "Only the syntax of the code"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A test calls a `createOrder()` function that interacts with a real in-memory SQLite database (without mocking). How should this test be classified?",
+        "options": [
+          "More of an integration test: even though the database is in-memory and fast, it tests the real interaction between business logic and the persistence layer, not an isolated unit",
+          "A unit test, because in-memory SQLite is very fast",
+          "Neither, it's not a real test"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Why is a test that depends on the execution order of other tests (e.g. reuses shared state) considered a bad test?",
+        "options": [
+          "It becomes a \"flaky\" (unstable) test: its result depends on the execution context, which breaks the reliability of the whole test suite",
+          "It's never a problem as long as the tests pass locally",
+          "Tests should always share their state to be faster"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "TDD culture genuinely divides the profession: some teams treat it as an almost religious practice, others consider it too rigid for exploratory code — many pragmatic teams write tests after stabilizing a first version.",
+    "pionnier": {
+      "nom": "Kent Beck",
+      "portrait": "American software engineer, co-founder of the Extreme Programming movement and co-author of the Agile Manifesto, who formalized and popularized Test-Driven Development (TDD) in the late 1990s and early 2000s.",
+      "contribution": "He defined and spread the practice of TDD, as well as the \"Red-Green-Refactor\" cycle that now structures test writing in many teams.",
+      "problematique": "Adding new features to existing software frequently caused undetected regressions, due to a lack of systematic checks on the code's behavior after each change.",
+      "solution": "Propose writing the test before the production code (\"red\"), writing just enough code to make it pass (\"green\"), then improving the code without changing its behavior (\"refactor\") — a short, repeated cycle.",
+      "resultat": "TDD has become a widely taught and adopted reference practice in the industry, with dedicated test frameworks in nearly every modern programming language."
+    },
+    "ambiguite": {
+      "question": "Does 100% code coverage mean 0 bugs?",
+      "reponse": "No: coverage only measures which lines are executed by the tests, not whether all business cases are verified. A test can execute a line without ever properly checking its behavior — 100% coverage doesn't eliminate logic bugs."
+    }
+  },
+  {
+    "id": "code-review",
+    "title": "Code Review — Best Practices",
+    "category": "Quality",
+    "badge": {
+      "id": "badge-review",
+      "name": "Master of Review",
+      "emoji": "🔍"
+    },
+    "griotIntro": [
+      "Before an important decision is made in the village, the council of elders reviews it and discusses it together.",
+      "Code review is that collective moment when code is reviewed before joining the shared project."
+    ],
+    "explanation": {
+      "text": "A good code review stays kind and factual: criticize the code, never the person, always explaining the \"why.\" Click on the lines to see a constructive example.",
+      "code": "// Example of a constructive review comment:\n// \"This function is 80 lines long and handles 3 different responsibilities.\n//  What do you think about splitting it into 2-3 smaller functions, would that make testing easier?\"\n\n// To avoid — a vague, judgmental comment:\n// \"This code is bad, redo it.\"\n\n// Even better: suggest a concrete direction, not just a question:\n// \"We could extract the validation into validateOrder() to test it in isolation, what do you think?\"",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "The comment describes an observable fact (80 lines, 3 responsibilities), not a judgment on the person who wrote the code."
+        },
+        {
+          "line": 2,
+          "note": "Phrased as an open question (\"what do you think about\"), not an order — this leaves room for discussion rather than confrontation."
+        },
+        {
+          "line": 5,
+          "note": "This kind of comment says nothing precise about the problem and targets the person rather than the code — it gives no direction for improvement and can put the pull request author on the defensive."
+        },
+        {
+          "line": 8,
+          "note": "Suggesting a concrete direction (here, a precise function name) while leaving the final decision to the author combines the best of both worlds: actionable and respectful."
+        }
+      ]
+    },
+    "useCases": [
+      "A GitHub pull request on which 2 colleagues leave comments before approving the merge into `main`.",
+      "A team that requires at least one approved review before merging, configured directly in branch protection rules.",
+      "A junior developer who learns the team's best practices through feedback received on their first pull requests."
+    ],
+    "relatedTools": [
+      {
+        "name": "GitHub / GitLab (pull requests)",
+        "description": "The platforms that host the review workflow: inline comments, approvals, branch protection rules."
+      },
+      {
+        "name": "CodeRabbit / GitHub Copilot Review",
+        "description": "Recent AI tools that perform a first automated review pass before human review."
+      },
+      {
+        "name": "Conventional Commits",
+        "description": "A commit message convention that makes the history easier to read and enables automatic changelog generation."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function canMerge(pullRequest) {",
+        "  const approvals = pullRequest.reviews.filter(r => r.status === 'APPROVED').length;",
+        "  const changesRequested = pullRequest.reviews.filter(r => r.status === 'CHANGES_REQUESTED').length;",
+        "  if (approvals >= 0) {",
+        "    return true;",
+        "  }",
+        "  return false;",
+        "}"
+      ],
+      "buggyLineIndex": 3,
+      "explanation": "The condition `approvals >= 0` is always true (a number of approvals can never be negative), so the function allows merging even with zero approvals — and worse, it completely ignores `changesRequested`: a pull request with unresolved requested changes could be merged. The correct condition should be something like `approvals >= 1 && changesRequested === 0`, according to the branch protection rule defined by the team."
+    },
+    "practice": {
+      "question": "Which review comment wording is the most constructive?",
+      "options": [
+        "\"This function is hard to test because it does several things — could we split it up?\"",
+        "\"This code is bad.\"",
+        "\"Why did you do it like that?!\""
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — factual, solution-oriented, without attacking the person.",
+        "incorrect": "A good review stays factual and kind, never a value judgment on the person."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Why make small, focused pull requests rather than huge changes all at once?",
+        "options": [
+          "They're easier and faster to review properly, with less risk of missing a problem",
+          "It has no impact on review quality",
+          "Large PRs are always preferable"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "As the author of a PR, how should you react well to criticism of your code?",
+        "options": [
+          "See it as an opportunity for improvement, not a personal attack",
+          "Systematically ignore all comments",
+          "Close the pull request immediately"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is a \"linter\" and what role does it play even before human review?",
+        "options": [
+          "A tool that automatically detects style/syntax errors, so human review can focus on the logic",
+          "A production deployment tool",
+          "A type of database"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why explain the context/motivation in a pull request description?",
+        "options": [
+          "So the reviewer understands the \"why\" of the change, not just the \"what\"",
+          "It's never useful, the code speaks for itself",
+          "It's purely an administrative formality"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What should you do if you disagree with a review comment?",
+        "options": [
+          "Discuss it openly with technical arguments, rather than ignoring it or accepting it without understanding",
+          "Always obey without discussion",
+          "Delete the comment"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A reviewer spends 40 minutes debating the name of a variable but approves without comment a function containing an obvious logic flaw. What is this review bias called?",
+        "options": [
+          "\"Bikeshedding\" (the law of triviality): focusing on minor, easy-to-judge details at the expense of deeper, harder-to-analyze problems",
+          "An exemplary and rigorous review",
+          "The single responsibility principle"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "What does a review comment marked \"nit:\" (nitpick) generally mean?",
+        "options": [
+          "A minor, non-blocking remark for the merge — often a style preference rather than a real problem",
+          "A critical security flaw that mandatorily blocks the merge",
+          "A request to completely delete the pull request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Code review culture varies enormously from one company to another: some require 2-3 approvals before merging, others trust their teams and merge with a single quick review (\"move fast\") — neither is universally \"the right one.\"",
+    "pionnier": {
+      "nom": "Michael Fagan",
+      "portrait": "An IBM engineer who formalized in 1976 a structured method for reviewing code and technical documents, known as the \"Fagan inspection.\"",
+      "contribution": "He defined a rigorous process with defined roles (moderator, author, reviewers) and formal steps to systematically inspect code before its integration.",
+      "problematique": "In large software projects, defects introduced early in development were often only detected much later (in testing, or even in production), where fixing them cost far more.",
+      "solution": "Set up a structured, systematic peer inspection of the code, with formal steps for preparation, the review meeting, and follow-up on fixes, before the code advanced in the development cycle.",
+      "resultat": "Internal studies at IBM showed a significant reduction in the number of defects detected after production release, laying the groundwork for the modern code review practices used today on GitHub and GitLab."
+    },
+    "ambiguite": {
+      "question": "Is a quick \"LGTM\" a real code review?",
+      "reponse": "Technically yes (it's an approval), but in many teams' culture, an LGTM with no comment on a large PR is seen as a superficial review rather than a genuine one."
+    }
+  }
+]

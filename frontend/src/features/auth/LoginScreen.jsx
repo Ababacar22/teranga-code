@@ -1,8 +1,40 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from './AuthContext'
+import { getLanguage } from '../../lib/language'
 
 const DEMO_ACCOUNT = { email: 'demo@terangacode.sn', pseudo: 'Demo', password: 'demo1234' }
+
+const TEXT = {
+  fr: {
+    subtitle: 'Connecte-toi pour retrouver ta progression.',
+    quickLogin: '⚡ Connexion rapide (démo)',
+    connecting: 'Connexion...',
+    or: 'ou',
+    email: 'Email',
+    password: 'Mot de passe',
+    submit: 'Se connecter',
+    noAccount: 'Pas encore de compte ?',
+    createAccount: 'Créer un compte',
+    continueGuest: '👤 Continuer sans compte',
+    guestNote: 'Ta progression restera uniquement sur cet appareil et sera perdue si tu te déconnectes.',
+    back: '← Retour à la présentation',
+  },
+  en: {
+    subtitle: 'Log in to pick up your progress.',
+    quickLogin: '⚡ Quick login (demo)',
+    connecting: 'Logging in...',
+    or: 'or',
+    email: 'Email',
+    password: 'Password',
+    submit: 'Log in',
+    noAccount: 'No account yet?',
+    createAccount: 'Create an account',
+    continueGuest: '👤 Continue without an account',
+    guestNote: 'Your progress will stay only on this device and will be lost if you log out.',
+    back: '← Back to the overview',
+  },
+}
 
 function LoginScreen() {
   const { login, register, loginAsGuest } = useAuth()
@@ -12,6 +44,7 @@ function LoginScreen() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [quickLoading, setQuickLoading] = useState(false)
+  const t = TEXT[getLanguage()]
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -48,7 +81,7 @@ function LoginScreen() {
     <div className="scene scene--auth">
       <form className="auth-card" onSubmit={handleSubmit}>
         <h1>Teranga Code</h1>
-        <p>Connecte-toi pour retrouver ta progression.</p>
+        <p>{t.subtitle}</p>
 
         <button
           className="btn btn--primary btn--quick"
@@ -56,30 +89,30 @@ function LoginScreen() {
           onClick={handleQuickLogin}
           disabled={quickLoading || loading}
         >
-          {quickLoading ? 'Connexion...' : '⚡ Connexion rapide (démo)'}
+          {quickLoading ? t.connecting : t.quickLogin}
         </button>
 
         <div className="auth-divider">
-          <span>ou</span>
+          <span>{t.or}</span>
         </div>
 
         <label>
-          Email
+          {t.email}
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
         <label>
-          Mot de passe
+          {t.password}
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
 
         {error && <p className="auth-error">{error}</p>}
 
         <button className="btn btn--secondary" type="submit" disabled={loading || quickLoading}>
-          {loading ? 'Connexion...' : 'Se connecter'}
+          {loading ? t.connecting : t.submit}
         </button>
 
         <p>
-          Pas encore de compte ? <Link to="/inscription">Créer un compte</Link>
+          {t.noAccount} <Link to="/inscription">{t.createAccount}</Link>
         </p>
 
         <button
@@ -90,12 +123,12 @@ function LoginScreen() {
             navigate('/')
           }}
         >
-          👤 Continuer sans compte
+          {t.continueGuest}
         </button>
-        <p className="auth-guest-note">Ta progression restera uniquement sur cet appareil et sera perdue si tu te déconnectes.</p>
+        <p className="auth-guest-note">{t.guestNote}</p>
 
         <p>
-          <Link to="/bienvenue">← Retour à la présentation</Link>
+          <Link to="/bienvenue">{t.back}</Link>
         </p>
       </form>
     </div>

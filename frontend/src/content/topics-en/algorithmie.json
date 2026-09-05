@@ -1,0 +1,730 @@
+[
+  {
+    "id": "big-o",
+    "title": "Algorithmic Complexity (Big O)",
+    "category": "Algorithmie",
+    "badge": {
+      "id": "badge-bigo",
+      "name": "Master of Complexity",
+      "emoji": "📈"
+    },
+    "griotIntro": [
+      "Counting millet grains one by one, or weighing a whole sack in a single go — the result is the same, but not the time it takes.",
+      "Big O notation measures how an algorithm's time (or memory) grows as the size of the data grows."
+    ],
+    "explanation": {
+      "text": "Big O measures how an algorithm's time (or memory) grows with the size of the input, ignoring constants — useful for comparing two solutions independently of the machine they run on. Click the lines below to see the complexity of each step.",
+      "code": "function containsDuplicate(arr) {\n  const seen = new Set(); // O(n) in time, O(n) in space\n  for (const x of arr) {\n    if (seen.has(x)) return true;\n    seen.add(x);\n  }\n  return false;\n}\n\ncontainsDuplicate([]); // Edge case: empty array, the loop never runs\ncontainsDuplicate([5, 5]); // Case with a duplicate right at the 2nd element",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`new Set()` creates an empty structure in O(1). It grows with the data added to it: O(n) in space."
+        },
+        {
+          "line": 2,
+          "note": "Walks through each element exactly once — this is the function's O(n) time cost."
+        },
+        {
+          "line": 3,
+          "note": "`has(x)` checks membership in O(1) on average (hash table). With an array and `.includes()`, this step would be O(n), making the whole loop O(n²) overall."
+        },
+        {
+          "line": 4,
+          "note": "`add(x)` is also O(1) on average."
+        },
+        {
+          "line": 6,
+          "note": "Worst case (no duplicate): the loop runs all the way through — O(n) total, versus O(n²) for two nested loops without a Set."
+        },
+        {
+          "line": 10,
+          "note": "Edge case: empty array. The loop never runs (0 iterations), the function returns false immediately — always check this case in interviews, even though the announced complexity is still O(n)."
+        },
+        {
+          "line": 11,
+          "note": "Case with a duplicate right at the 2nd element: `seen.has(x)` detects the duplicate immediately, and we exit with `return true` without scanning the rest of the array — so the best case is O(1), but we still quote the worst-case complexity, O(n)."
+        }
+      ]
+    },
+    "useCases": [
+      "Choosing between a linear search O(n) and a search on an indexed database O(log n) for a user-facing search feature over millions of rows.",
+      "Explaining in an interview why a nested loop over a list of 100,000 elements (O(n²)) times out a service, while 100 elements ran fine.",
+      "Justifying the choice of data structure (Set vs Array) to check membership of an element thousands of times inside a loop."
+    ],
+    "relatedTools": [
+      {
+        "name": "Big O Cheat Sheet (bigocheatsheet.com)",
+        "description": "A widely used quick reference for checking the complexity of common data structures and algorithms."
+      },
+      {
+        "name": "LeetCode / HackerRank",
+        "description": "Practice platforms that explicitly measure execution time — great for learning to spot the complexity of your own code."
+      },
+      {
+        "name": "Chrome DevTools (Performance tab)",
+        "description": "Lets you concretely profile where a slow algorithm is actually bottlenecking a web application."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function containsPair(arr, target) {",
+        "  // Complexity: O(n)",
+        "  for (let i = 0; i < arr.length; i++) {",
+        "    for (let j = 0; j < arr.length; j++) {",
+        "      if (arr[i] + arr[j] === target) return true;",
+        "    }",
+        "  }",
+        "  return false;",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "The comment claims O(n), but the doubly nested loop actually gives O(n²) — always verify the actual complexity of the code, not what it appears to be at first glance."
+    },
+    "practice": {
+      "question": "What is the time complexity of a search in an unsorted array?",
+      "options": [
+        "O(n)",
+        "O(1)",
+        "O(log n)"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — in the worst case, you have to go through every element.",
+        "incorrect": "Without sorting or a special structure, you may need to check every element: O(n)."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the complexity of accessing an array by index?",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(log n)"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why does an O(n²) algorithm become a problem on large datasets?",
+        "options": [
+          "Execution time grows with the square of the data size (e.g., 1,000 elements = 1 million operations)",
+          "It only becomes slow if the array contains duplicates",
+          "It's negligible as long as the code runs on a powerful server"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "You're analyzing a function with two nested loops, each iterating over the entirety of an array of size n, with no early exit. What is its complexity?",
+        "options": [
+          "O(n²)",
+          "O(2n)",
+          "O(n log n)"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "You need to search for a value in an already-sorted array of 1 million elements. How does the complexity of binary search compare to a simple linear scan?",
+        "options": [
+          "Binary search is O(log n), much faster than a linear scan at O(n)",
+          "Both are O(log n), since the array is sorted",
+          "A sorted array doesn't speed anything up: the search stays O(n) in both cases"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, you're shown two solutions for detecting a duplicate in an array of 100,000 elements: one using a Set (O(n) time, O(n) space) and one using two nested loops (O(n²) time, O(1) space). What's the right reasoning for choosing between them?",
+        "options": [
+          "If available memory isn't a limiting factor, the O(n)-time version is clearly preferable once n is large — the memory cost is an acceptable trade-off to avoid a blow-up in execution time",
+          "The O(n²) version is always preferable because it uses no extra memory",
+          "The choice doesn't matter: both have the same asymptotic complexity"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "When we say that `push()` on a JavaScript array is O(1) amortized, what does \"amortized\" actually mean?",
+        "options": [
+          "Most calls are O(1), but occasionally an internal resize of the array costs O(n); over a long series of operations, the average cost per operation stays O(1)",
+          "It means `push()` is always exactly O(1), with no exceptions whatsoever, no matter how many calls are made",
+          "It means `push()` gets progressively slower with each call, eventually reaching O(n)"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A function has a loop nested inside another, but the inner loop stops with a `break` as soon as it finds a match, on average after only a few iterations. What complexity should you correctly state in an interview?",
+        "options": [
+          "The worst case remains O(n²) (if the match is never found early), even though the average case may be better — you should state both",
+          "It's automatically O(n) thanks to the `break`, regardless of the array's contents",
+          "The `break` has no effect on complexity at all: you should always state O(n²) without nuance"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Algorithmic complexity questions are culturally associated with \"American-style\" interviews (LeetCode-style) — a controversial practice: many experienced engineers criticize this format because it tests very little of what people actually do day to day, yet it remains extremely widespread.",
+    "pionnier": {
+      "nom": "Donald Knuth",
+      "portrait": "American computer scientist born in 1938, professor at Stanford, author of the landmark series \"The Art of Computer Programming\", whose first volume was published in 1968.",
+      "contribution": "He popularized and systematized the use of Big O notation in computer science to analyze algorithmic complexity, building on a mathematical notation already used in number theory by Paul Bachmann in the late 19th century.",
+      "problematique": "There was no common, rigorous language for objectively comparing the efficiency of two different algorithms, independent of the machine or implementation used.",
+      "solution": "In his books and articles, he formalized and popularized a standardized notation (O, Ω, Θ) describing the asymptotic behavior of an algorithm's time or space usage as a function of input size.",
+      "resultat": "This notation became the universal vocabulary of algorithm analysis, taught in every computer science curriculum and used daily in technical interviews and system design."
+    },
+    "ambiguite": {
+      "question": "Is an O(n) algorithm always faster than an O(n²) one in practice?",
+      "reponse": "Not necessarily for small inputs: the hidden constants that Big O notation ignores can make a simple O(n²) algorithm faster than an O(n) one with heavy initialization, as long as n stays small. Big O describes asymptotic behavior, not real-world performance at every scale."
+    }
+  },
+  {
+    "id": "structures-lineaires",
+    "title": "Arrays, Linked Lists, Stacks & Queues",
+    "category": "Algorithmie",
+    "badge": {
+      "id": "badge-structures",
+      "name": "Master of Structures",
+      "emoji": "🧱"
+    },
+    "griotIntro": [
+      "A queue at the market works differently from a stack of calabashes piled one on top of another.",
+      "Every data structure has its own access rules — knowing them means picking the right tool for the right problem."
+    ],
+    "explanation": {
+      "text": "The choice between array and linked list, stack and queue, radically changes performance depending on the operation. Click the lines to see the LIFO vs FIFO details.",
+      "code": "// Stack using an array\nconst stack = [];\nstack.push('a'); stack.push('b');\nstack.pop(); // 'b' (LIFO)\n\n// Queue using an array (shift costs O(n) — know this for interviews!)\nconst queue = [];\nqueue.push('a'); queue.push('b');\nqueue.shift(); // 'a' (FIFO)\n\nstack.pop(); // 'a' — the stack is now empty\nstack.pop(); // undefined — edge case: pop() on an empty stack doesn't throw in JS",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "A JS array can serve directly as a stack — no special structure needed."
+        },
+        {
+          "line": 2,
+          "note": "`push` always adds at the end — O(1) amortized."
+        },
+        {
+          "line": 3,
+          "note": "`pop` removes and returns the last element added: LIFO (last in, first out)."
+        },
+        {
+          "line": 7,
+          "note": "`push` adds at the end, just like for the stack."
+        },
+        {
+          "line": 8,
+          "note": "`shift` removes the FIRST element: FIFO. But it has to shift every remaining element down by one — O(n), worth knowing for interviews."
+        },
+        {
+          "line": 11,
+          "note": "We empty the stack completely: after this `pop()`, it holds no elements at all."
+        },
+        {
+          "line": 12,
+          "note": "Edge case: calling `pop()` on an already-empty stack doesn't throw an error in JavaScript — it simply returns `undefined`. A classic trap if you don't check `isEmpty()` before using the result."
+        }
+      ]
+    },
+    "useCases": [
+      "A browser's navigation history (the \"back\" button): a stack that pushes each page you visit.",
+      "An order-processing queue in an e-commerce system, handled in arrival order (FIFO).",
+      "Task-management algorithms (the `event loop`, `job queue` with Redis/BullMQ) that process asynchronous tasks in order."
+    ],
+    "relatedTools": [
+      {
+        "name": "BullMQ / Redis Queue",
+        "description": "Redis-backed task queue (FIFO) libraries, widely used for asynchronous processing in Node.js."
+      },
+      {
+        "name": "Immutable.js / Linked list libs",
+        "description": "Ready-made implementations of linked lists and persistent structures for JavaScript."
+      },
+      {
+        "name": "Redux (undo/redo)",
+        "description": "Some action-history libraries (redux-undo) rely directly on a stack structure."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "class Queue {",
+        "  constructor() { this.items = []; }",
+        "  enqueue(element) {",
+        "    this.items.push(element);",
+        "  }",
+        "  dequeue() {",
+        "    return this.items.pop();",
+        "  }",
+        "}"
+      ],
+      "buggyLineIndex": 6,
+      "explanation": "`dequeue()` uses `pop()`, which removes the LAST element added (LIFO) — this turns the queue into a stack! For a true queue (FIFO), you need to remove the FIRST element with `this.items.shift()`."
+    },
+    "practice": {
+      "question": "Which structure should you use to implement an \"undo last action\" system?",
+      "options": [
+        "A stack (LIFO)",
+        "A queue (FIFO)",
+        "A sorted array"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — you always undo the most recently performed action first: that's LIFO.",
+        "incorrect": "Think about the order: the last action must be undone first → LIFO → stack."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Why is `Array.prototype.shift()` expensive (O(n)) on a large array?",
+        "options": [
+          "It has to shift every remaining element down by one position toward index 0",
+          "It doesn't do anything at all",
+          "It's actually O(1) in every JS engine"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is the advantage of a doubly linked list over a singly linked list?",
+        "options": [
+          "It can be traversed in both directions (each node knows both its previous and next neighbor)",
+          "It lets you insert an element without ever needing to know the previous node",
+          "It allows direct O(1) access by index"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "A job-processing task queue corresponds to which structure?",
+        "options": [
+          "FIFO (queue)",
+          "LIFO (stack)",
+          "A binary tree"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why doesn't a linked list offer O(1) access by index like an array does?",
+        "options": [
+          "You have to walk through the nodes one by one from the start to reach a given position",
+          "Linked lists are actually faster than arrays for access by index",
+          "That's only true for accessing the first and last elements of the list"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In which case would you prefer a linked list over an array?",
+        "options": [
+          "When you do a lot of insertions/removals at the start or middle of the list, without needing frequent random access",
+          "When you need very frequent access by index",
+          "Only when you need to sort the data very frequently"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Classic trap: if you use an array as a queue with `push()` to add and `shift()` to remove, what is the total complexity for processing n elements?",
+        "options": [
+          "O(n²) overall, because each `shift()` costs O(n) (shifting all remaining elements) and it's called n times",
+          "O(n) overall, because `push()` and `shift()` are both O(1) amortized",
+          "O(n log n), like a sorting algorithm"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Which structure allows an efficient O(1) queue for both adding AND removing, unlike a plain array used with `shift()`?",
+        "options": [
+          "A linked list (or a deque) with pointers to the head and the tail",
+          "An array sorted in ascending order",
+          "A classic stack"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "The choice between array and linked list is rarely a real dilemma in modern JavaScript: the V8 engine optimizes arrays so heavily that hand-rolled linked lists are rare in practice on the web, unlike in lower-level languages (C, Rust).",
+    "pionnier": {
+      "nom": "Friedrich L. Bauer",
+      "portrait": "German computer scientist (1924-2015), professor at the Technical University of Munich, one of the pioneers of European computing and co-inventor of the ALGOL language.",
+      "contribution": "Together with his colleague Klaus Samelson, he formalized the stack principle (\"pushdown store\"/\"Keller-Prinzip\"), a LIFO (last in, first out) data structure, filed as a patent in 1957.",
+      "problematique": "Early compilers needed to evaluate nested arithmetic expressions (with parentheses and operator precedence) and handle subroutine calls, without a suitable structure for remembering pending operations or calls in the right order.",
+      "solution": "Bauer and Samelson proposed using a stack structure to temporarily push values and operators awaiting processing, then pop them off in the reverse order they were added.",
+      "resultat": "This principle became fundamental to computer science: it underlies the call stack of practically every programming language today, as well as expression evaluation in modern compilers and interpreters."
+    },
+    "ambiguite": {
+      "question": "Is a stack and JavaScript's \"call stack\" the same thing?",
+      "reponse": "Yes, literally: the JavaScript call stack that tracks function execution is itself a stack-type data structure (LIFO). That's exactly why infinite recursion causes a \"Stack Overflow\"."
+    }
+  },
+  {
+    "id": "arbres-graphes",
+    "title": "Trees & Graphs (BFS/DFS)",
+    "category": "Algorithmie",
+    "badge": {
+      "id": "badge-graphes",
+      "name": "Master of Networks",
+      "emoji": "🌳"
+    },
+    "griotIntro": [
+      "A large Senegalese family's genealogical tree, or the network of paths linking villages — two ways of representing relationships.",
+      "Trees and graphs structure hierarchical or networked data, and we explore them with two key methods: BFS and DFS."
+    ],
+    "explanation": {
+      "text": "BFS explores level by level using a queue, DFS explores one branch all the way down using a stack or recursion. Click the lines of this BFS to see how the queue (FIFO) drives the order of exploration.",
+      "code": "function bfs(graph, start) {\n  const visited = new Set([start]);\n  const queue = [start];\n  while (queue.length) {\n    const node = queue.shift();\n    for (const neighbor of graph[node]) {\n      if (!visited.has(neighbor)) {\n        visited.add(neighbor);\n        queue.push(neighbor);\n      }\n    }\n  }\n  return visited;\n}",
+      "annotations": [
+        {
+          "line": 1,
+          "note": "`visited` avoids re-processing a node that's already been explored — essential if the graph contains a cycle."
+        },
+        {
+          "line": 2,
+          "note": "`queue` (used as FIFO) holds the nodes to explore in discovery order — this is what gives BFS its \"level by level\" exploration."
+        },
+        {
+          "line": 4,
+          "note": "`shift()` removes the next node to process, in the order it was added (FIFO)."
+        },
+        {
+          "line": 6,
+          "note": "We skip neighbors already visited — without this check, a cycle would make the algorithm loop forever."
+        },
+        {
+          "line": 8,
+          "note": "The neighbor is added to the end of the queue: it will be processed after every node already waiting — that's what guarantees the level-by-level order."
+        }
+      ]
+    },
+    "useCases": [
+      "A social network's news feed and friend suggestions, represented as a graph of connections between users.",
+      "A GPS calculating the shortest route between two points on a road map (weighted graph).",
+      "An operating system's file tree, or a web page's DOM — both are trees."
+    ],
+    "relatedTools": [
+      {
+        "name": "Neo4j",
+        "description": "A graph-oriented database designed specifically to store and traverse relationships (social networks, recommendations)."
+      },
+      {
+        "name": "React (Virtual DOM)",
+        "description": "React represents the UI as a component tree and compares (\"diffs\") it on every update."
+      },
+      {
+        "name": "Leaflet (used in this project)",
+        "description": "Interactive map route-calculation algorithms rely on traversals of weighted graphs."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function depth(node) {",
+        "  if (node = null) return 0;",
+        "  const left = depth(node.left);",
+        "  const right = depth(node.right);",
+        "  return 1 + Math.max(left, right);",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "`if (node = null)` uses `=` (assignment) instead of `===` (comparison): this overwrites `node` with `null` and then evaluates the condition against `null` (always falsy), so the base case never fires correctly — accessing `node.left` eventually crashes on a genuinely `null` node. It should read `if (node === null) return 0;`."
+    },
+    "practice": {
+      "question": "Which data structure does BFS (breadth-first search) use?",
+      "options": [
+        "A queue (FIFO)",
+        "A stack (LIFO)",
+        "A sorted array"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — BFS processes nodes in the order they're discovered, level by level, via a queue.",
+        "incorrect": "BFS = Breadth-First = level by level = queue (FIFO). A stack is for DFS."
+      }
+    },
+    "quiz": [
+      {
+        "question": "To find the shortest path (by number of edges) in an unweighted graph, which algorithm should you use?",
+        "options": [
+          "BFS",
+          "DFS",
+          "Insertion sort"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is the fundamental difference between a tree and a graph?",
+        "options": [
+          "A tree has no cycles and a single root; a graph can have cycles and multiple connections",
+          "A tree is a special case of graph that allows cycles",
+          "A graph is always directed, unlike a tree"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "DFS (depth-first search) can naturally be implemented with which technique?",
+        "options": [
+          "Recursion (or an explicit stack)",
+          "Only a queue (FIFO)",
+          "Merge sort"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A binary search tree (BST) allows a search in what complexity, in the balanced case?",
+        "options": [
+          "O(log n)",
+          "O(n)",
+          "O(1)"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why do you need to mark nodes as \"visited\" during a graph traversal?",
+        "options": [
+          "To avoid an infinite loop if the graph contains a cycle",
+          "Only if the graph has more than 100 nodes",
+          "Only to save memory, for no other reason"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "On a binary tree that's very wide but shallow (many nodes per level, low depth), why might BFS consume more memory than DFS?",
+        "options": [
+          "BFS must keep every node of a level in memory at once in its queue, which can be very large; DFS only keeps one branch (depth) at a time on its stack",
+          "BFS always uses less memory than DFS, regardless of the tree's shape",
+          "The memory used by BFS and DFS is strictly identical in every case, only speed differs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "For a graph with n vertices and very few edges (a sparse graph), why is an adjacency list generally preferred over an adjacency matrix?",
+        "options": [
+          "An adjacency matrix always takes O(n²) space, even with few edges, whereas an adjacency list only takes space proportional to the actual number of edges",
+          "An adjacency list allows O(1) direct access to check whether two vertices are connected, unlike a matrix",
+          "An adjacency matrix can only represent undirected graphs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "BFS and DFS are recurring interview questions, but their real-world use varies with team culture: a frontend team almost never implements these algorithms by hand (React handles it for the Virtual DOM), while a data/infra team works with them regularly.",
+    "pionnier": {
+      "nom": "Edsger Dijkstra",
+      "portrait": "Dutch computer scientist (1930-2002), one of the founding figures of theoretical computer science, also known for his work on structured programming.",
+      "contribution": "In 1956 he designed the algorithm that bears his name, for computing the shortest path from a starting node to every other node in a weighted graph.",
+      "problematique": "As a demonstration for a new machine (the ARMAC), Dijkstra wanted a simple but compelling example: calculating the shortest road route between two Dutch cities, Rotterdam and Groningen, using a simplified map of the country's roads.",
+      "solution": "He proposed a greedy method that progressively explores the graph's nodes, always picking the one whose known distance from the start is shortest, and updating its neighbors' distances along the way.",
+      "resultat": "Dijkstra's algorithm, published in 1959, became a cornerstone of computer science and still underlies many GPS navigation systems and network routing protocols today."
+    },
+    "ambiguite": {
+      "question": "Are a binary tree and a binary search tree (BST) the same thing?",
+      "reponse": "No: a binary tree is just a structure where each node has at most 2 children, with no ordering rule. A BST adds a precise constraint (left child smaller, right child larger) that enables O(log n) search."
+    }
+  },
+  {
+    "id": "tri-recherche",
+    "title": "Sorting & Searching Algorithms",
+    "category": "Algorithmie",
+    "badge": {
+      "id": "badge-tri",
+      "name": "Master of Sorting",
+      "emoji": "🔀"
+    },
+    "griotIntro": [
+      "Sorting mangoes by size at the market can be done slowly, one at a time, or smartly by splitting the pile in two.",
+      "Sorting algorithms perfectly illustrate the impact of a good algorithmic choice on performance."
+    ],
+    "explanation": {
+      "text": "Merge sort illustrates the \"divide and conquer\" principle: O(n log n), far faster than a bubble sort's O(n²) on large data. Click the lines to follow the recursion.",
+      "code": "function merge(left, right) {\n  const res = [];\n  while (left.length && right.length) {\n    res.push(left[0] <= right[0] ? left.shift() : right.shift());\n  }\n  return [...res, ...left, ...right];\n}\n\nfunction mergeSort(arr) {\n  if (arr.length <= 1) return arr;\n  const mid = Math.floor(arr.length / 2);\n  return merge(mergeSort(arr.slice(0, mid)), mergeSort(arr.slice(mid)));\n}",
+      "annotations": [
+        {
+          "line": 2,
+          "note": "As long as both halves still have elements, we compare their first elements."
+        },
+        {
+          "line": 3,
+          "note": "We always take the smaller of the two first elements — this is what guarantees a sorted result."
+        },
+        {
+          "line": 5,
+          "note": "One of the two halves is empty at this point; we simply append whatever's left, already sorted."
+        },
+        {
+          "line": 9,
+          "note": "Base case of the recursion: an array with 0 or 1 element is already sorted, so we stop dividing."
+        },
+        {
+          "line": 10,
+          "note": "We split the array into two roughly equal halves."
+        },
+        {
+          "line": 11,
+          "note": "We recursively sort each half, then merge them — this is \"divide and conquer\"."
+        }
+      ]
+    },
+    "timeline": [
+      {
+        "label": "Division",
+        "description": "The array is split into two roughly equal halves."
+      },
+      {
+        "label": "Recursion",
+        "description": "Each half is sorted recursively by applying the same principle."
+      },
+      {
+        "label": "Base case",
+        "description": "An array with 0 or 1 element is already sorted — the recursion stops there."
+      },
+      {
+        "label": "Merge",
+        "description": "The two sorted halves are recombined into a single ordered list."
+      },
+      {
+        "label": "Result",
+        "description": "The full array is sorted, in O(n log n) complexity."
+      }
+    ],
+    "useCases": [
+      "Sorting a list of products by price or popularity on an e-commerce site (`Array.prototype.sort` uses an algorithm close to merge sort in V8).",
+      "Looking up a user by ID in a sorted, indexed database, in O(log n) rather than scanning the whole table.",
+      "Sorting millions of log lines by timestamp to analyze a production incident in chronological order."
+    ],
+    "relatedTools": [
+      {
+        "name": "PostgreSQL (B-tree index)",
+        "description": "Database indexes use sorted tree structures to allow O(log n) lookups instead of a full scan."
+      },
+      {
+        "name": "Array.prototype.sort() (V8)",
+        "description": "Chrome/Node's JavaScript engine internally uses an algorithm close to merge sort/TimSort."
+      },
+      {
+        "name": "Elasticsearch",
+        "description": "A search engine that indexes data at massive scale to enable near-instant searches."
+      }
+    ],
+    "bugHunt": {
+      "lines": [
+        "function binarySearch(arr, target) {",
+        "  let low = 0, high = arr.length;",
+        "  while (low <= high) {",
+        "    const mid = Math.floor((low + high) / 2);",
+        "    if (arr[mid] === target) return mid;",
+        "    if (arr[mid] < target) low = mid + 1;",
+        "    else high = mid - 1;",
+        "  }",
+        "  return -1;",
+        "}"
+      ],
+      "buggyLineIndex": 1,
+      "explanation": "`high` is initialized to `arr.length` instead of `arr.length - 1`: a classic off-by-one error. With `high = arr.length`, `mid` can equal `arr.length`, an index outside the array (`arr[mid]` is then `undefined`), which breaks the comparisons. It should read `let high = arr.length - 1;`."
+    },
+    "practice": {
+      "question": "What is the principle behind merge sort?",
+      "options": [
+        "Split the array in two, recursively sort each half, then merge the sorted results",
+        "Compare every pair of adjacent elements a million times",
+        "Only sort the even numbers"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — it's the \"divide and conquer\" principle, which gives O(n log n) complexity.",
+        "incorrect": "Merge sort recursively divides the problem; it doesn't just compare adjacent pairs (that's bubble sort)."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the average complexity of quicksort?",
+        "options": [
+          "O(n log n)",
+          "O(n)",
+          "O(n²) in every case"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "In which case can quicksort degrade to O(n²)?",
+        "options": [
+          "When the chosen pivot is consistently the smallest or largest element (e.g., an already-sorted array with a poor pivot choice)",
+          "Only when the array contains duplicates",
+          "Only on arrays of negative numbers"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What precondition does binary search require on the data?",
+        "options": [
+          "The array must be sorted",
+          "The array must contain duplicates",
+          "The array must be empty"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why can selection/insertion sort (O(n²)) still be a good choice in some cases?",
+        "options": [
+          "On very small arrays, its simplicity can make it just as fast in practice as a more complex algorithm",
+          "It always finds the right result in a single pass, unlike merge sort",
+          "It only works on even numbers"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What does \"divide and conquer\" mean?",
+        "options": [
+          "Break a problem into smaller sub-problems, solve them, then combine the results",
+          "Always solve the problem as a single block, without dividing it",
+          "A technique reserved only for sorting"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "In a binary search, why is the midpoint sometimes computed as `mid = low + Math.floor((high - low) / 2)` rather than `mid = Math.floor((low + high) / 2)`?",
+        "options": [
+          "To avoid an overflow on `low + high` when the indices are very large, in languages with fixed-size integers — a classic interview point, even though it isn't an issue in JavaScript on realistic arrays",
+          "The two formulas always give different results, regardless of the language",
+          "It's purely a matter of style, with no impact on the algorithm's correctness in any language"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "A sort is called \"stable\" when...",
+        "options": [
+          "...two equal elements keep their original relative order after sorting (useful, for example, when sorting a list already sorted by name, then by date, without losing alphabetical order among items with the same date)",
+          "...it always has O(n log n) complexity in the worst case",
+          "...it can never fail, even on an array containing non-comparable values"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "\"Never reimplement your own sort in production\" is a widespread cultural piece of advice — the sorting algorithms built into languages are highly optimized; sorting questions in interviews are meant to assess reasoning, not to prepare for an actual day-to-day task.",
+    "pionnier": {
+      "nom": "Tony Hoare",
+      "portrait": "British computer scientist born in 1934, later a professor at Oxford and winner of the 1980 Turing Award for his contributions to programming language design.",
+      "contribution": "He invented the quicksort algorithm between 1959 and 1961, while working as a young visiting researcher at Moscow State University and then for the British company Elliott Brothers.",
+      "problematique": "Hoare was working on a Russian-to-English machine translation project and needed to sort words quickly in order to look them up efficiently in a dictionary, with the very limited computing resources of the time.",
+      "solution": "He devised a \"divide and conquer\" method: choose a pivot, partition elements smaller on one side and larger on the other, then recursively repeat the operation on each part until the array is fully sorted.",
+      "resultat": "Quicksort, with an average complexity of O(n log n), became one of the most widely used sorting algorithms in the world and still serves today as the basis (or inspiration) for many sorting implementations in the standard libraries of modern languages."
+    },
+    "ambiguite": {
+      "question": "What algorithm does JavaScript's Array.prototype.sort() actually use?",
+      "reponse": "It depends on the JS engine: V8 (Chrome/Node) uses TimSort (a hybrid of insertion sort and merge sort), not a pure merge sort. The details change over time — which is exactly why you shouldn't reimplement these algorithms yourself."
+    }
+  }
+]

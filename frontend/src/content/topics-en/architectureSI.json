@@ -1,0 +1,535 @@
+[
+  {
+    "id": "cache-strategies",
+    "title": "Cache strategies: write-through, write-back, cache-aside",
+    "category": "Information Systems Architecture",
+    "badge": { "id": "badge-cache-strategies", "name": "Master of Caches", "emoji": "🗃️" },
+    "griotIntro": [
+      "In Diourbel, the central store at the market always keeps a stock of the most requested goods close at hand, rather than fetching them from the warehouse every single time.",
+      "A cache does the same thing for an application — but there are several ways to fill it and keep it up to date, each with its own trade-offs."
+    ],
+    "explanation": {
+      "text": "It's not enough to say \"let's cache that\" — the strategy matters: when to write to the cache, when to invalidate it, what to do when it's full. Click on the lines to compare two writing strategies.",
+      "code": "// Write-through: we write to the cache AND the database at the same time\nasync function saveUser(id, data) {\n  await db.user.update({ where: { id }, data });\n  await cache.set(`user:${id}`, data); // synchronous, before continuing\n}\n\n// Write-back (write-behind): we write to the cache first, the database follows later\nasync function saveUserFast(id, data) {\n  await cache.set(`user:${id}`, data);\n  queue.push({ type: 'sync-db', id, data }); // deferred write, in the background\n}",
+      "annotations": [
+        { "line": 2, "note": "The database write happens first — it's the source of truth that gets updated as a priority." },
+        { "line": 3, "note": "The cache is updated right afterward, synchronously — cache and database stay consistent at all times, at the cost of a slightly slower write." },
+        { "line": 8, "note": "Here, the CACHE is written first — the response to the user is immediate." },
+        { "line": 9, "note": "Syncing with the database is deferred. Faster for the user, but a real risk exists: if the system goes down before the sync happens, the data can be lost." }
+      ]
+    },
+    "useCases": [
+      "Write-through for critical data (bank balance) where immediate consistency between cache and database is non-negotiable.",
+      "Write-back for very high write-volume counters (video views), where losing a few milliseconds of data is acceptable.",
+      "LRU (Least Recently Used) eviction policy, used by default in most caching systems like Redis, to decide what to remove when the cache is full."
+    ],
+    "relatedTools": [
+      { "name": "Redis", "description": "Lets you configure its eviction policy (`maxmemory-policy`): LRU, LFU, TTL — a concrete choice to make in production." },
+      { "name": "Memcached", "description": "Simple, fast in-memory cache, historically very widely used before Redis became mainstream." },
+      { "name": "Varnish", "description": "Specialized HTTP cache, placed in front of a web server to absorb a large share of traffic without it ever reaching the server." }
+    ],
+    "practice": {
+      "question": "In the \"cache-aside\" pattern, who is responsible for loading the data into the cache on a cache miss?",
+      "options": [
+        "The application itself, at read time, rather than the cache automatically",
+        "The cache fills itself in the background, never involving the application",
+        "The database actively pushes all its data to the cache continuously"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — cache-aside leaves full control to the application, unlike write-through which automates the write.",
+        "incorrect": "In cache-aside, it's the application code that checks the cache, fetches from the database if absent, then fills the cache itself."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is the difference between write-through and write-back?",
+        "options": [
+          "Write-through writes to cache and database at the same time; write-back writes to the cache first and defers the database",
+          "They are two names for exactly the same strategy",
+          "Write-back doesn't exist in practice, it's a purely theoretical concept"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is the LRU (Least Recently Used) eviction policy?",
+        "options": [
+          "Remove the least recently used data first when the cache is full",
+          "Always remove the most recent data first",
+          "Never remove any data from the cache, no matter its size"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is write-back risky in the event of a server failure?",
+        "options": [
+          "Data written to the cache but not yet synced to the database can be lost",
+          "There's no risk at all, the cache is always automatically saved to disk",
+          "Write-back can technically never fail"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is the \"cache-aside\" pattern?",
+        "options": [
+          "The application checks the cache, and if absent (cache miss), fetches from the database and then fills the cache itself",
+          "The cache is always filled before the application's very first request",
+          "The application never checks the cache, only the database"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, why would you choose LFU (Least Frequently Used) over LRU for a product recommendation cache?",
+        "options": [
+          "LFU keeps the overall most-consulted items, useful if some products stay popular over time even without a recent visit",
+          "LFU and LRU are rigorously identical in every use case",
+          "LFU is always strictly worse than LRU, with no exception"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The choice of caching policy is as debated in engineering as the choice of framework — Facebook, for example, developed McRouter, its own routing layer on top of Memcached, purely to fine-tune these strategies at very large scale.",
+    "pionnier": {
+      "nom": "Maurice Wilkes",
+      "portrait": "British computer scientist, a pioneer of computing at the University of Cambridge, known in particular for leading the construction of the EDSAC, one of the very first stored-program computers.",
+      "contribution": "He introduced the concept of cache memory in a 1965 paper titled \"Slave Memories and Dynamic Storage Allocation\".",
+      "problematique": "The speed gap between the very fast processor and the much slower main memory limited the performance of computers of the era.",
+      "solution": "He proposed inserting a small, fast memory (\"slave memory\") between the processor and main memory, holding a copy of the most recently used data.",
+      "resultat": "This principle became the basis of caching as we know it today, present in hardware (CPU cache) as well as in modern software systems (Redis, CDNs, etc.)."
+    },
+    "ambiguite": {
+      "question": "Are cache-aside and write-through the same thing?",
+      "reponse": "No: cache-aside concerns READING (the app fetches from the database on a cache miss, then fills the cache itself); write-through concerns WRITING (the cache is updated at the same time as the database). The two can, in fact, be combined within the same system."
+    }
+  },
+  {
+    "id": "load-balancing-algorithmes",
+    "title": "Load balancing algorithms",
+    "category": "Information Systems Architecture",
+    "badge": { "id": "badge-lb-algo", "name": "Master of Load-Balancing Algorithms", "emoji": "🧮" },
+    "griotIntro": [
+      "At the great market of Diourbel, customers can be distributed among vendors in turn, or sent to whichever one has the shortest line in front of them.",
+      "A load balancer also chooses among several algorithms to decide which server receives each request."
+    ],
+    "explanation": {
+      "text": "\"Load balancing\" hides several different algorithms, each with its own strengths. Click on the lines to compare round-robin and least connections.",
+      "code": "// Round-robin: each server receives requests in turn\nservers = [serverA, serverB, serverC];\nfunction roundRobin() {\n  const server = servers[current % servers.length];\n  current++;\n  return server;\n}\n\n// Least connections: the request goes to the currently least-loaded server\nfunction leastConnections() {\n  return servers.reduce((min, s) => (s.activeConnections < min.activeConnections ? s : min));\n}",
+      "annotations": [
+        { "line": 3, "note": "The modulo (`%`) loops the index over the list of servers — after the last one, it automatically wraps back to the first." },
+        { "line": 4, "note": "The counter advances on every call, guaranteeing that the NEXT call will go to the following server, in order." },
+        { "line": 10, "note": "Unlike round-robin, this algorithm looks at the ACTUAL state of each server (number of active connections) before choosing — better suited when requests have very uneven durations." }
+      ]
+    },
+    "useCases": [
+      "Round-robin for servers of identical capacity and requests of similar cost — the simplest and most common case.",
+      "Least connections when some requests take much longer than others, to avoid overloading a server that's already busy with long requests.",
+      "IP hash routing to guarantee that the same client is always directed to the same server, useful for sessions that aren't shared across servers."
+    ],
+    "relatedTools": [
+      { "name": "Nginx", "description": "Supports several configurable load-balancing algorithms (round-robin by default, least_conn, ip_hash)." },
+      { "name": "Envoy Proxy", "description": "Modern proxy widely used in service mesh architectures, with advanced load-balancing algorithms." },
+      { "name": "AWS Application Load Balancer", "description": "Managed layer-7 load balancer, able to route based on the content of the HTTP request." }
+    ],
+    "practice": {
+      "question": "What is the difference between a layer-4 (L4) and a layer-7 (L7) load balancer?",
+      "options": [
+        "L4 routes based on IP/port without reading content, L7 can route based on HTTP request content (URL, headers)",
+        "They are two different names for exactly the same mechanism",
+        "L7 can only route unencrypted traffic, never HTTPS"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — L7 is \"smarter\" but more computationally expensive than L4.",
+        "incorrect": "L4 ignores the content of the request (just IP/port), L7 can read and route based on the HTTP content itself."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does the round-robin algorithm do?",
+        "options": [
+          "It distributes requests to servers in turn, in order",
+          "It always sends every request to the same server",
+          "It picks a server completely at random for each request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "When should you prefer the \"least connections\" algorithm over round-robin?",
+        "options": [
+          "When requests have highly variable durations, to avoid overloading an already busy server",
+          "Never, round-robin is always sufficient regardless of context",
+          "Only when there's a single available server"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is \"IP hash\" in load balancing?",
+        "options": [
+          "The same client (same IP) is consistently directed to the same server",
+          "Each request encrypts its IP before being sent to the server",
+          "The target server's IP changes randomly on every request"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why can an L7 load balancer route differently based on the requested URL (e.g., /api to one pool, /images to another)?",
+        "options": [
+          "Because it reads the content of the HTTP request, unlike an L4 which only sees the IP address/port",
+          "A load balancer can technically never do this kind of conditional routing",
+          "URL-based routing is a feature reserved for databases"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an interview, why can \"IP hash\" cause a load-balancing problem if a small number of clients generate enormous traffic?",
+        "options": [
+          "Those clients will always be directed to the same server, which can end up overloaded despite the algorithm",
+          "IP hash always guarantees perfect balancing, with no possible exception",
+          "This problem can technically never happen with IP hash"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The \"L4 vs L7\" debate comes up often in infra interviews: L4 is faster and simpler (it barely looks at anything), L7 is smarter but more computationally expensive — the choice often depends on whether the team needs fine-grained routing rules or just simple traffic distribution.",
+    "pionnier": {
+      "nom": "Fernando Corbató",
+      "portrait": "American computer scientist at MIT, a pioneer of time-sharing systems in the 1960s, with the CTSS (Compatible Time-Sharing System).",
+      "contribution": "His work on time-sharing process scheduling helped popularize the principle of \"round-robin scheduling\", where each task receives processor time in turn.",
+      "problematique": "On early computers, a single task could monopolize the processor, preventing multiple users or programs from making progress at the same time.",
+      "solution": "The round-robin principle consists of allocating a fixed time slice to each task or request before moving to the next, cyclically and fairly.",
+      "resultat": "This principle, born in process scheduling, extended well beyond operating systems and today underlies one of the most widely used load-balancing algorithms. No single figure is universally credited with inventing round-robin as applied to load balancing itself — it's a concept that emerged gradually within the distributed systems community."
+    },
+    "ambiguite": {
+      "question": "Are a load balancer and a reverse proxy the same thing?",
+      "reponse": "They overlap a lot in practice (Nginx does both), but the primary role of a reverse proxy is to hide/protect the upstream servers, while that of a load balancer is to DISTRIBUTE load across several of them — a load balancer is often a special case of reverse proxy, not the other way around."
+    }
+  },
+  {
+    "id": "orchestration-conteneurs",
+    "title": "Container orchestration (Kubernetes)",
+    "category": "Information Systems Architecture",
+    "badge": { "id": "badge-orchestration", "name": "Master of Orchestration", "emoji": "🎼" },
+    "griotIntro": [
+      "A conductor in Diourbel doesn't play any instrument themselves — they coordinate dozens of musicians and immediately replace anyone who falls ill.",
+      "A container orchestrator does the same with dozens of application containers: it starts them, monitors them, and replaces them automatically when something goes wrong."
+    ],
+    "explanation": {
+      "text": "Running ONE Docker container is simple. Running dozens of them, across multiple machines, with automatic restart on crash — that's the job of an orchestrator. Click on the lines of a simplified Kubernetes deployment.",
+      "code": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api-backend\nspec:\n  replicas: 3\n  template:\n    spec:\n      containers:\n        - name: api\n          image: teranga-code/api:v2\n          livenessProbe:\n            httpGet: { path: /health, port: 4000 }",
+      "annotations": [
+        { "line": 1, "note": "Here we describe the DESIRED state of the application, not step-by-step commands to run — Kubernetes takes care of making reality match this description." },
+        { "line": 5, "note": "Kubernetes guarantees there are ALWAYS 3 instances of this container running — if one goes down, a new one is automatically recreated, with no human intervention." },
+        { "line": 10, "note": "The image defines exactly which version of the code is running — changing this line and redeploying is enough to update the whole application." },
+        { "line": 11, "note": "Kubernetes periodically calls this route to check that the container is healthy — otherwise, it restarts it automatically." }
+      ]
+    },
+    "useCases": [
+      "Automatically restarting a container that crashes in production, without a human needing to intervene in the middle of the night.",
+      "Automatically increasing the number of instances (auto-scaling) during a traffic spike, then scaling back down once things settle.",
+      "Deploying a new version progressively (rolling update), replacing old containers with new ones one by one, without service interruption."
+    ],
+    "relatedTools": [
+      { "name": "Kubernetes", "description": "The reference container orchestrator, which has become a de facto standard for large-scale deployments." },
+      { "name": "Docker Swarm", "description": "A simpler alternative to Kubernetes, integrated directly into Docker, suited to less complex needs." },
+      { "name": "Helm", "description": "Package manager for Kubernetes, allowing you to package and version complete deployment configurations." }
+    ],
+    "practice": {
+      "question": "Why declare `replicas: 3` in a Kubernetes deployment, rather than manually launching 3 containers?",
+      "options": [
+        "Kubernetes continuously maintains that number: if a container goes down, it automatically recreates one",
+        "It doesn't change anything, `replicas: 3` just launches 3 containers once",
+        "It's just a naming convention, with no real effect on the deployment"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — that's the difference between a one-off command and a continuously maintained state.",
+        "incorrect": "`replicas: 3` declares a TARGET state that Kubernetes maintains continuously, not a one-off action."
+      }
+    },
+    "quiz": [
+      {
+        "question": "In one sentence, what does a container orchestrator like Kubernetes do?",
+        "options": [
+          "It starts, monitors, and automatically replaces application containers across multiple machines",
+          "It compiles source code into executable containers",
+          "It completely replaces the need for a database"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is a \"pod\" in Kubernetes vocabulary?",
+        "options": [
+          "The smallest deployable unit, containing one or more tightly coupled containers",
+          "A type of database specific to Kubernetes",
+          "A strict synonym for \"physical server\""
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What happens if a container fails to respond correctly to its \"liveness probe\"?",
+        "options": [
+          "Kubernetes considers the container unhealthy and restarts it automatically",
+          "Nothing, the liveness probe is purely informational and has no effect",
+          "The entire Kubernetes cluster stops immediately"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why is auto-scaling one of the major benefits of container orchestration?",
+        "options": [
+          "The number of instances adjusts automatically to actual load, without constant manual intervention",
+          "Auto-scaling completely eliminates the need for a load balancer",
+          "Auto-scaling can only work on a single physical machine"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an infra interview, why is a \"rolling update\" preferred over restarting all containers at once during a deployment?",
+        "options": [
+          "It keeps part of the service available throughout the deployment, by replacing instances progressively",
+          "A rolling update is always slower, with no real benefit",
+          "Restarting everything at once is actually always preferable"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Kubernetes (often abbreviated \"K8s\") was born at Google, which had already been running a similar internal orchestrator (Borg) for years before open-sourcing the idea in 2014 — a fairly rare case of a company publicly sharing a technology so central to its own infrastructure.",
+    "pionnier": {
+      "nom": "Brendan Burns, Joe Beda, and Craig McLuckie",
+      "portrait": "Three Google engineers who co-founded the Kubernetes project in 2014, drawing on the company's internal experience with its Borg orchestration system, used for years to manage its own infrastructure.",
+      "contribution": "They designed and launched Kubernetes as an open-source project, in order to make the container orchestration principles proven internally at Google accessible to the entire industry.",
+      "problematique": "Running and maintaining dozens or hundreds of application containers across many machines, with automatic restart, scaling, and zero-downtime deployments, was a complex problem that every company had to solve on its own.",
+      "solution": "They created a declarative system where you describe the desired state of the application (number of instances, resources, health), and the orchestrator continuously works to make reality match that description.",
+      "resultat": "Kubernetes became, within a few years, the de facto standard for container orchestration, adopted by nearly all major cloud platforms and now administered by the Cloud Native Computing Foundation."
+    },
+    "ambiguite": {
+      "question": "Are Docker and Kubernetes competitors or complementary?",
+      "reponse": "Complementary, not competitors: Docker creates and runs ONE container; Kubernetes orchestrates dozens of containers (potentially built with Docker) across multiple machines. Kubernetes needs a container runtime to function, it does not replace it."
+    }
+  },
+  {
+    "id": "typologie-bases-donnees",
+    "title": "Database typology",
+    "category": "Information Systems Architecture",
+    "badge": { "id": "badge-db-types", "name": "Master of Typologies", "emoji": "🗂️" },
+    "griotIntro": [
+      "At the Diourbel market, grains, spices, and fabrics aren't stored the same way — each type of merchandise has its own optimal storage system.",
+      "In the same way, there are several families of databases, each designed for a different type of data and use case."
+    ],
+    "explanation": {
+      "text": "\"Database\" doesn't mean just one thing: relational, document, key-value, column-oriented, graph... each family makes a different trade-off. Click on the lines to compare two ways of representing the same relationship.",
+      "code": "// Relational (PostgreSQL): data in tables linked by keys\n// users(id, name) + orders(id, user_id, amount)\n\n// Graph (Neo4j): data as nodes linked by explicit relationships\nCREATE (aissatou:User)-[:PLACED_ORDER]->(order1:Order {amount: 4500})",
+      "annotations": [
+        { "line": 1, "note": "In the relational model, the relationship between a user and their order goes through a foreign key (`user_id`) — a JOIN is needed to reconstruct it." },
+        { "line": 4, "note": "In a graph, the `PLACED_ORDER` relationship is stored DIRECTLY as a connection between two nodes — traversing complex relationships (friends of friends, recommendations) becomes much more natural and fast." }
+      ]
+    },
+    "useCases": [
+      "A key-value store (Redis) for user sessions or a cache, where ultra-fast access by unique identifier matters above all else.",
+      "A column-oriented database (Cassandra) for very high-volume time series (IoT sensors, logs), optimized for massive writes.",
+      "A graph database (Neo4j) for a recommendation engine that needs to traverse complex relationships (friends of friends, similar products)."
+    ],
+    "relatedTools": [
+      { "name": "PostgreSQL", "description": "The reference relational database, with advanced JSON support that somewhat blurs the line with document stores." },
+      { "name": "Redis", "description": "Extremely fast in-memory key-value store, used for caching, sessions, or task queues." },
+      { "name": "Neo4j", "description": "Graph database designed specifically to efficiently store and traverse complex relationships." }
+    ],
+    "practice": {
+      "question": "Why is a column-oriented database (like Cassandra) particularly well suited to very high write-volume IoT sensor data?",
+      "options": [
+        "It is optimized for massive, fast writes, with a flexible schema suited to time series",
+        "It can technically only store integers",
+        "It is strictly identical to a classic relational database"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — column-oriented databases shine at massive writes and time-series reads.",
+        "incorrect": "The strength of column-oriented databases is precisely their ability to absorb massive, continuous writes."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Which family of database organizes data into tables linked by keys?",
+        "options": ["The relational database", "The graph database", "The key-value database"],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "What is a key-value store (Redis) typically used for?",
+        "options": [
+          "Ultra-fast access by unique identifier, like a cache or a session",
+          "Storing complex relationships between millions of entities",
+          "Performing complex joins across many tables"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is a graph database better suited than a relational database for a \"friends of friends\" recommendation engine?",
+        "options": [
+          "Relationships are stored directly as connections, avoiding multiple, costly joins",
+          "A relational database can technically never store relationships between users",
+          "The two types of databases are rigorously equivalent for this need"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What differentiates a document database (MongoDB) from a column-oriented database (Cassandra)?",
+        "options": [
+          "The document store holds complete, flexible objects; the column store optimizes massive writes of similar data at large scale",
+          "They are two different names for exactly the same database family",
+          "A column-oriented database can technically only store plain text"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an architecture interview, how would you justify using several types of databases within a single system (\"polyglot persistence\")?",
+        "options": [
+          "Each database family makes a different trade-off; picking the one best suited to each specific need beats a single choice for the whole system",
+          "Using several databases is always a design mistake, you should pick only one",
+          "The choice of database type actually never has any impact on performance"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The term \"polyglot persistence\" (using several types of databases within a single system, each for its own purpose) took hold in the industry around 2011, reacting against years where \"one big relational database for everything\" was almost the only norm — a modern architecture today often combines 2 to 4 different families.",
+    "pionnier": {
+      "nom": "Edgar F. Codd",
+      "portrait": "British researcher at IBM, who published the foundational 1970 paper \"A Relational Model of Data for Large Shared Data Banks\".",
+      "contribution": "He invented the relational model, which organizes data into tables linked by keys rather than the hierarchical or pointer-based structures dominant at the time.",
+      "problematique": "The databases of the era depended heavily on the physical storage structure, making applications fragile to the slightest schema change and complex queries hard to write.",
+      "solution": "Codd proposed separating the logical representation of data (tables, relations, constraints) from its physical implementation, building on mathematical foundations from set theory and predicate logic.",
+      "resultat": "The relational model became the foundation of systems like Oracle, PostgreSQL, or MySQL, and dominated the database industry for several decades. The term \"NoSQL\" was actually coined much later, in 1998, by Carlo Strozzi to describe a lightweight relational database that didn't use SQL — a different usage from the one that became popular in the 2000s for distributed non-relational databases."
+    },
+    "ambiguite": {
+      "question": "Are MongoDB (document) and Redis (key-value) just two variants of the same NoSQL type?",
+      "reponse": "No, they are two quite distinct families despite the shared \"NoSQL\" label: MongoDB stores complex, deeply queryable documents, Redis stores simple key-value pairs optimized for pure speed — their use cases rarely overlap in practice."
+    }
+  },
+  {
+    "id": "patterns-architecture-si",
+    "title": "Architecture patterns: n-tier, event-driven, API Gateway",
+    "category": "Information Systems Architecture",
+    "badge": { "id": "badge-patterns-si", "name": "Master of Patterns", "emoji": "🏛️" },
+    "griotIntro": [
+      "Building a house in Diourbel, a whole neighborhood, or an entire city doesn't follow the same organizational plan — each scale has its own proven blueprints.",
+      "An information system also has major architecture patterns, recognized and reused from one project to another rather than reinvented every time."
+    ],
+    "explanation": {
+      "text": "An \"architecture pattern\" is a proven way of organizing an entire system — not just a class or a function. Click on the lines to compare two approaches to the same need: notifying after an action.",
+      "code": "// Classic architecture (direct, synchronous call)\nawait notificationService.send(userId, 'Order confirmed');\nawait billingService.generateInvoice(orderId);\n\n// Event-driven architecture\neventBus.publish('order.confirmed', { userId, orderId });\n// -> notificationService AND billingService each listen to this event, independently",
+      "annotations": [
+        { "line": 1, "note": "The calling service must know AND wait for each concerned service, one by one — adding a new service to notify requires modifying this code." },
+        { "line": 2, "note": "If THIS service is slow or fails, the whole chain of calls is blocked or fails along with it." },
+        { "line": 5, "note": "The code that triggers the event knows NONE of the services that will react to it — it just publishes a fact, without knowing who's listening." },
+        { "line": 6, "note": "New services can subscribe to this event later, without ever touching the code that publishes it — real decoupling." }
+      ]
+    },
+    "useCases": [
+      "An API Gateway as a single entry point that routes to the right microservices, centrally handling authentication and rate limiting.",
+      "A classic n-tier architecture (presentation / business logic / data) for an enterprise application with clearly separated responsibilities per layer.",
+      "An event-driven architecture for an e-commerce system where an order triggers billing, notification, and stock updates in parallel, without coupling them together."
+    ],
+    "relatedTools": [
+      { "name": "Kong / AWS API Gateway", "description": "Managed or open-source API Gateway solutions, to centralize routing, authentication, and rate limiting." },
+      { "name": "Apache Kafka / RabbitMQ", "description": "Event buses widely used to concretely implement an event-driven architecture between services." },
+      { "name": "NestJS", "description": "Backend framework whose modular/layered structure naturally enforces an organization close to n-tier." }
+    ],
+    "practice": {
+      "question": "What is the main advantage of an event-driven architecture over direct calls between services?",
+      "options": [
+        "Services are decoupled: the one publishing an event doesn't know who's listening",
+        "An event-driven architecture is always easier to debug than a direct call",
+        "Events guarantee instant execution, with no delay whatsoever"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Correct — decoupling is the central value of this pattern.",
+        "incorrect": "The main benefit is the decoupling between the publishing service and the reacting ones, not speed or debugging simplicity."
+      }
+    },
+    "quiz": [
+      {
+        "question": "In one sentence, what is an API Gateway?",
+        "options": [
+          "A single entry point that routes requests to the right services and centralizes cross-cutting concerns",
+          "A specialized database for storing APIs",
+          "A programming language dedicated to writing APIs"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "In a classic n-tier architecture, why do we separate presentation, business logic, and data into distinct layers?",
+        "options": [
+          "To isolate responsibilities and be able to evolve each layer independently",
+          "To deliberately slow down the application, with no other benefit",
+          "It's a constraint imposed by all programming languages"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why does an event-driven architecture decouple services better than a direct call between them?",
+        "options": [
+          "The service publishing an event doesn't need to know any of the services reacting to it",
+          "Events completely remove the need for a network between services",
+          "It's not really decoupling, just a different name for the same mechanism"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "What is a real risk of a poorly managed event-driven architecture?",
+        "options": [
+          "It becomes hard to trace the full flow of an operation, scattered across many independent subscribers",
+          "There's no risk at all, it's always strictly superior to direct calls",
+          "Events can technically never be lost, regardless of the system"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an architecture interview, how would you choose between a direct (synchronous) call and an event-driven (asynchronous) one to notify a service after an order?",
+        "options": [
+          "It depends on whether what follows immediately depends on the result (synchronous) or the processing can be deferred without blocking the user (event-driven)",
+          "You should always choose event-driven architecture, with no exception",
+          "The choice actually never has any real impact on the user experience"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The API Gateway pattern became widespread with the rise of microservices in 2015-2020: without it, every client (web, mobile) had to know the address of EVERY microservice individually — a real maintenance headache that the Gateway solved by centralizing the entry point.",
+    "pionnier": {
+      "nom": "Gregor Hohpe and Bobby Woolf",
+      "portrait": "Two software engineers, authors in 2003 of the reference book \"Enterprise Integration Patterns\", which catalogs proven solutions for integrating enterprise systems with each other.",
+      "contribution": "They formalized and documented a common vocabulary of patterns for message- and event-oriented architectures (message queue, publish-subscribe, event-driven), widely adopted since then across the industry.",
+      "problematique": "Making several enterprise systems or services, often heterogeneous, communicate with each other without coupling them too tightly was a recurring problem handled in an ad hoc and poorly documented way before their book.",
+      "solution": "Their book proposes a set of named, illustrated patterns (such as the \"Publish-Subscribe Channel\" or the \"Message Router\") to structure asynchronous exchanges between systems in a decoupled way.",
+      "resultat": "\"Enterprise Integration Patterns\" became a widely cited reference in designing event-driven architectures and messaging systems, influencing tools like Apache Camel, Spring Integration, and modern message buses (Kafka, RabbitMQ)."
+    },
+    "ambiguite": {
+      "question": "Does an event-driven architecture eliminate the need for direct calls between services?",
+      "reponse": "No — most real systems combine both: direct (synchronous) calls for what must respond immediately to the user (e.g., checking stock before confirming a purchase), event-driven (asynchronous) for what can be processed later (e.g., sending a confirmation email)."
+    }
+  }
+]

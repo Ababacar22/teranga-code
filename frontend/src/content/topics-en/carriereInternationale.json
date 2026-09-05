@@ -1,0 +1,307 @@
+[
+  {
+    "id": "entretien-comportemental-star",
+    "title": "The Behavioral Interview and the STAR Method",
+    "category": "International Career",
+    "badge": { "id": "badge-star-method", "name": "STAR Storyteller", "emoji": "🎤" },
+    "griotIntro": [
+      "In Mbour, fishermen always tell the story of their sea trips the same way: the context, the difficulty they ran into, what they did, and what came out of it.",
+      "Without knowing it, that structure is already the STAR method — the format expected in almost every behavioral interview internationally.",
+      "In the United States, in Europe, and increasingly in the Gulf, a good technical answer isn't enough — how you tell your story is also being evaluated.",
+      "'Tell me about a time you disagreed with a teammate' is not a throwaway question — it's a precise one that expects a structured answer, not a vague anecdote."
+    ],
+    "explanation": {
+      "text": "STAR stands for Situation, Task, Action, Result. Situation sets the context in one or two sentences. Task clarifies your role and the goal. Action details WHAT YOU did (not the team — the interviewer wants to assess YOUR contribution). Result wraps up with a measurable outcome if possible, and what you learned from it. The most common trap: staying vague on the Action and talking only about the team ('we decided...') instead of your own contribution.",
+      "code": "// Example of a structured answer (question: \"Tell me about a conflict with a teammate\")\n\nSituation:\n  \"On an API redesign project, a backend colleague wanted\n   to deploy a breaking change without versioning the endpoint.\"\n\nTask:\n  \"As the person responsible for API stability for our\n   3 internal clients, I had to avoid a service outage.\"\n\nAction:\n  \"I set up a 15-minute meeting to show the concrete\n   impact on existing clients, proposed a /v2 versioning\n   alternative, and pair-programmed the migration\n   with him instead of just blocking without a solution.\"\n\nResult:\n  \"The deployment went out without incident, and we documented\n   this versioning rule in our team guide —\n   reused since on 4 other projects.\"",
+      "annotations": [
+        { "line": 4, "note": "The Situation stays short: two sentences maximum. The goal isn't to tell the whole story of the project, just to set the minimal context needed to understand the stakes." },
+        { "line": 8, "note": "Task explicitly states the role and responsibility — this saves the interviewer from having to guess why the situation concerned you." },
+        { "line": 12, "note": "The Action is the longest and most important part: it must be phrased in the first person ('I proposed', 'I wrote') rather than 'we', otherwise the interviewer can't assess your individual contribution." },
+        { "line": 18, "note": "A good Result goes beyond the immediate outcome: mentioning what was retained or reused shows lasting impact, not a one-off." }
+      ]
+    },
+    "useCases": [
+      "Behavioral interviews at major American tech companies",
+      "'Soft skills' sections of interviews in France and Europe",
+      "'Culture fit' interviews at Gulf companies hiring international profiles"
+    ],
+    "relatedTools": [
+      { "name": "STAR Anecdote Notebook", "description": "Prepare 5-6 professional stories in advance covering conflict, failure, leadership, ambiguity, tight deadline — most behavioral questions are variations of these." },
+      { "name": "Amazon Leadership Principles", "description": "A widely used reference (even outside Amazon) for anticipating the type of qualities assessed in an English-speaking behavioral interview." }
+    ],
+    "practice": {
+      "question": "What is the most common mistake in the 'Action' part of a STAR answer?",
+      "options": [
+        "Speaking only in terms of 'we' without stating your individual contribution",
+        "Giving too many precise technical details",
+        "Ending with a quantified result"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: the interviewer wants to assess YOUR contribution — sticking to 'we' prevents them from judging your real role in the situation.",
+        "incorrect": "The classic trap is staying vague about your own contribution by talking only about the team ('we decided') — the interviewer then can't assess your individual input."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What does the acronym STAR stand for?",
+        "options": [
+          "Situation, Task, Action, Result",
+          "Story, Team, Analysis, Review",
+          "Skills, Time, Achievement, Reflection"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why must the Action part be phrased in the first person?",
+        "options": [
+          "Because the interviewer is assessing the candidate's individual contribution, not the team's",
+          "Because it's a mandatory rule of English grammar",
+          "Because the Situation part must stay in 'we'"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "A candidate answers 'tell me about a failure' with an anecdote but never says what they learned from it. What is missing?",
+        "options": [
+          "A conclusion (Result) showing the learning or lasting impact of the experience",
+          "Nothing, the question doesn't ask for a conclusion",
+          "A second failure example"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Why prepare 5-6 anecdotes in advance rather than just one?",
+        "options": [
+          "Because a well-chosen anecdote can often answer several different types of behavioral questions",
+          "Because every interview asks exactly 6 behavioral questions",
+          "Because recruiters check that anecdotes never repeat from one candidate to another"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "In an English-speaking behavioral interview, why is a structured answer perceived better than a spontaneous, disorganized one, even if the substance is similar?",
+        "options": [
+          "Because a clear structure is also seen as an indicator of professional communication, a skill explicitly being assessed",
+          "Because structure matters more than the content of the anecdote itself",
+          "Because English-speaking interviewers don't understand unstructured answers"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "The STAR method is explicitly taught in interview prep guides at major American companies — many candidates practice reciting it even before knowing the technical questions they'll be asked.",
+    "pionnier": {
+      "nom": "Industrial/Organizational (I/O) Psychologists",
+      "portrait": "Starting in the 1970s-1980s, industrial and organizational psychologists sought to make hiring interviews more reliable and less arbitrary.",
+      "contribution": "They formalized the principle of the structured interview based on past behavior ('behavioral interviewing'), of which the STAR method is a simplified version later popularized by companies.",
+      "problematique": "Unstructured interviews, based on general impressions or hypothetical questions ('what would you do if...'), were poor predictors of actual job performance.",
+      "solution": "Base the assessment on concrete, verifiable examples of past behavior, following the idea that past behavior is the best predictor of future behavior.",
+      "resultat": "The structured behavioral interview is today one of the most widely used and scientifically best-validated interview formats in hiring, especially in tech."
+    },
+    "ambiguite": {
+      "question": "Should you invent or embellish an anecdote so it fits the STAR method perfectly?",
+      "reponse": "No — experienced interviewers ask precise follow-up questions ('and specifically, what did you say in that meeting?') that quickly expose an embellished or made-up story. It's better to pick a real, even modest, anecdote and structure it honestly with STAR than to fabricate an impressive one that's fragile under follow-up questions."
+    }
+  },
+  {
+    "id": "anglais-technique-entretien",
+    "title": "Technical English for the Interview",
+    "category": "International Career",
+    "badge": { "id": "badge-technical-english", "name": "Bilingual in Code", "emoji": "🗣️" },
+    "griotIntro": [
+      "Talking about your code in a foreign language, live, under pressure: that's a skill in its own right, different from classroom English.",
+      "Many French-speaking candidates handle written technical English very well (documentation, code) but freeze up when speaking, on a video call, facing an unfamiliar accent.",
+      "This topic doesn't replace English classes — it targets the precise vocabulary and phrasing that come up over and over in a technical interview."
+    ],
+    "explanation": {
+      "text": "Three families of vocabulary come up systematically: describing an architecture ('this service is responsible for...', 'it communicates with X via a REST API'), explaining a bug or a trade-off ('the trade-off here is...', 'this introduces a race condition'), and talking about your experience ('I led/owned/contributed to...'). Practicing saying these sentences out loud, not just reading them, is what makes the difference under stress.",
+      "code": "// Vocabulary to master out loud, by situation\n\n// Describing an architecture\n\"This component is responsible for handling authentication.\"\n\"It talks to the database through an ORM.\"\n\"We decoupled these two services to scale them independently.\"\n\n// Explaining a technical trade-off\n\"The trade-off here is between consistency and latency.\"\n\"This approach is more scalable, but harder to maintain.\"\n\"We chose eventual consistency to favor read performance.\"\n\n// Talking about your role (not just 'I worked on')\n\"I owned the migration from monolith to microservices.\"\n\"I led a team of three engineers on this feature.\"\n\"I was the point of contact between the backend and mobile teams.\"",
+      "annotations": [
+        { "line": 4, "note": "'Responsible for' is an extremely common phrase for describing a component's role — much more natural when speaking than literal translations from French." },
+        { "line": 9, "note": "'Trade-off' is THE key word of English-speaking technical interviews: using it naturally immediately signals a good grasp of architectural considerations." },
+        { "line": 14, "note": "'I owned' and 'I led' are clearly valued more than 'I worked on' in the Anglo-Saxon interview culture — they signal taking ownership, not just participating." }
+      ]
+    },
+    "useCases": [
+      "Technical video-call interviews with English-speaking recruiters (USA, UK, Gulf companies)",
+      "Presenting a personal or professional project in English during an interview",
+      "Writing a resume and LinkedIn profile targeting international recruiters"
+    ],
+    "relatedTools": [
+      { "name": "Recording Yourself", "description": "Recording yourself describing a project in English, then listening back, quickly reveals the hesitations and phrasing that need work." },
+      { "name": "App Glossary", "description": "Teranga Code's lexicon section also lists the English equivalents of the most commonly used technical terms." }
+    ],
+    "practice": {
+      "question": "Why prefer 'I owned the migration' over 'I worked on the migration' to describe your role in a project?",
+      "options": [
+        "'Owned' signals taking ownership and leadership, which is valued more in Anglo-Saxon interview culture",
+        "'Worked on' is grammatically incorrect",
+        "The two expressions are strictly interchangeable with no nuance at all"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: the choice of verb changes the perceived level of responsibility — 'owned' or 'led' signal much more than mere participation.",
+        "incorrect": "Both expressions are grammatically correct but don't signal the same level of responsibility: 'owned'/'led' are perceived far better in an English-speaking interview."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Which word comes up most often when discussing an architectural trade-off in technical English?",
+        "options": [
+          "Trade-off",
+          "Feature",
+          "Deadline"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Which phrasing best describes the role of a component in an architecture, when speaking?",
+        "options": [
+          "\"This component is responsible for...\"",
+          "\"This component makes...\"",
+          "\"This component has...\""
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is practicing speaking out loud more useful than simply reading technical vocabulary?",
+        "options": [
+          "Because the stress of live speaking is different from written comprehension, and only oral practice prepares you for that pressure",
+          "Because reading technical vocabulary in English is of no use for an interview",
+          "Because interviewers only assess pronunciation, never content"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A candidate says 'we decided to use eventual consistency' without ever including themselves personally in the story. What is the risk?",
+        "options": [
+          "The interviewer can't assess the candidate's actual individual contribution to that decision",
+          "No risk, 'we' is always preferable to 'I' in technical English",
+          "The term 'eventual consistency' is incorrect in this context"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      }
+    ],
+    "culture": "Many Gulf companies (Dubai, Riyadh, Doha) run their technical interviews exclusively in English, even for French-speaking candidates — spoken technical English proficiency is often a disqualifying criterion even before the technical assessment.",
+    "pionnier": {
+      "nom": "Grace Hopper",
+      "portrait": "American computer scientist and Navy officer (1906-1992), a programming pioneer from the earliest days of computing on the Harvard Mark I.",
+      "contribution": "Starting in the 1950s, she championed the idea that code should be written in a language close to plain English rather than pure mathematical notation, contributing to the creation of the first compiler and later to the origin of the COBOL language.",
+      "problematique": "At the time, programming required working with machine code or symbolic notation that was hard to read, which made programming inaccessible and poorly portable between teams.",
+      "solution": "Create compilers that translated instructions close to natural English into machine code, making programming more readable and shareable.",
+      "resultat": "This approach durably established English as the reference language of code and technical computing vocabulary, a legacy still visible today in programming language keywords and worldwide technical jargon."
+    },
+    "ambiguite": {
+      "question": "Should you aim for perfect English, with no accent or hesitation, to succeed in these interviews?",
+      "reponse": "No — the vast majority of international recruiters, especially in tech, assess the clarity of technical communication, not the accent. English with an accent but structured sentences and precise technical vocabulary comes across far better than hesitant English on substance, even without an accent."
+    }
+  },
+  {
+    "id": "process-recrutement-regions",
+    "title": "Hiring Process: France, Middle East, USA",
+    "category": "International Career",
+    "badge": { "id": "badge-hiring-process", "name": "Process Traveler", "emoji": "🧭" },
+    "griotIntro": [
+      "Every region has its own hiring conventions — preparing for the USA the same way as for France is a costly mistake.",
+      "In Mbour, merchants who export to several countries know how to adapt their negotiations depending on who's buying.",
+      "It's the same logic here: knowing the expected format before the interview keeps you from being caught off guard by the rules of the game."
+    ],
+    "explanation": {
+      "text": "USA: the most standardized format, often an 'onsite loop' of 4 to 6 interviews in the same day (LeetCode-style algorithmic, system design from mid-level onward, STAR-style behavioral, sometimes a decisive 'bar raiser' interview). France: more variable process, often 2 to 3 rounds (technical, then team/culture-fit meeting, sometimes a take-home technical test), English isn't always required except at international companies. Middle East (Dubai, Riyadh, Doha): often a faster process, strong emphasis on spoken English, packages often including housing/relocation, interviews sometimes conducted by recruiters who are themselves international.",
+      "code": "// Concrete benchmarks by region (verify case by case, every company varies)\n\nUSA:\n  format: \"Onsite loop in 1 day, 4-6 interviews\"\n  contenu: [\"algo (LeetCode medium/hard)\", \"system design\", \"behavioral (STAR)\"]\n  duree_process: \"2-6 weeks\"\n  particularite: \"'Bar raiser': an interviewer outside the team may hold veto power\"\n\nFrance:\n  format: \"2-3 rounds, sometimes spread over several weeks\"\n  contenu: [\"technical (often less pure algo)\", \"culture fit\", \"sometimes a take-home test\"]\n  duree_process: \"3-8 weeks\"\n  particularite: \"English isn't systematic, except at internationally-reaching companies\"\n\nMoyen_Orient:\n  format: \"Often a faster process, grouped interviews\"\n  contenu: [\"technical\", \"spoken English almost always required\", \"package/relocation discussion\"]\n  duree_process: \"1-4 weeks\"\n  particularite: \"Packages often including housing, transport, relocation bonuses\"",
+      "annotations": [
+        { "line": 5, "note": "The American onsite loop packs everything into a single intense day — preparing physically and mentally for it (managing energy across 4-6 interviews) matters as much as technical preparation." },
+        { "line": 8, "note": "The 'bar raiser' is an American specificity (popularized by Amazon): even if the other interviews go well, a negative opinion from this independent interviewer can block the offer." },
+        { "line": 12, "note": "In France, the frequent absence of an English-language interview doesn't mean algorithmic questions are absent — the format is simply less standardized than in the USA, making it harder to anticipate precisely." },
+        { "line": 18, "note": "Negotiating a package in the Gulf often involves non-salary elements (housing, annual flights, children's schooling) that need to be valued and compared, not just net salary." }
+      ]
+    },
+    "useCases": [
+      "Deciding how much time to spend on algorithmic prep depending on the targeted region",
+      "Anticipating a package negotiation that includes relocation (Gulf) rather than pure salary",
+      "Adapting your personal presentation (resume, verbal pitch) to the interview format expected in each region"
+    ],
+    "relatedTools": [
+      { "name": "LeetCode", "description": "An almost essential algorithmic practice platform for targeting a job in the USA." },
+      { "name": "Glassdoor", "description": "Lets you check feedback from former candidates about the exact hiring process of a given company." },
+      { "name": "LinkedIn", "description": "The main sourcing channel for Gulf recruiters, who often contact sought-after profiles directly." }
+    ],
+    "practice": {
+      "question": "A candidate prepares for a US company interview by only reviewing system design, never practicing LeetCode-style algorithmic exercises. What is the risk?",
+      "options": [
+        "The American onsite loop almost always includes an algorithmic step, in addition to system design",
+        "No risk, system design always replaces algorithmic questions in the USA",
+        "Algorithmic questions are never assessed in the USA, unlike in France"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactly: the standard American format generally combines algorithmic AND system design, rarely one without the other for a mid-level-or-above role.",
+        "incorrect": "The standard American format (onsite loop) almost always combines algorithmic questions and system design — neglecting either one is risky."
+      }
+    },
+    "quiz": [
+      {
+        "question": "What is a 'bar raiser' in the American hiring process?",
+        "options": [
+          "An interviewer independent of the hiring team, whose negative opinion can block the offer even if the other interviews go well",
+          "The name given to the final salary negotiation round",
+          "A technical test to complete at home before the interview"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Which feature often comes up in Middle East hiring processes?",
+        "options": [
+          "Packages including housing, transport, or relocation bonuses on top of salary",
+          "A process that is always longer than in the USA",
+          "The total absence of technical interviews"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Why is the hiring process in France described as 'more variable' than the American process?",
+        "options": [
+          "Because there is no format as standardized as in the USA from one company to another",
+          "Because France has no technical interviews at all",
+          "Because the French process always lasts less than a week"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "A candidate receives an offer in the Gulf with a net salary slightly lower than a French offer, but including housing and annual flights. What should be done before comparing the two offers?",
+        "options": [
+          "Quantify the real value of the non-salary benefits to compare the total package, not just net salary",
+          "Automatically reject the offer with the lower net salary",
+          "Ignore non-salary benefits, they never have real value"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Many engineers moving to the Gulf go through specialized recruiters who handle the entire relocation — a phenomenon much less present for hiring in France or the USA, where the candidate generally handles the administrative steps alone.",
+    "pionnier": {
+      "nom": "Laszlo Bock",
+      "portrait": "Former Senior Vice President of People Operations at Google (2006-2016), author of the book 'Work Rules!' (2015), which documents the company's internal HR practices.",
+      "contribution": "He publicly detailed and theorized Google's structured technical hiring methods (multiple interviews, standardized scoring rubrics, a hiring committee independent of managers), practices later widely adopted by other tech companies worldwide.",
+      "problematique": "Hiring decisions based on a single manager's intuition were unreliable and prone to bias, with a high risk of costly hiring mistakes.",
+      "solution": "Structure the process around several standardized interviews, shared scoring rubrics, and a hiring committee separate from the hiring manager, to make the decision more objective and consistent across teams.",
+      "resultat": "This approach, documented in 'Work Rules!', has influenced the technical hiring practices of many tech companies worldwide, notably the onsite loop format with several independent interviewers."
+    },
+    "ambiguite": {
+      "question": "Is the fastest process (often the Middle East) necessarily the least technically demanding?",
+      "reponse": "No — a short process doesn't mean lower technical standards, just fewer intermediate steps. Many international companies established in the Gulf hire with the same technical standards as their US or European headquarters, simply with a faster decision cycle."
+    }
+  }
+]
