@@ -71,6 +71,14 @@ const TOPIC_BADGE_IDS = [
   'badge-star-method',
   'badge-technical-english',
   'badge-hiring-process',
+  // fintech.json
+  'badge-idempotence',
+  'badge-payment-gateway',
+  'badge-fraud-detection',
+  // iaMachineLearning.json
+  'badge-ml-fond',
+  'badge-neural-networks',
+  'badge-generative-ai',
 ]
 
 const MAX_XP_PER_BADGE = {

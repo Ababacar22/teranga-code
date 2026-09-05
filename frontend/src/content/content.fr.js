@@ -10,6 +10,8 @@ import cloudDistribue from './topics/cloudDistribue.json'
 import architectureSI from './topics/architectureSI.json'
 import systemDesign from './topics/systemDesign.json'
 import carriereInternationale from './topics/carriereInternationale.json'
+import fintech from './topics/fintech.json'
+import iaMachineLearning from './topics/iaMachineLearning.json'
 import { createContentHelpers } from './unlockLogic'
 
 export const villes = [
@@ -707,6 +709,122 @@ export const villes = [
             'Un grand marathon international',
             'Un festival de cinéma d’action',
           ],
+          correctIndex: 0,
+        },
+      ],
+    },
+  },
+  {
+    id: 'bangalore',
+    name: 'Bangalore',
+    rubrique: 'Fintech & Paiements',
+    icon: '💳',
+    lonLat: [77.5946, 12.9716],
+    topics: fintech,
+    alwaysUnlocked: true,
+    discovery: {
+      facts: [
+        "Bangalore est surnommée la « Silicon Valley de l'Inde », capitale technologique du pays depuis les années 1990.",
+        "La ville abrite les sièges ou centres majeurs de milliers d'entreprises tech, indiennes comme internationales.",
+        "L'Inde a développé l'India Stack, un ensemble d'infrastructures numériques publiques incluant UPI, l'un des systèmes de paiement instantané les plus utilisés au monde.",
+        "Bangalore compte l'une des plus fortes concentrations d'ingénieurs logiciels au monde, formés notamment dans les grands instituts indiens (IIT, IISc).",
+        "La ville est aussi appelée « Garden City » pour ses nombreux parcs, héritage de son urbanisme du XIXe siècle.",
+        "L'écosystème de startups de Bangalore est l'un des plus actifs d'Asie, avec un fort accent sur la fintech et le SaaS.",
+        "Le climat tempéré de Bangalore, rare en Inde, a historiquement attiré les industries de haute technologie dans la ville.",
+      ],
+      quickFacts: {
+        population: '~13 millions d’habitants (agglomération)',
+        specialite: 'Technologie de l’information et fintech',
+        langues: 'Kannada, anglais et hindi',
+      },
+      quiz: [
+        {
+          question: 'Comment surnomme-t-on souvent Bangalore ?',
+          options: ['La Silicon Valley de l’Inde', 'La capitale religieuse de l’Inde', 'Le plus grand port du pays'],
+          correctIndex: 0,
+        },
+        {
+          question: 'Qu’est-ce que l’India Stack ?',
+          options: [
+            'Un ensemble d’infrastructures numériques publiques indiennes, incluant UPI',
+            'Une chaîne de montagnes près de Bangalore',
+            'Un festival annuel de musique',
+          ],
+          correctIndex: 0,
+        },
+        {
+          question: 'Pourquoi Bangalore est-elle aussi appelée « Garden City » ?',
+          options: ['Pour ses nombreux parcs hérités de son urbanisme du XIXe siècle', 'Pour ses plages', 'Pour ses cultures de riz environnantes'],
+          correctIndex: 0,
+        },
+        {
+          question: 'Dans quel secteur l’écosystème de startups de Bangalore est-il particulièrement actif ?',
+          options: ['La fintech et le SaaS', 'La pêche industrielle', 'L’extraction minière'],
+          correctIndex: 0,
+        },
+        {
+          question: 'Quelle particularité climatique a historiquement attiré la tech à Bangalore ?',
+          options: ['Un climat tempéré, rare en Inde', 'Un climat glacial toute l’année', 'Une absence totale de saison des pluies'],
+          correctIndex: 0,
+        },
+      ],
+    },
+  },
+  {
+    id: 'silicon-valley',
+    name: 'Silicon Valley',
+    rubrique: 'IA & Machine Learning',
+    icon: '🤖',
+    lonLat: [-122.143, 37.4419],
+    topics: iaMachineLearning,
+    alwaysUnlocked: true,
+    discovery: {
+      facts: [
+        "La Silicon Valley, dans la baie de San Francisco, doit son nom au silicium utilisé dans les semi-conducteurs qui y ont été développés dès les années 1950-60.",
+        "Elle abrite les sièges de géants technologiques comme Google, Apple, Meta et Nvidia, ainsi que Stanford, université au cœur de son écosystème.",
+        "La région concentre une part majeure des investissements mondiaux en capital-risque, en particulier dans l'intelligence artificielle depuis les années 2020.",
+        "Le terme « Silicon Valley » a été popularisé par le journaliste Don Hoefler en 1971.",
+        "L'université de Stanford a directement engendré des entreprises comme Google et Hewlett-Packard, nées de projets ou thèses d'étudiants.",
+        "La région a connu plusieurs vagues technologiques majeures : semi-conducteurs, micro-informatique, internet, puis intelligence artificielle.",
+        "Malgré son image de pointe technologique, la Silicon Valley fait aussi face à d'importants défis de coût de la vie et d'inégalités locales.",
+      ],
+      quickFacts: {
+        population: '~3,5 millions d’habitants (baie de San Francisco)',
+        specialite: 'Capital-risque, intelligence artificielle et grandes entreprises tech',
+        langues: 'Anglais, espagnol et de nombreuses autres langues (forte immigration internationale)',
+      },
+      quiz: [
+        {
+          question: 'D’où vient le nom « Silicon Valley » ?',
+          options: [
+            'Du silicium utilisé dans les semi-conducteurs développés dans la région',
+            'D’une chaîne de montagnes en forme de silicium',
+            'D’un lac local appelé « Silicon »',
+          ],
+          correctIndex: 0,
+        },
+        {
+          question: 'Quelle université est particulièrement associée à l’écosystème de la Silicon Valley ?',
+          options: ['Stanford', 'Harvard', 'Oxford'],
+          correctIndex: 0,
+        },
+        {
+          question: 'Qui a popularisé le terme « Silicon Valley » ?',
+          options: ['Le journaliste Don Hoefler en 1971', 'Un ingénieur de la NASA', 'Le gouverneur de Californie'],
+          correctIndex: 0,
+        },
+        {
+          question: 'Quelles vagues technologiques successives ont marqué la Silicon Valley ?',
+          options: [
+            'Semi-conducteurs, micro-informatique, internet, intelligence artificielle',
+            'Uniquement l’intelligence artificielle, depuis toujours',
+            'Textile, sidérurgie, automobile',
+          ],
+          correctIndex: 0,
+        },
+        {
+          question: 'Quel défi important accompagne le succès technologique de la région ?',
+          options: ['Un coût de la vie très élevé et des inégalités locales importantes', 'Un manque total d’entreprises', 'L’absence de toute université'],
           correctIndex: 0,
         },
       ],

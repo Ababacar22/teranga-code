@@ -1,0 +1,326 @@
+[
+  {
+    "id": "fondamentaux-machine-learning",
+    "title": "Fondamentaux du Machine Learning",
+    "category": "IA & Machine Learning",
+    "badge": { "id": "badge-ml-fond", "name": "Apprenti de la donnée", "emoji": "📊" },
+    "griotIntro": [
+      "Dans la Silicon Valley, on ne programme plus toujours une règle explicite pour chaque cas — on montre des milliers d'exemples à une machine, et elle en déduit la règle elle-même.",
+      "C'est le renversement fondamental du Machine Learning : au lieu d'écrire 'si ceci alors cela', on écrit 'voici des exemples, trouve le motif'.",
+      "Un ingénieur logiciel n'a pas besoin d'être data scientist pour un entretien — mais doit savoir distinguer les grandes familles d'apprentissage et leurs cas d'usage."
+    ],
+    "explanation": {
+      "text": "Trois grandes familles structurent le Machine Learning. L'apprentissage supervisé entraîne un modèle sur des exemples déjà étiquetés (ex: des emails marqués spam/non-spam) pour prédire l'étiquette de nouveaux exemples. L'apprentissage non-supervisé cherche des structures dans des données SANS étiquette (ex: regrouper des clients en segments similaires). L'apprentissage par renforcement entraîne un agent à maximiser une récompense par essais-erreurs successifs (ex: un programme qui apprend à jouer en étant récompensé quand il gagne). Le choix de la famille dépend entièrement du problème et des données disponibles.",
+      "code": "// Apprentissage supervisé : classification simplifiée (pseudo-code)\nfunction trainClassifier(examples) {\n  // examples = [{ features: [...], label: 'spam' | 'not_spam' }, ...]\n  const model = initializeModel()\n\n  for (const epoch of range(numEpochs)) {\n    for (const example of examples) {\n      const prediction = model.predict(example.features)\n      const error = example.label - prediction\n      model.adjustWeights(error)          // ajustement progressif des paramètres\n    }\n  }\n  return model\n}\n\nfunction classify(model, newEmail) {\n  const features = extractFeatures(newEmail)  // ex: fréquence de certains mots\n  return model.predict(features)              // 'spam' ou 'not_spam'\n}",
+      "annotations": [
+        { "line": 2, "note": "Chaque exemple d'entraînement porte une étiquette connue — c'est précisément ce qui définit l'apprentissage SUPERVISÉ, par opposition au non-supervisé où aucune étiquette n'existe." },
+        { "line": 9, "note": "L'ajustement des poids du modèle est progressif et répété sur de nombreux passages (epochs) sur les données — le modèle ne 'devine' pas juste une fois, il affine sa prédiction petit à petit." },
+        { "line": 15, "note": "L'extraction de features (caractéristiques) transforme une donnée brute (un email) en valeurs numériques exploitables par le modèle — une étape cruciale souvent sous-estimée." }
+      ]
+    },
+    "useCases": [
+      "Filtrage de spam, détection de fraude, systèmes de recommandation (apprentissage supervisé)",
+      "Segmentation de clients, détection d'anomalies sans exemples préalables (apprentissage non-supervisé)",
+      "Jeux (échecs, Go), robotique, optimisation de systèmes (apprentissage par renforcement)"
+    ],
+    "relatedTools": [
+      { "name": "scikit-learn", "description": "Bibliothèque Python de référence pour les algorithmes de ML classiques (hors deep learning), très utilisée en entretien technique." },
+      { "name": "TensorFlow / PyTorch", "description": "Frameworks dominants pour construire et entraîner des modèles de deep learning à grande échelle." },
+      { "name": "Jeu de données d'entraînement/test", "description": "Séparer les données en un ensemble d'entraînement et un ensemble de test est essentiel pour vérifier qu'un modèle généralise, plutôt que de simplement mémoriser." }
+    ],
+    "practice": {
+      "question": "Une entreprise veut regrouper ses clients en segments similaires, sans savoir à l'avance combien de segments existent ni leurs caractéristiques. Quelle famille de Machine Learning est la plus adaptée ?",
+      "options": [
+        "L'apprentissage non-supervisé",
+        "L'apprentissage supervisé",
+        "L'apprentissage par renforcement"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : sans étiquette connue à l'avance (les segments ne sont pas définis), c'est un problème de découverte de structure — le terrain de l'apprentissage non-supervisé.",
+        "incorrect": "Sans étiquette prédéfinie (les segments ne sont pas connus à l'avance), ce n'est pas un problème supervisé — c'est exactement le cas d'usage de l'apprentissage non-supervisé (ex: clustering)."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Quelle est la différence fondamentale entre apprentissage supervisé et non-supervisé ?",
+        "options": [
+          "Le supervisé utilise des données étiquetées, le non-supervisé cherche des structures sans étiquette",
+          "Le supervisé est toujours plus rapide à entraîner que le non-supervisé",
+          "Il n'existe aucune différence significative entre les deux"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Dans l'apprentissage par renforcement, comment l'agent apprend-il ?",
+        "options": [
+          "Par essais-erreurs successifs, en maximisant une récompense",
+          "Uniquement à partir d'exemples déjà étiquetés par un humain",
+          "En mémorisant exactement toutes les données d'entraînement"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Pourquoi sépare-t-on toujours les données en un ensemble d'entraînement et un ensemble de test ?",
+        "options": [
+          "Pour vérifier que le modèle généralise à de nouvelles données, plutôt que d'avoir simplement mémorisé les exemples d'entraînement",
+          "Pour accélérer artificiellement l'entraînement du modèle",
+          "Cette séparation est optionnelle et rarement utile en pratique"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un modèle obtient un score presque parfait sur les données d'entraînement mais un score très faible sur les données de test. Quel est ce phénomène ?",
+        "options": [
+          "Le surapprentissage (overfitting) — le modèle a mémorisé les exemples plutôt que d'apprendre un motif généralisable",
+          "Un bug d'implémentation systématique, il n'existe pas de terme spécifique pour ce cas",
+          "C'est le comportement normal et souhaité d'un bon modèle"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi l'extraction de features (caractéristiques) est-elle une étape cruciale, souvent plus déterminante que le choix de l'algorithme lui-même ?",
+        "options": [
+          "Un modèle ne peut apprendre que ce que les features lui permettent de \"voir\" — de mauvaises features limitent la performance quel que soit l'algorithme utilisé",
+          "L'extraction de features est une étape purement optionnelle sans impact réel",
+          "Le choix de l'algorithme compte toujours plus que la qualité des données d'entrée"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "Le terme \"Machine Learning\" a été popularisé par Arthur Samuel en 1959, dans le contexte d'un programme qui apprenait à jouer aux dames — bien avant que la puissance de calcul nécessaire pour le deep learning moderne n'existe.",
+    "pionnier": {
+      "nom": "Arthur Samuel",
+      "portrait": "Informaticien américain chez IBM, il a créé dans les années 1950 l'un des tout premiers programmes capables de s'améliorer en jouant contre lui-même.",
+      "contribution": "Il a inventé le terme \"machine learning\" en 1959 et démontré, avec son programme de jeu de dames, qu'un ordinateur pouvait améliorer ses performances sans être explicitement reprogrammé pour chaque nouvelle situation.",
+      "problematique": "Les programmes de l'époque devaient être explicitement codés pour chaque règle et situation, rendant impossible la gestion de problèmes trop complexes pour être entièrement anticipés par un programmeur.",
+      "solution": "Un programme qui ajuste ses propres paramètres internes en fonction de ses parties précédentes, s'améliorant progressivement par l'expérience plutôt que par reprogrammation manuelle.",
+      "resultat": "Son programme de dames a fini par battre des joueurs amateurs compétents, une démonstration précoce et marquante que l'apprentissage automatique était possible — jetant les bases conceptuelles d'un champ qui domine aujourd'hui une grande partie de la tech mondiale."
+    },
+    "ambiguite": {
+      "question": "Le Machine Learning signifie-t-il qu'une machine \"comprend\" réellement ce qu'elle fait, comme un humain ?",
+      "reponse": "Non — c'est une confusion fréquente en entretien. Un modèle de ML détecte des motifs statistiques dans des données, sans compréhension conceptuelle du sens de ces données au sens humain. Un modèle peut parfaitement classer des images de chats sans avoir la moindre notion de ce qu'est un chat — il détecte des motifs de pixels corrélés à l'étiquette \"chat\" dans ses données d'entraînement, rien de plus."
+    }
+  },
+  {
+    "id": "reseaux-neurones-deep-learning",
+    "title": "Réseaux de neurones et Deep Learning",
+    "category": "IA & Machine Learning",
+    "badge": { "id": "badge-neural-networks", "name": "Architecte de neurones", "emoji": "🧠" },
+    "griotIntro": [
+      "Un réseau de neurones artificiels s'inspire, très librement, du cerveau : des unités simples connectées entre elles, dont la force des connexions s'ajuste avec l'expérience.",
+      "Ce qui a changé la donne dans la Silicon Valley depuis les années 2010, ce n'est pas l'idée elle-même — elle date des années 1950 — mais la puissance de calcul disponible pour l'exploiter à grande échelle.",
+      "Le 'deep' dans deep learning ne veut pas dire 'intelligent', il veut dire simplement : beaucoup de couches empilées."
+    ],
+    "explanation": {
+      "text": "Un réseau de neurones est composé de couches de nœuds (neurones artificiels) connectées entre elles. Chaque neurone reçoit des entrées, les combine avec des poids appris, applique une fonction d'activation (introduisant de la non-linéarité), et transmet le résultat à la couche suivante. L'entraînement ajuste ces poids par rétropropagation (backpropagation) : l'erreur de prédiction est propagée en arrière à travers le réseau pour ajuster chaque poids dans la direction qui la réduit. Un réseau 'profond' (deep) empile de nombreuses couches, chacune apprenant des représentations de plus en plus abstraites.",
+      "code": "// Un neurone artificiel simplifié\nfunction neuron(inputs, weights, bias) {\n  let sum = bias\n  for (let i = 0; i < inputs.length; i++) {\n    sum += inputs[i] * weights[i]      // combinaison pondérée des entrées\n  }\n  return activation(sum)               // non-linéarité (ex: ReLU, sigmoid)\n}\n\nfunction activation(x) {\n  return Math.max(0, x)                // ReLU : simple mais très efficace en pratique\n}\n\n// Passage avant dans un réseau à plusieurs couches\nfunction forwardPass(input, layers) {\n  let activations = input\n  for (const layer of layers) {\n    activations = layer.map((neuron) => neuron(activations, neuron.weights, neuron.bias))\n  }\n  return activations                   // sortie finale du réseau\n}",
+      "annotations": [
+        { "line": 3, "note": "La combinaison pondérée est une simple somme — c'est la fonction d'activation qui apporte la non-linéarité indispensable pour que le réseau puisse apprendre des motifs complexes, pas juste des relations linéaires." },
+        { "line": 9, "note": "ReLU (Rectified Linear Unit) est devenue la fonction d'activation la plus utilisée en pratique car elle est simple à calculer et évite certains problèmes d'entraînement des fonctions plus anciennes comme la sigmoid." },
+        { "line": 14, "note": "Le passage avant (forward pass) traverse les couches une par une — chaque couche transforme la représentation de la précédente en quelque chose de plus abstrait, jusqu'à la sortie finale." }
+      ]
+    },
+    "useCases": [
+      "Reconnaissance d'images et de vidéos (réseaux convolutifs, CNN)",
+      "Traitement du langage naturel et traduction automatique (réseaux transformers)",
+      "Reconnaissance vocale et génération audio"
+    ],
+    "relatedTools": [
+      { "name": "PyTorch", "description": "Framework de deep learning développé par Meta, très populaire pour la recherche grâce à sa flexibilité." },
+      { "name": "GPU / TPU", "description": "Matériel spécialisé indispensable pour entraîner des réseaux profonds à grande échelle — le calcul matriciel massif est leur point fort." },
+      { "name": "Réseaux convolutifs (CNN)", "description": "Architecture spécialisée pour les images, exploitant la structure spatiale des pixels plutôt que de les traiter comme une liste plate." }
+    ],
+    "practice": {
+      "question": "Pourquoi la fonction d'activation est-elle indispensable dans un réseau de neurones, et pas seulement la somme pondérée des entrées ?",
+      "options": [
+        "Sans non-linéarité, empiler plusieurs couches reviendrait mathématiquement à une seule transformation linéaire, incapable d'apprendre des motifs complexes",
+        "La fonction d'activation sert uniquement à accélérer les calculs, sans impact sur la capacité d'apprentissage",
+        "Elle n'est utile que pour la toute dernière couche du réseau"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : sans non-linéarité, un réseau à 100 couches serait mathématiquement équivalent à un réseau à une seule couche — la non-linéarité est ce qui donne sa puissance au deep learning.",
+        "incorrect": "La fonction d'activation introduit la non-linéarité nécessaire — sans elle, empiler des couches n'apporterait mathématiquement rien de plus qu'une seule transformation linéaire."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Que signifie \"deep\" dans deep learning ?",
+        "options": [
+          "Le réseau empile un grand nombre de couches",
+          "Le modèle comprend profondément le sens des données",
+          "L'algorithme est nécessairement plus lent que les autres méthodes de ML"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Qu'est-ce que la rétropropagation (backpropagation) ?",
+        "options": [
+          "La méthode qui propage l'erreur de prédiction en arrière à travers le réseau pour ajuster les poids",
+          "La phase où le réseau génère sa prédiction finale",
+          "Un type spécifique de fonction d'activation"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi les GPU sont-ils particulièrement adaptés à l'entraînement de réseaux de neurones ?",
+        "options": [
+          "Ils excellent dans le calcul matriciel massivement parallèle, exactement ce que requiert le passage avant/arrière dans un réseau",
+          "Ils sont uniquement utiles pour l'affichage graphique, sans lien avec le calcul de ML",
+          "Un CPU classique est toujours plus rapide pour ce type de calcul"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Un réseau convolutif (CNN) traite une image en exploitant sa structure spatiale plutôt qu'en la traitant comme une liste plate de pixels. Pourquoi cette approche est-elle plus efficace pour les images ?",
+        "options": [
+          "Elle permet de détecter des motifs locaux (contours, formes) réutilisables à différents endroits de l'image, réduisant le nombre de paramètres nécessaires",
+          "Elle n'apporte aucun avantage réel par rapport à un traitement en liste plate",
+          "Elle fonctionne uniquement sur des images en noir et blanc"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      },
+      {
+        "question": "Pourquoi la disponibilité de puissance de calcul (GPU à bas coût, cloud) a-t-elle été un facteur aussi déterminant que les avancées théoriques dans l'essor du deep learning depuis les années 2010 ?",
+        "options": [
+          "Les concepts mathématiques des réseaux de neurones existaient depuis des décennies, mais manquaient de la puissance de calcul nécessaire pour entraîner des réseaux suffisamment profonds sur de grandes quantités de données",
+          "La puissance de calcul n'a joué aucun rôle, seules les avancées théoriques comptent",
+          "Le deep learning n'a en réalité aucun lien avec la puissance de calcul disponible"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "L'architecture \"Transformer\", introduite en 2017 dans l'article \"Attention Is All You Need\" par des chercheurs de Google, est devenue la base de pratiquement tous les grands modèles de langage modernes (GPT, BERT, et bien d'autres).",
+    "pionnier": {
+      "nom": "Geoffrey Hinton",
+      "portrait": "Informaticien britanno-canadien, souvent surnommé l'un des \"parrains du deep learning\", professeur à l'Université de Toronto puis chercheur chez Google.",
+      "contribution": "Il a contribué de manière déterminante à populariser et perfectionner l'algorithme de rétropropagation dans les années 1980, puis a codirigé en 2012 la création d'AlexNet, un réseau de neurones qui a spectaculairement surpassé les méthodes précédentes en reconnaissance d'images.",
+      "problematique": "Les réseaux de neurones étaient largement délaissés par la communauté de recherche dans les années 1990-2000, jugés trop limités face à d'autres approches de Machine Learning plus simples à entraîner.",
+      "solution": "En combinant des architectures profondes, de grandes quantités de données étiquetées (ImageNet) et la puissance des GPU, son équipe a démontré que le deep learning surpassait largement les approches précédentes sur des tâches concrètes.",
+      "resultat": "La victoire d'AlexNet au concours ImageNet en 2012 est largement considérée comme le déclencheur de l'explosion mondiale du deep learning dans l'industrie tech, ce qui lui a valu le prix Turing 2018 (partagé avec Yoshua Bengio et Yann LeCun)."
+    },
+    "ambiguite": {
+      "question": "Un réseau de neurones plus profond (plus de couches) est-il toujours plus performant qu'un réseau moins profond ?",
+      "reponse": "Non — un réseau trop profond sans les bonnes techniques (normalisation, connexions résiduelles) peut devenir plus difficile à entraîner et moins performant, un phénomène observé et documenté dans la recherche. Ajouter des couches n'est bénéfique que si l'architecture et les techniques d'entraînement associées permettent réellement d'exploiter cette profondeur — sinon, un réseau plus profond peut simplement être plus lent sans gain de précision, voire pire."
+    }
+  },
+  {
+    "id": "ia-generative-llm",
+    "title": "IA générative et modèles de langage (LLM)",
+    "category": "IA & Machine Learning",
+    "badge": { "id": "badge-generative-ai", "name": "Maître des grands modèles", "emoji": "✨" },
+    "griotIntro": [
+      "Un modèle de langage ne 'sait' rien au sens humain — il prédit, mot après mot, le token le plus probable étant donné tout ce qui précède.",
+      "Et pourtant, à une échelle suffisante (des milliards de paramètres, des trillions de mots d'entraînement), cette simple prédiction produit des capacités qui semblent relever du raisonnement.",
+      "Comprendre cette mécanique démystifie autant qu'elle impressionne — c'est un sujet devenu incontournable dans presque tout entretien technique moderne."
+    ],
+    "explanation": {
+      "text": "Un grand modèle de langage (LLM) est entraîné à prédire le prochain token (mot ou fragment de mot) d'un texte, à partir d'immenses quantités de texte. L'architecture dominante est le Transformer, dont le mécanisme clé est l'attention (attention mechanism) : pour chaque mot, le modèle apprend à quels autres mots du contexte 'prêter attention' pour prédire la suite, quelle que soit leur distance dans le texte — contrairement aux architectures plus anciennes qui traitaient le texte séquentiellement et perdaient le contexte lointain. Après un pré-entraînement massif, un fine-tuning (souvent avec du retour humain, RLHF) ajuste le modèle pour être utile et sûr dans un contexte conversationnel.",
+      "code": "// Génération de texte par prédiction séquentielle (pseudo-code très simplifié)\nfunction generateText(prompt, model, maxTokens) {\n  let tokens = tokenize(prompt)\n\n  for (let i = 0; i < maxTokens; i++) {\n    const probabilities = model.predictNextToken(tokens)  // distribution sur tout le vocabulaire\n    const nextToken = sampleFrom(probabilities, temperature)  // choix pondéré, pas toujours le plus probable\n    tokens.push(nextToken)\n\n    if (nextToken === END_TOKEN) break\n  }\n\n  return detokenize(tokens)\n}",
+      "annotations": [
+        { "line": 6, "note": "À chaque étape, le modèle ne prédit pas un mot fixe mais une DISTRIBUTION de probabilités sur tout son vocabulaire — c'est fondamentalement un problème de prédiction statistique, pas de récupération d'information stockée." },
+        { "line": 7, "note": "Le paramètre 'temperature' contrôle le hasard de la génération : une température basse choisit presque toujours le token le plus probable (réponses plus prévisibles), une température élevée introduit plus de variété (et de risque d'incohérence)." },
+        { "line": 9, "note": "La génération s'arrête sur un token spécial de fin — sans ce mécanisme, le modèle continuerait indéfiniment à générer du texte." }
+      ]
+    },
+    "useCases": [
+      "Assistants conversationnels et génération de code (comme les outils d'aide à la programmation)",
+      "Résumé automatique de documents, traduction, réponse à des questions sur un corpus de documents (RAG)",
+      "Génération de contenu créatif (texte, et par extension modèles similaires pour image/audio)"
+    ],
+    "relatedTools": [
+      { "name": "Transformer", "description": "Architecture de réseau de neurones introduite en 2017, base de pratiquement tous les LLM modernes grâce à son mécanisme d'attention." },
+      { "name": "RAG (Retrieval-Augmented Generation)", "description": "Technique combinant un LLM avec une recherche documentaire externe, pour ancrer les réponses sur des données précises plutôt que sur la seule mémoire du modèle." },
+      { "name": "RLHF (Reinforcement Learning from Human Feedback)", "description": "Méthode d'affinage d'un modèle à partir de préférences humaines, utilisée pour rendre les réponses plus utiles et moins problématiques." }
+    ],
+    "practice": {
+      "question": "Pourquoi un LLM peut-il produire une information incorrecte avec beaucoup d'assurance (\"hallucination\") ?",
+      "options": [
+        "Parce qu'il prédit statistiquement le texte le plus probable, sans mécanisme de vérification factuelle intégré à sa génération",
+        "Parce qu'il ment intentionnellement quand il ne sait pas la réponse",
+        "Cela n'arrive jamais avec les modèles suffisamment grands"
+      ],
+      "correctIndex": 0,
+      "feedback": {
+        "correct": "Exactement : le modèle génère la suite la plus statistiquement plausible selon son entraînement — rien ne garantit intrinsèquement que cette suite soit factuellement exacte, d'où l'intérêt de techniques comme le RAG pour ancrer les réponses sur des sources vérifiables.",
+        "incorrect": "Un LLM n'a pas d'intention ni de mécanisme de vérification factuelle — il génère la continuation statistiquement la plus probable, ce qui peut produire une erreur formulée avec la même assurance qu'une réponse correcte."
+      }
+    },
+    "quiz": [
+      {
+        "question": "Qu'est-ce que le mécanisme d'attention dans un Transformer ?",
+        "options": [
+          "Un mécanisme qui permet au modèle de pondérer l'importance de chaque mot du contexte pour prédire la suite, quelle que soit sa distance",
+          "Un système de surveillance qui empêche le modèle de générer du contenu inapproprié",
+          "La quantité de mémoire GPU utilisée pendant l'entraînement"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "Que fait fondamentalement un LLM à chaque étape de génération de texte ?",
+        "options": [
+          "Il prédit une distribution de probabilités sur le prochain token possible",
+          "Il recherche la réponse exacte dans une base de données interne",
+          "Il exécute un raisonnement logique symbolique explicite"
+        ],
+        "correctIndex": 0,
+        "difficulty": "facile"
+      },
+      {
+        "question": "À quoi sert le paramètre de \"température\" lors de la génération de texte ?",
+        "options": [
+          "Il contrôle le degré de hasard dans le choix du prochain token, entre prévisibilité et variété",
+          "Il mesure la puissance de calcul consommée par la requête",
+          "Il détermine la longueur maximale du texte généré"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi le RAG (Retrieval-Augmented Generation) réduit-il le risque d'hallucination par rapport à un LLM utilisé seul ?",
+        "options": [
+          "Il ancre la génération sur des documents récupérés et vérifiables, plutôt que de s'appuyer uniquement sur ce que le modèle a mémorisé de façon statistique pendant l'entraînement",
+          "Il rend le modèle plus rapide, sans lien avec la fiabilité des réponses",
+          "Le RAG élimine complètement et définitivement tout risque d'erreur"
+        ],
+        "correctIndex": 0,
+        "difficulty": "moyen"
+      },
+      {
+        "question": "Pourquoi le mécanisme d'attention a-t-il représenté une avancée majeure par rapport aux architectures séquentielles plus anciennes (comme les RNN) pour traiter de longs textes ?",
+        "options": [
+          "Il permet au modèle d'accéder directement à n'importe quel mot du contexte, sans perdre progressivement l'information au fil d'un traitement strictement séquentiel",
+          "Il élimine complètement le besoin d'entraîner le modèle sur de grandes quantités de données",
+          "Il rend le modèle capable de raisonnement logique garanti, contrairement aux architectures précédentes"
+        ],
+        "correctIndex": 0,
+        "difficulty": "difficile"
+      }
+    ],
+    "culture": "GPT signifie \"Generative Pre-trained Transformer\" — les trois mots résument directement l'architecture (Transformer), la méthode d'entraînement (pré-entraînement sur d'immenses corpus) et la fonction (génération de texte) qui ont défini cette génération de modèles.",
+    "pionnier": {
+      "nom": "Fei-Fei Li",
+      "portrait": "Informaticienne américaine d'origine chinoise, professeure à Stanford, codirectrice du Stanford Human-Centered AI Institute.",
+      "contribution": "Elle a créé ImageNet (2009), une base de données de plus de 14 millions d'images étiquetées, qui a servi de terrain d'entraînement et de compétition de référence ayant directement permis la démonstration du deep learning moderne (dont la victoire d'AlexNet en 2012).",
+      "problematique": "Les algorithmes de vision par ordinateur de l'époque manquaient cruellement de données d'entraînement à grande échelle pour démontrer leur potentiel réel, freinant les progrès du domaine.",
+      "solution": "Constituer, avec son équipe, une base de données à une échelle alors inédite, en s'appuyant notamment sur le crowdsourcing pour l'étiquetage massif d'images.",
+      "resultat": "ImageNet est devenu le catalyseur reconnu de la révolution du deep learning en vision par ordinateur, et Fei-Fei Li est aujourd'hui l'une des voix les plus influentes sur l'IA centrée sur l'humain et ses implications éthiques."
+    },
+    "ambiguite": {
+      "question": "Un LLM \"comprend\"-il vraiment les questions qu'on lui pose, au sens où un humain comprendrait ?",
+      "reponse": "C'est un sujet activement débattu, mais techniquement : un LLM ne possède pas de représentation conceptuelle du monde comparable à la cognition humaine — il modélise des relations statistiques complexes entre tokens de texte, apprises sur d'immenses corpus. Que cela constitue une forme de 'compréhension' est une question philosophique ouverte ; ce qui est certain techniquement, c'est qu'il n'y a pas de mécanisme de vérification de vérité ni de conscience du sens intégré à son fonctionnement de base."
+    }
+  }
+]

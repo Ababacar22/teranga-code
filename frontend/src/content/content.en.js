@@ -10,6 +10,8 @@ import cloudDistribue from './topics-en/cloudDistribue.json'
 import architectureSI from './topics-en/architectureSI.json'
 import systemDesign from './topics-en/systemDesign.json'
 import carriereInternationale from './topics-en/carriereInternationale.json'
+import fintech from './topics-en/fintech.json'
+import iaMachineLearning from './topics-en/iaMachineLearning.json'
 import { createContentHelpers } from './unlockLogic'
 
 export const villes = [
@@ -647,6 +649,149 @@ export const villes = [
         specialite: "A place of memory and art",
         langues: "Wolof and French",
       },
+      quiz: [
+        {
+          question: "Since when has Goree Island been a UNESCO World Heritage Site?",
+          options: ["Since 1978", "Since 1960", "Since 2000"],
+          correctIndex: 0,
+        },
+        {
+          question: "Which iconic building on Goree symbolizes the memory of the slave trade?",
+          options: ["The House of Slaves", "The Presidential Palace", "The Great Mosque"],
+          correctIndex: 0,
+        },
+        {
+          question: "How do people get around on Goree Island?",
+          options: ["On foot, the island is car-free", "By car only", "By subway"],
+          correctIndex: 0,
+        },
+        {
+          question: "How many European colonial powers occupied Goree Island over its history?",
+          options: ["Several, one after another", "Just one, throughout its entire history", "None, the island was never occupied"],
+          correctIndex: 0,
+        },
+        {
+          question: "What happens every year on Goree Island related to its history?",
+          options: ["International commemorations in memory of the slave trade", "A major international marathon", "An action film festival"],
+          correctIndex: 0,
+        },
+      ],
+    },
+  },
+  {
+    id: "bangalore",
+    name: "Bangalore",
+    rubrique: "Fintech & Payments",
+    icon: "💳",
+    lonLat: [77.5946, 12.9716],
+    topics: fintech,
+    alwaysUnlocked: true,
+    discovery: {
+      facts: [
+        "Bangalore is nicknamed the \"Silicon Valley of India,\" the country's technology capital since the 1990s.",
+        "The city is home to the headquarters or major hubs of thousands of tech companies, both Indian and international.",
+        "India built the India Stack, a set of public digital infrastructures including UPI, one of the most widely used instant payment systems in the world.",
+        "Bangalore has one of the highest concentrations of software engineers in the world, many trained at India's top institutes (IIT, IISc).",
+        "The city is also called the \"Garden City\" for its many parks, a legacy of its 19th-century urban planning.",
+        "Bangalore's startup ecosystem is one of the most active in Asia, with a strong focus on fintech and SaaS.",
+        "Bangalore's mild climate, rare in India, historically attracted high-tech industries to the city.",
+      ],
+      quickFacts: {
+        population: "~13 million (metro area)",
+        specialite: "Information technology and fintech",
+        langues: "Kannada, English and Hindi",
+      },
+      quiz: [
+        {
+          question: "What is Bangalore often nicknamed?",
+          options: ["The Silicon Valley of India", "India's religious capital", "The country's largest port"],
+          correctIndex: 0,
+        },
+        {
+          question: "What is the India Stack?",
+          options: [
+            "A set of Indian public digital infrastructures, including UPI",
+            "A mountain range near Bangalore",
+            "An annual music festival",
+          ],
+          correctIndex: 0,
+        },
+        {
+          question: "Why is Bangalore also called the \"Garden City\"?",
+          options: ["For its many parks, a legacy of its 19th-century urban planning", "For its beaches", "For the rice paddies surrounding it"],
+          correctIndex: 0,
+        },
+        {
+          question: "In which sector is Bangalore's startup ecosystem particularly active?",
+          options: ["Fintech and SaaS", "Industrial fishing", "Mining"],
+          correctIndex: 0,
+        },
+        {
+          question: "What climate feature historically attracted tech to Bangalore?",
+          options: ["A mild climate, rare in India", "A freezing climate year-round", "A complete absence of a rainy season"],
+          correctIndex: 0,
+        },
+      ],
+    },
+  },
+  {
+    id: "silicon-valley",
+    name: "Silicon Valley",
+    rubrique: "AI & Machine Learning",
+    icon: "🤖",
+    lonLat: [-122.143, 37.4419],
+    topics: iaMachineLearning,
+    alwaysUnlocked: true,
+    discovery: {
+      facts: [
+        "Silicon Valley, in the San Francisco Bay Area, owes its name to the silicon used in semiconductors developed there starting in the 1950s-60s.",
+        "It is home to the headquarters of tech giants like Google, Apple, Meta and Nvidia, as well as Stanford, a university at the heart of its ecosystem.",
+        "The region concentrates a major share of global venture capital investment, particularly in artificial intelligence since the 2020s.",
+        "The term \"Silicon Valley\" was popularized by journalist Don Hoefler in 1971.",
+        "Stanford University directly spawned companies like Google and Hewlett-Packard, born from student projects or theses.",
+        "The region has gone through several major technology waves: semiconductors, personal computing, the internet, and now artificial intelligence.",
+        "Despite its cutting-edge tech image, Silicon Valley also faces major challenges around cost of living and local inequality.",
+      ],
+      quickFacts: {
+        population: "~3.5 million (San Francisco Bay Area)",
+        specialite: "Venture capital, artificial intelligence and major tech companies",
+        langues: "English, Spanish and many other languages (high international immigration)",
+      },
+      quiz: [
+        {
+          question: "Where does the name \"Silicon Valley\" come from?",
+          options: [
+            "The silicon used in semiconductors developed in the region",
+            "A mountain range shaped like silicon",
+            "A local lake called \"Silicon\"",
+          ],
+          correctIndex: 0,
+        },
+        {
+          question: "Which university is particularly associated with the Silicon Valley ecosystem?",
+          options: ["Stanford", "Harvard", "Oxford"],
+          correctIndex: 0,
+        },
+        {
+          question: "Who popularized the term \"Silicon Valley\"?",
+          options: ["Journalist Don Hoefler in 1971", "A NASA engineer", "The governor of California"],
+          correctIndex: 0,
+        },
+        {
+          question: "What successive technology waves have shaped Silicon Valley?",
+          options: [
+            "Semiconductors, personal computing, the internet, artificial intelligence",
+            "Only artificial intelligence, from the very start",
+            "Textiles, steel, automotive",
+          ],
+          correctIndex: 0,
+        },
+        {
+          question: "What major challenge accompanies the region's tech success?",
+          options: ["A very high cost of living and significant local inequality", "A complete lack of companies", "The absence of any university"],
+          correctIndex: 0,
+        },
+      ],
     },
   },
 ]

@@ -5,7 +5,7 @@ const UNLOCK_THRESHOLD = 2
 
 export function createContentHelpers(villes, requirementLabel) {
   function orderedVilles(focusAreas = []) {
-    const technical = villes.filter((v) => v.topics)
+    const technical = villes.filter((v) => v.topics && !v.alwaysUnlocked)
     const dakar = technical.find((v) => v.id === 'dakar')
     const others = technical.filter((v) => v.id !== 'dakar')
     const prioritized = (focusAreas ?? []).map((id) => others.find((v) => v.id === id)).filter(Boolean)
@@ -14,7 +14,8 @@ export function createContentHelpers(villes, requirementLabel) {
   }
 
   function getUnlockInfo(villeId, badges, focusAreas = []) {
-    if (villeId === 'goree') return { unlocked: true }
+    const ville = villes.find((v) => v.id === villeId)
+    if (villeId === 'goree' || ville?.alwaysUnlocked) return { unlocked: true }
 
     const chain = orderedVilles(focusAreas)
     const chainIndex = chain.findIndex((v) => v.id === villeId)

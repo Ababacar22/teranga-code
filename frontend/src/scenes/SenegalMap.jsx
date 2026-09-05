@@ -32,6 +32,8 @@ const TEXT = {
     revise: (n) => `🔁 Réviser mes erreurs (${n})`,
     admin: '🛠️ Admin',
     badgesUnlocked: (n) => `${n} badge(s) débloqué(s)`,
+    international: '🌍 Destinations internationales',
+    internationalNote: 'Toujours accessibles, aucune progression requise.',
   },
   en: {
     tagline: 'Travel across Senegal to prepare for your tech interviews.',
@@ -51,6 +53,8 @@ const TEXT = {
     revise: (n) => `🔁 Review my mistakes (${n})`,
     admin: '🛠️ Admin',
     badgesUnlocked: (n) => `${n} badge(s) unlocked`,
+    international: '🌍 International destinations',
+    internationalNote: 'Always accessible, no progress required.',
   },
 }
 
@@ -95,6 +99,8 @@ function SenegalMap() {
   }
 
   const recommended = getRecommendedNext(user)
+  const senegalVilles = villes.filter((v) => !v.alwaysUnlocked)
+  const internationalVilles = villes.filter((v) => v.alwaysUnlocked)
 
   return (
     <div className="scene scene--map">
@@ -175,12 +181,28 @@ function SenegalMap() {
       <TodayCard goal={goal} recommended={recommended} streakCurrent={streakCurrent} missedCount={missedQuestions.length} />
 
       <SenegalLeafletMap
-        villes={villes}
+        villes={senegalVilles}
         unlockInfoFor={(ville) => getUnlockInfo(ville.id, badges, focusAreas)}
         onCityClick={handleEnter}
       />
 
       {badges.length > 0 && <p className="map-badges-count">{t.badgesUnlocked(badges.length)}</p>}
+
+      {internationalVilles.length > 0 && (
+        <section className="international-destinations">
+          <h2>{t.international}</h2>
+          <p className="international-destinations__note">{t.internationalNote}</p>
+          <div className="international-destinations__grid">
+            {internationalVilles.map((v) => (
+              <button key={v.id} type="button" className="international-destinations__card" onClick={() => handleEnter(v)}>
+                <span className="international-destinations__icon">{v.icon}</span>
+                <strong>{v.name}</strong>
+                <small>{v.rubrique}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }

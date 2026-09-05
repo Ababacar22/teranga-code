@@ -599,7 +599,34 @@
         "population": "a few hundred residents",
         "specialty": "A place of memory and art",
         "languages": "Wolof and French"
-      }
+      },
+      "quiz": [
+        {
+          "question": "Since when has Goree Island been a UNESCO World Heritage Site?",
+          "options": ["Since 1978", "Since 1960", "Since 2000"],
+          "correctIndex": 0
+        },
+        {
+          "question": "Which iconic building on Goree symbolizes the memory of the slave trade?",
+          "options": ["The House of Slaves", "The Presidential Palace", "The Great Mosque"],
+          "correctIndex": 0
+        },
+        {
+          "question": "How do people get around on Goree Island?",
+          "options": ["On foot, the island is car-free", "By car only", "By subway"],
+          "correctIndex": 0
+        },
+        {
+          "question": "How many European colonial powers occupied Goree Island over its history?",
+          "options": ["Several, one after another", "Just one, throughout its entire history", "None, the island was never occupied"],
+          "correctIndex": 0
+        },
+        {
+          "question": "What happens every year on Goree Island related to its history?",
+          "options": ["International commemorations in memory of the slave trade", "A major international marathon", "An action film festival"],
+          "correctIndex": 0
+        }
+      ]
     }
   }
 }

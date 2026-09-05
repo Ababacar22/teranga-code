@@ -346,6 +346,55 @@ const SCENES = {
       </motion.g>
     </>
   ),
+  bangalore: (
+    <>
+      <rect width="200" height="140" fill="#e8e0d0" />
+      <motion.circle cx="150" cy="28" r="15" fill="var(--sn-yellow)" {...pulse} />
+      {/* silhouette de tours tech */}
+      <rect x="30" y="70" width="22" height="48" fill="#9c8b6f" />
+      <rect x="58" y="55" width="22" height="63" fill="#8a7a5f" />
+      <rect x="86" y="80" width="22" height="38" fill="#9c8b6f" />
+      {[34, 62, 90].map((x) => (
+        <g key={x}>
+          <rect x={x} y="76" width="6" height="6" fill="var(--sn-yellow)" opacity="0.6" />
+          <rect x={x + 10} y="88" width="6" height="6" fill="var(--sn-yellow)" opacity="0.6" />
+        </g>
+      ))}
+      {/* carte de paiement stylisée, clin d'œil au thème fintech */}
+      <g transform="translate(130 95) rotate(-8)">
+        <rect width="42" height="26" rx="4" fill="var(--sn-green)" />
+        <rect y="7" width="42" height="5" fill="var(--ink)" opacity="0.3" />
+      </g>
+      {/* parcs, "Garden City" */}
+      <ellipse cx="20" cy="122" rx="14" ry="6" fill="var(--sn-green-dark)" opacity="0.6" />
+      <ellipse cx="175" cy="120" rx="16" ry="7" fill="var(--sn-green-dark)" opacity="0.6" />
+      <motion.g {...drift(10, 7)}>
+        <path d="M25 40 Q31 33 37 40" stroke="var(--ink)" strokeWidth="1.5" fill="none" opacity="0.4" />
+      </motion.g>
+    </>
+  ),
+  'silicon-valley': (
+    <>
+      <rect width="200" height="140" fill="#dfe6ea" />
+      <motion.circle cx="45" cy="26" r="14" fill="var(--sn-yellow)" {...pulse} />
+      {/* collines douces de la baie */}
+      <path d="M0 100 Q50 75 100 95 T200 90 V140 H0 Z" fill="#c7bf9a" opacity="0.7" />
+      {/* campus bas, style Silicon Valley */}
+      <rect x="60" y="88" width="34" height="24" rx="3" fill="var(--paper)" stroke="var(--border)" />
+      <rect x="104" y="94" width="26" height="18" rx="3" fill="var(--paper)" stroke="var(--border)" />
+      {/* motif circuit imprimé, clin d'œil IA/tech */}
+      <g stroke="var(--sn-green-dark)" strokeWidth="1.5" fill="none" opacity="0.55">
+        <path d="M140 60 H160 V80 H175" />
+        <circle cx="140" cy="60" r="2.5" fill="var(--sn-green-dark)" />
+        <circle cx="175" cy="80" r="2.5" fill="var(--sn-green-dark)" />
+        <path d="M150 40 V55" />
+        <circle cx="150" cy="38" r="2.5" fill="var(--sn-green-dark)" />
+      </g>
+      <motion.g {...bob(2, 4)}>
+        <ellipse cx="170" cy="30" rx="6" ry="9" fill="var(--sn-green-dark)" opacity="0.4" />
+      </motion.g>
+    </>
+  ),
 }
 
 function CityIllustration({ villeId }) {

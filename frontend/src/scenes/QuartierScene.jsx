@@ -59,6 +59,12 @@ import HiringProcessRegionsDemo from '../components/HiringProcessRegionsDemo'
 import ArchitectureEvolutionDemo from '../components/ArchitectureEvolutionDemo'
 import RateLimiterDemo from '../components/RateLimiterDemo'
 import ConsistentHashingDemo from '../components/ConsistentHashingDemo'
+import IdempotenceDemo from '../components/IdempotenceDemo'
+import PaymentGatewayDemo from '../components/PaymentGatewayDemo'
+import FraudScoreDemo from '../components/FraudScoreDemo'
+import MlFamiliesDemo from '../components/MlFamiliesDemo'
+import NeuralNetworkDemo from '../components/NeuralNetworkDemo'
+import LlmGenerationDemo from '../components/LlmGenerationDemo'
 import AnnotatedCode from '../components/AnnotatedCode'
 import RecapSheet from '../components/RecapSheet'
 import BugHunt from '../components/BugHunt'
@@ -130,6 +136,12 @@ const TOPIC_DEMOS = {
   'evolution-architecture-echelle': ArchitectureEvolutionDemo,
   'rate-limiter': RateLimiterDemo,
   'consistent-hashing': ConsistentHashingDemo,
+  'idempotence-transactions': IdempotenceDemo,
+  'architecture-passerelle-paiement': PaymentGatewayDemo,
+  'detection-fraude-fondamentaux': FraudScoreDemo,
+  'fondamentaux-machine-learning': MlFamiliesDemo,
+  'reseaux-neurones-deep-learning': NeuralNetworkDemo,
+  'ia-generative-llm': LlmGenerationDemo,
 }
 
 const STEPS = ['Histoire', 'Pratique', 'Quiz', 'Récompense']
